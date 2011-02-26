@@ -1,0 +1,24 @@
+<project default="injectyml" basedir=".">
+
+	<property name="yml.name" value="yml name" />
+	<property name="yml.main" value="yml main" />
+	<property name="yml.version" value="yml version" />
+
+	<property name="yml.dest" location="target" />
+
+	<property name="yml.file" value="${yml.dest}/plugin.yml" />
+	<property name="jar.file" value="${yml.dest}/bukkitmodders-helloworld-0.0.1-SNAPSHOT.jar" />
+
+	<target name="injectyml" depends="buildyml">
+		<jar destfile="${jar.file}" update="true" includes="plugin.yml" basedir="${yml.dest}" />
+	</target>
+
+	<target name="buildyml">
+		<property name="file" value="${yml.dest}/plugin.yml" />
+
+		<echo file="${yml.file}" message="name: ${yml.name}" />
+		<echo file="${yml.file}" message="${line.separator}main: ${yml.main}" append="true" />
+		<echo file="${yml.file}" message="${line.separator}version: ${yml.version}" append="true" />
+	</target>
+
+</project>

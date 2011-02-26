@@ -5,6 +5,12 @@
 	<artifactId>bukkitmodders-helloworld</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
+	<properties>
+		<build.path>${project.build.directory}</build.path>
+		<build.artifact>${project.build.finalName}.${project.packaging}</build.artifact>
+		<bukkit.plugin.class>org.bukkitmodders.helloworld.MyPlugin</bukkit.plugin.class>
+	</properties>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -19,18 +25,42 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.2</version>
 				<executions>
 					<execution>
-						<id>copy</id>
+						<id>copy-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>copy-dependencies</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target/lib</outputDirectory>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
 							<overWriteReleases>false</overWriteReleases>
 							<overWriteSnapshots>true</overWriteSnapshots>
+							<excludeTransitive>true</excludeTransitive>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<property name="yml.name" value="${project.artifactId}" />
+								<property name="yml.main" value="${bukkit.plugin.class}" />
+								<property name="yml.version" value="${project.version}" />
+								<property name="jar.file" value="${build.artifact}" />
+								
+								<ant antfile="build.xml" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>
