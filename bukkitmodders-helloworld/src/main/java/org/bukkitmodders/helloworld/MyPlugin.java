@@ -24,8 +24,9 @@ public class MyPlugin extends JavaPlugin {
 	}
 
 	public void onEnable() {
+		log.info("Plugin Enabled");
 
-		// Register events we are interested in litenting to
+		// Register events we are interested in listenting to
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
 		pm.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
