@@ -1,0 +1,3 @@
+name: HelloWorld
+main: org.myorg.bukkit.myplugin.EntryPoint
+version: 0.1
