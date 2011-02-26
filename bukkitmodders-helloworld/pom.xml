@@ -53,8 +53,10 @@
 								<property name="yml.name" value="${project.artifactId}" />
 								<property name="yml.main" value="${bukkit.plugin.class}" />
 								<property name="yml.version" value="${project.version}" />
-								<property name="jar.file" value="${build.artifact}" />
-								
+
+								<property name="jar.filename" value="${build.artifact}" />
+								<property name="build.path" value="build.path" />
+
 								<ant antfile="build.xml" />
 							</target>
 						</configuration>

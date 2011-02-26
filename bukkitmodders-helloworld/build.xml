@@ -4,17 +4,19 @@
 	<property name="yml.main" value="yml main" />
 	<property name="yml.version" value="yml version" />
 
-	<property name="yml.dest" location="target" />
+	<property name="build.path" location="target" />
 
-	<property name="yml.file" value="${yml.dest}/plugin.yml" />
-	<property name="jar.file" value="${yml.dest}/bukkitmodders-helloworld-0.0.1-SNAPSHOT.jar" />
+	<property name="jar.filename" value="bukkitmodders-helloworld-0.0.1-SNAPSHOT.jar" />
+	
+	<property name="yml.file" value="${build.path}/plugin.yml" />
+	<property name="jar.file" value="${build.path}/${jar.filename}" />
 
 	<target name="injectyml" depends="buildyml">
-		<jar destfile="${jar.file}" update="true" includes="plugin.yml" basedir="${yml.dest}" />
+		<jar destfile="${jar.file}" update="true" includes="plugin.yml" basedir="${build.path}" />
 	</target>
 
 	<target name="buildyml">
-		<property name="file" value="${yml.dest}/plugin.yml" />
+		<property name="file" value="${build.path}/plugin.yml" />
 
 		<echo file="${yml.file}" message="name: ${yml.name}" />
 		<echo file="${yml.file}" message="${line.separator}main: ${yml.main}" append="true" />
