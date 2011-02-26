@@ -1,4 +1,4 @@
-package org.myorg.bukkit.myplugin;
+package org.bukkitmodders.helloworld;
 
 import java.util.HashMap;
 

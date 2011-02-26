@@ -1,4 +1,4 @@
-package org.myorg.bukkit.myplugin;
+package org.bukkitmodders.helloworld;
 
 import org.bukkit.event.block.BlockListener;
 import org.slf4j.Logger;
