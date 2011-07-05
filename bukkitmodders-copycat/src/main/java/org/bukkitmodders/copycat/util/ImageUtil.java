@@ -1,12 +1,6 @@
 package org.bukkitmodders.copycat.util;
 
-import java.awt.AlphaComposite;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageFilter;
-import java.awt.image.BufferedImageOp;
 
 import com.thebuzzmedia.imgscalr.Scalr;
 import com.thebuzzmedia.imgscalr.Scalr.Method;

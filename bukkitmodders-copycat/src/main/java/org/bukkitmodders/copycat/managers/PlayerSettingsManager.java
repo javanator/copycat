@@ -1,7 +1,6 @@
 package org.bukkitmodders.copycat.managers;
 
 import org.bukkit.entity.Player;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;

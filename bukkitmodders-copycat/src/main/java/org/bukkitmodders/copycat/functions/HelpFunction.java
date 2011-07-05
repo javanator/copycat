@@ -2,10 +2,8 @@ package org.bukkitmodders.copycat.functions;
 
 import java.util.Map;
 import java.util.Queue;
-import java.util.StringTokenizer;
 
 import org.bukkit.entity.Player;
-import org.bukkitmodders.copycat.CopycatCommand;
 import org.bukkitmodders.copycat.Plugin;
 
 public class HelpFunction extends AbstractCopycatFunction {

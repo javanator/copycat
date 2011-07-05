@@ -1,5 +1,6 @@
 package org.bukkitmodders.copycat;
 
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
@@ -25,52 +26,51 @@ public class CopycatCommand extends AbstractCopycatCommand {
 	}
 
 	@Override
-	protected void performCommand(Player sender, Command command, String label, Queue<String> args) {
+	protected void performCommand(Player sender, Command command, String label, Queue<String> args)
+			throws NeedMoreArgumentsException {
+
+		Queue<String> argsCopy = new LinkedList<String>(args);
 
 		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager()
 				.getPlayerSettings(sender.getName());
 
+		Map<String, AbstractCopycatFunction> functions = getPlugin().getFunctions();
+
 		try {
-			Map<String, AbstractCopycatFunction> functions = getPlugin().getFunctions();
+			AbstractCopycatFunction.validateSufficientArgs(1, args);
+		} catch (NeedMoreArgumentsException e) {
+			// Help a player out
+			args.add(HelpFunction.FUNCTION_STRING);
+		}
+
+		String desiredFunction = args.remove();
+
+		if (functions.containsKey(desiredFunction)) {
+
+			AbstractCopycatFunction function = functions.get(desiredFunction);
 
 			try {
-				AbstractCopycatFunction.validateSufficientArgs(1, args);
+				function.performFunction(sender, args);
 			} catch (NeedMoreArgumentsException e) {
-				// Help a player out
-				args.add(HelpFunction.FUNCTION_STRING);
+				sender.sendMessage(e.getMessage());
+				function.giveFunctionHelp(sender);
 			}
 
-			String desiredFunction = args.remove();
+		} else if (playerSettings.getShortcut(desiredFunction) != null) {
 
-			if (functions.containsKey(desiredFunction)) {
+			// For convenience...
+			// If the desired function matches a shortcut, copy it
 
-				AbstractCopycatFunction function = functions.get(desiredFunction);
+			Shortcut shortcut = playerSettings.getShortcut(desiredFunction);
 
-				try {
-					function.performFunction(sender, args);
-				} catch (NeedMoreArgumentsException e) {
-					sender.sendMessage(e.getMessage());
-					function.giveFunctionHelp(sender);
-				}
+			if (shortcut != null) {
+				args.clear();
+				args.add(shortcut.getName());
 
-			} else if (playerSettings.getShortcut(desiredFunction) != null) {
-
-				// For convenience...
-				// If the desired function matches a shortcut, copy it
-
-				Shortcut shortcut = playerSettings.getShortcut(desiredFunction);
-
-				if (shortcut != null) {
-					args.clear();
-					args.add(shortcut.getName());
-
-					((ShortcutFunctions) functions.get(ShortcutFunctions.FUNCTION_NAME)).doCopy(sender, args);
-				}
-			} else {
-				functions.get(HelpFunction.FUNCTION_STRING).performFunction(sender, args);
+				((ShortcutFunctions) functions.get(ShortcutFunctions.FUNCTION_NAME)).doCopy(sender, args);
 			}
-		} catch (Exception e) {
-			sender.sendMessage(e.getMessage());
+		} else {
+			functions.get(HelpFunction.FUNCTION_STRING).performFunction(sender, args);
 		}
 	}
 

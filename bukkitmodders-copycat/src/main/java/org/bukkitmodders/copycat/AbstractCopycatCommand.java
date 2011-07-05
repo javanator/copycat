@@ -3,8 +3,6 @@ package org.bukkitmodders.copycat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,13 +34,26 @@ public abstract class AbstractCopycatCommand implements CommandExecutor {
 			Queue<String> argsQueue = new LinkedList<String>();
 			argsQueue.addAll(Arrays.asList(args));
 
-			performCommand((Player) sender, command, label, argsQueue);
+			try {
+				performCommand((Player) sender, command, label, argsQueue);
+			} catch (Exception e) {
+
+				log.error("Caught exception performing command with args: " + Arrays.deepToString(args), e);
+
+				if (e.getMessage() != null) {
+					sender.sendMessage(e.getMessage());
+				} else {
+					sender.sendMessage("Something very unexpected happened. See server log.");
+				}
+
+			}
 		}
 
 		return true;
 	}
 
-	protected abstract void performCommand(Player sender, Command command, String label, Queue<String> argsQueue);
+	protected abstract void performCommand(Player sender, Command command, String label, Queue<String> argsQueue)
+			throws Exception;
 
 	public abstract String getCommandString();
 

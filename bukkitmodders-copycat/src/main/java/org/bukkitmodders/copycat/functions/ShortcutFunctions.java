@@ -61,6 +61,8 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			doList(player, player.getName());
 		} else if ("copy".equalsIgnoreCase(operation)) {
 			doCopy(player, args);
+		} else {
+			player.sendMessage("Bad Shortcut Operation");
 		}
 	}
 
@@ -121,6 +123,21 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 		Block targetBlock = requestor.getTargetBlock(null, 100);
 
+		Location location = null;
+		Matrix4d orientationMatrix = null;
+		if (args.size() < 5) {
+
+			// The user has specified position manually
+
+			int x = Integer.parseInt(args.remove());
+			int y = Integer.parseInt(args.remove());
+			int z = Integer.parseInt(args.remove());
+
+			location = new Location(requestor.getWorld(), x, y, z);
+			orientationMatrix = new Matrix4d();
+			//TODO: parse an orientation
+		}
+
 		Shortcut shortcut = playerSettings.getShortcut(shortcutName);
 		InputStream in = null;
 
@@ -135,10 +152,12 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			requestor.sendMessage("Width: " + image.getWidth() + " Height: " + image.getHeight());
 			Stack<RevertableBlock> undoBuffer = createUndoBuffer(requestor);
 
-			Location location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(),
-					targetBlock.getZ());
+			if (location == null) {
+				location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(),
+						targetBlock.getZ());
+				orientationMatrix = calculateOrientation(requestor, targetBlock);
+			}
 
-			Matrix4d orientationMatrix = calculateOrientation(requestor, targetBlock);
 			BlockProfileType blockProfile = configurationManager.getBlockProfile(playerSettings.getBlockProfile());
 			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, requestor.getWorld(), orientationMatrix);
 			mcGraphics2d.draw(image, undoBuffer);

@@ -2,9 +2,7 @@ package org.bukkitmodders.copycat.util;
 
 public class NeedMoreArgumentsException extends Exception {
 
-	public NeedMoreArgumentsException() {
-		super();
-	}
+	private static final long serialVersionUID = 7149223696312513389L;
 
 	public NeedMoreArgumentsException(String message, Throwable cause) {
 		super(message, cause);
@@ -17,5 +15,4 @@ public class NeedMoreArgumentsException extends Exception {
 	public NeedMoreArgumentsException(Throwable cause) {
 		super(cause);
 	}
-
 }

@@ -17,8 +17,7 @@ public abstract class AbstractCopycatFunction {
 		this.plugin = plugin;
 	}
 
-	public abstract void performFunction(Player sender, Queue<String> args) throws IllegalArgumentException,
-			NeedMoreArgumentsException;
+	public abstract void performFunction(Player sender, Queue<String> args) throws NeedMoreArgumentsException;
 
 	public abstract String getFunction();
 
@@ -53,7 +52,8 @@ public abstract class AbstractCopycatFunction {
 		tellSplitNewline(player, sb);
 	}
 
-	public static void validateSufficientArgs(int expectedNumArgs, Queue<String> args) throws NeedMoreArgumentsException {
+	public static void validateSufficientArgs(int expectedNumArgs, Queue<String> args)
+			throws NeedMoreArgumentsException {
 
 		if (args.size() < expectedNumArgs) {
 
