@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/pluginSettings"
+	xmlns:cc="http://www.example.org/pluginSettings" elementFormDefault="unqualified">
+
+	<element name="configFile" type="cc:pluginConfig" />
+
+	<complexType name="globalSettingsType">
+		<sequence>
+			<element name="prohibitedWorlds" minOccurs="1" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="world" type="string" minOccurs="0"
+							maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+			<element name="maxImageWidth" type="int" minOccurs="1"
+				maxOccurs="1" />
+			<element name="maxImageHeight" type="int" minOccurs="1"
+				maxOccurs="1" />
+			<element name="blockProfiles">
+				<complexType>
+					<sequence>
+						<element name="blockProfile" type="cc:blockProfileType"
+							minOccurs="1" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+
+	<complexType name="playerSettingsType">
+		<sequence>
+			<element name="blockProfile" type="string" minOccurs="1"
+				maxOccurs="1" />
+			<element name="buildWidth" type="int" minOccurs="1"
+				maxOccurs="1" default="64" />
+			<element name="buildHeight" type="int" minOccurs="1"
+				maxOccurs="1" default="64" />
+
+			<element name="shortcuts" minOccurs="1" maxOccurs="1">
+				<complexType>
+					<sequence>
+						<element name="shortcut" minOccurs="0" maxOccurs="unbounded">
+							<complexType>
+								<attribute name="name" type="string" use="required" />
+								<attribute name="url" type="string" use="required" />
+							</complexType>
+						</element>
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="playerName" type="string" use="required" />
+		<attribute name="playerEnabled" type="boolean" use="required" />
+	</complexType>
+
+	<complexType name="blockProfileType">
+		<sequence>
+			<element name="block" minOccurs="1" maxOccurs="unbounded">
+				<complexType>
+					<attribute name="name" use="optional" type="string" />
+					<attribute name="textureIndex" type="int" use="required" />
+				</complexType>
+			</element>
+		</sequence>
+		<attribute name="name" type="string" use="required" />
+	</complexType>
+
+	<complexType name="pluginConfig">
+		<sequence>
+			<element name="globalSettings" type="cc:globalSettingsType"
+				minOccurs="1" maxOccurs="1" />
+
+			<element name="preferences">
+				<complexType>
+					<sequence>
+						<element name="playerPreferences" type="cc:playerSettingsType"
+							minOccurs="0" maxOccurs="unbounded" />
+					</sequence>
+				</complexType>
+			</element>
+		</sequence>
+	</complexType>
+</schema>
