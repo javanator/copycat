@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bukkitmodders</groupId>
 	<artifactId>bukkitmodders-copycat</artifactId>
@@ -32,12 +31,10 @@
 							<schemaIncludes>
 								<include>pluginSettings.xsd</include>
 							</schemaIncludes>
-							<generatePackage>org.bukkitmodders.copycat.schema
-							</generatePackage>
-							<generateDirectory>src/main/xjc</generateDirectory>
-							<removeOldOutput>true</removeOldOutput>
-							<clearOutputDir>true</clearOutputDir>
+							<generatePackage>org.bukkitmodders.copycat.schema</generatePackage>
+							<generateDirectory>src/main/java</generateDirectory>
 							<forceRegenerate>true</forceRegenerate>
+							<episode>false</episode>
 						</configuration>
 					</execution>
 				</executions>
@@ -53,7 +50,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -71,7 +67,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>standalonejar</id>
@@ -103,8 +98,7 @@
 								<property name="yml.classpath" refid="maven.compile.classpath" />
 
 
-								<property name="jar.filename"
-									value="${project.build.finalName}-jar-with-dependencies.jar" />
+								<property name="jar.filename" value="${project.build.finalName}-jar-with-dependencies.jar" />
 								<property name="build.path" value="build.path" />
 
 								<ant antfile="build.xml" />
@@ -119,6 +113,35 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId> org.jvnet.jaxb2.maven2</groupId>
+										<artifactId>maven-jaxb2-plugin</artifactId>
+										<versionRange>[0.7.4,)</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<dependencies>
