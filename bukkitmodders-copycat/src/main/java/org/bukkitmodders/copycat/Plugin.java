@@ -116,7 +116,7 @@ public class Plugin extends JavaPlugin {
 		}
 	}
 
-	private static Map<String, Object> getYamlMap(String pluginName, String pluginVersion) {
+	private Map<String, Object> getYamlMap(String pluginName, String pluginVersion) {
 
 		Map<String, Object> yamlData = new HashMap<String, Object>();
 
