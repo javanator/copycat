@@ -56,6 +56,4 @@ public abstract class AbstractCopycatCommand implements CommandExecutor {
 			throws Exception;
 
 	public abstract String getCommandString();
-
-	public abstract void appendYml(String indent, StringBuffer yml);
 }

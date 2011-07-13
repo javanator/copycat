@@ -17,15 +17,14 @@
 	</target>
 
 	<target name="buildyml">
+
 		<property name="file" value="${yml.file}" />
 
-		<echo file="${yml.file}" message="name: ${yml.name}" />
-		<echo file="${yml.file}" message="${line.separator}main: ${yml.main}" append="true" />
-		<echo file="${yml.file}" message="${line.separator}version: ${yml.version}" append="true" />
-		<echo file="${yml.file}" message="${line.separator}" append="true" />
-
-		<echo message="STDOUT for java command to: ${yml.file}" />
-		<java failonerror="yes" fork="yes" classname="${yml.main}" classpath="${yml.classpath}${path.separator}${jar.file}" output="${yml.file}" append="true" />
+		<java failonerror="yes" fork="yes" classname="${yml.main}" classpath="${yml.classpath}${path.separator}${jar.file}">
+			<arg value="${yml.file}" />
+			<arg value="${yml.name}" />
+			<arg value="${yml.version}" />
+		</java>
 	</target>
 
 	<target name="zipForRelease">

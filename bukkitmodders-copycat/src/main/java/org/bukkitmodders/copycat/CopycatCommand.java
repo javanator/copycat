@@ -1,5 +1,6 @@
 package org.bukkitmodders.copycat;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -80,10 +81,14 @@ public class CopycatCommand extends AbstractCopycatCommand {
 		return "cc";
 	}
 
-	@Override
-	public void appendYml(String indent, StringBuffer yml) {
-		yml.append(indent + "cc" + ":\n");
-		yml.append(indent + indent + "description: Copycat renders images into the game world\n");
-		yml.append(indent + indent + "usage: Type /cc help for help");
+	public static Map<String, Object> getUsageDescMap() {
+
+		HashMap<String, Object> ccCommand = new HashMap<String, Object>();
+
+		ccCommand = new HashMap<String, Object>();
+		ccCommand.put("description", "Copycat renders images into the game world");
+		ccCommand.put("usage", "Type /cc help for help");
+
+		return ccCommand;
 	}
 }

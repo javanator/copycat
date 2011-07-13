@@ -1,0 +1,7 @@
+name: CopyCat
+main: org.bukkitmodders.copycat.Plugin
+version: 0.4
+commands:
+ cc:
+  description: Copycat renders images into the game world
+  usage: Type /cc help for help
