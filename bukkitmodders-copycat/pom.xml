@@ -7,11 +7,9 @@
 
 	<properties>
 		<bukkit.plugin.name>CopyCat</bukkit.plugin.name>
-		<bukkit.plugin.class>org.bukkitmodders.copycat.Plugin
-		</bukkit.plugin.class>
+		<bukkit.plugin.class>org.bukkitmodders.copycat.Plugin</bukkit.plugin.class>
 		<build.path>${project.build.directory}</build.path>
-		<build.artifact>${project.build.finalName}.${project.packaging}
-		</build.artifact>
+		<build.artifact>${project.build.finalName}.${project.packaging}</build.artifact>
 	</properties>
 
 	<build>
@@ -69,29 +67,10 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>standalonejar</id>
+						<id>default</id>
 						<phase>package</phase>
 						<configuration>
-							<target>
-								<property name="yml.name" value="${bukkit.plugin.name}" />
-								<property name="yml.main" value="${bukkit.plugin.class}" />
-								<property name="yml.version" value="${project.version}" />
-								<property name="yml.classpath" refid="maven.compile.classpath" />
-
-								<property name="jar.filename" value="${build.artifact}" />
-
-								<ant antfile="build.xml" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>dependenciesIncludedJar</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
+							<tasks>
 								<property name="yml.name" value="${bukkit.plugin.name}" />
 								<property name="yml.main" value="${bukkit.plugin.class}" />
 								<property name="yml.version" value="${project.version}" />
@@ -99,12 +78,12 @@
 
 
 								<property name="jar.filename" value="${project.build.finalName}-jar-with-dependencies.jar" />
-								<property name="build.path" value="build.path" />
+								<property name="build.path" value="${build.path}" />
 
-								<ant antfile="build.xml" />
+								<ant antfile="build.xml" target="injectyml" />
 								<ant antfile="build.xml" target="zipForRelease" />
 								<ant antfile="build.xml" target="deploy" />
-							</target>
+							</tasks>
 						</configuration>
 						<goals>
 							<goal>run</goal>

@@ -17,7 +17,7 @@
 	</target>
 
 	<target name="buildyml">
-		<property name="file" value="${build.path}/plugin.yml" />
+		<property name="file" value="${yml.file}" />
 
 		<echo file="${yml.file}" message="name: ${yml.name}" />
 		<echo file="${yml.file}" message="${line.separator}main: ${yml.main}" append="true" />

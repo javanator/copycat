@@ -125,7 +125,8 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 		Location location = null;
 		Matrix4d orientationMatrix = null;
-		if (args.size() < 5) {
+
+		if (args.size() >= 4) {
 
 			// The user has specified position manually
 
@@ -135,7 +136,9 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 			location = new Location(requestor.getWorld(), x, y, z);
 			orientationMatrix = new Matrix4d();
-			//TODO: parse an orientation
+
+			// TODO: parse an orientation
+			args.remove();
 		}
 
 		Shortcut shortcut = playerSettings.getShortcut(shortcutName);
