@@ -92,10 +92,6 @@ public class ConfigurationManager {
 		return profiles;
 	}
 
-	public void save() {
-		persist();
-	}
-
 	synchronized void persist() {
 
 		OutputStream out = null;
@@ -111,7 +107,7 @@ public class ConfigurationManager {
 
 	}
 
-	public synchronized File getDataFile() {
+	private synchronized File getDataFile() {
 
 		File dataFile = new File(file);
 		dataFile.getParentFile().mkdirs();
