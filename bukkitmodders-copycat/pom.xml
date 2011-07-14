@@ -104,7 +104,7 @@
 			<groupId>com.thebuzzmedia</groupId>
 			<artifactId>imgscalr-lib</artifactId>
 			<version>3.1</version>
-			<type>jar</type>
+	<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

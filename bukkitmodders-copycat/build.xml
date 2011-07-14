@@ -28,10 +28,11 @@
 	</target>
 
 	<target name="zipForRelease">
-		<property name="releasejar" value="${build.path}/${yml.name}.jar" />
-		<copy file="${jar.file}" tofile="${releasejar}" />
+		<property name="releasejar.name" value="${yml.name}.jar" />
+		<property name="releasejar.file" value="${build.path}/${releasejar.name}" />
 
-		<!-- TODO: Get the damn single file zip working -->
+		<copy file="${jar.file}" tofile="${releasejar.file}" />
+		<zip destfile="${build.path}/${yml.name}.zip" basedir="${build.path}" includes="${releasejar.name}" />
 	</target>
 
 	<target name="deploy">
