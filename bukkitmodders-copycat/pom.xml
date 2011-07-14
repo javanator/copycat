@@ -15,6 +15,7 @@
 	<build>
 		<plugins>
 			<plugin>
+				<!-- Must install additional connector to be m2eclipse friendly https://bugs.eclipse.org/bugs/show_bug.cgi?id=350299 -->
 				<groupId>org.jvnet.jaxb2.maven2</groupId>
 				<artifactId>maven-jaxb2-plugin</artifactId>
 				<version>0.7.4</version>
@@ -104,7 +105,7 @@
 			<groupId>com.thebuzzmedia</groupId>
 			<artifactId>imgscalr-lib</artifactId>
 			<version>3.1</version>
-	<type>jar</type>
+			<type>jar</type>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
