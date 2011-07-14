@@ -21,7 +21,7 @@ public class HelpFunction extends AbstractCopycatFunction {
 
 	@Override
 	public void buildFunctionHelp(StringBuffer sb) {
-		sb.append(getOperationPrefix() + " - Shows help\n");
+		sb.append("/" + getOperationPrefix() + " - Shows help\n");
 	}
 
 	public void doHelp(Player player) {

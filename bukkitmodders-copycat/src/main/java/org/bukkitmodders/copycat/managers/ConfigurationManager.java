@@ -13,6 +13,7 @@ import java.util.Map;
 import javax.xml.bind.JAXB;
 
 import org.apache.commons.io.IOUtils;
+import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.ObjectFactory;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
@@ -24,23 +25,17 @@ public class ConfigurationManager {
 
 	private Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
 
-	private final File dataFile;
-	private final PluginConfig pluginConfig;
 	private final ObjectFactory of = new ObjectFactory();
+	private final String file;
 
-	public ConfigurationManager(File dataFile) {
+	public ConfigurationManager(String file) {
 
-		this.dataFile = dataFile;
-
-		PluginConfig pluginConfig = JAXB.unmarshal(getDataFile(), PluginConfig.class);
-		this.pluginConfig = pluginConfig;
-
-		log.info("Loaded Config File: " + getDataFile().getAbsolutePath());
+		this.file = file;
 	}
 
 	public PlayerSettingsManager getPlayerSettings(String targetPlayerName) {
 
-		List<PlayerSettingsType> playerPreferences = pluginConfig.getPreferences().getPlayerPreferences();
+		List<PlayerSettingsType> playerPreferences = getPluginConfig().getPreferences().getPlayerPreferences();
 
 		PlayerSettingsType toReturn = null;
 
@@ -69,8 +64,8 @@ public class ConfigurationManager {
 		playerSettings.setPlayerEnabled(true);
 		playerSettings.setShortcuts(of.createPlayerSettingsTypeShortcuts());
 		playerSettings.setBlockProfile("default");
-		playerSettings.setBuildWidth(pluginConfig.getGlobalSettings().getMaxImageWidth());
-		playerSettings.setBuildHeight(pluginConfig.getGlobalSettings().getMaxImageHeight());
+		playerSettings.setBuildWidth(getPluginConfig().getGlobalSettings().getMaxImageWidth());
+		playerSettings.setBuildHeight(getPluginConfig().getGlobalSettings().getMaxImageHeight());
 
 		return playerSettings;
 	}
@@ -90,7 +85,7 @@ public class ConfigurationManager {
 
 		Map<String, BlockProfileType> profiles = new HashMap<String, BlockProfileType>();
 
-		for (BlockProfileType blockProfile : pluginConfig.getGlobalSettings().getBlockProfiles().getBlockProfile()) {
+		for (BlockProfileType blockProfile : getPluginConfig().getGlobalSettings().getBlockProfiles().getBlockProfile()) {
 			profiles.put(blockProfile.getName(), blockProfile);
 		}
 
@@ -107,7 +102,7 @@ public class ConfigurationManager {
 
 		try {
 			out = new FileOutputStream(getDataFile());
-			JAXB.marshal(pluginConfig, out);
+			JAXB.marshal(getPluginConfig(), out);
 		} catch (FileNotFoundException e) {
 			log.error("Error persisting config", e);
 		} finally {
@@ -116,12 +111,13 @@ public class ConfigurationManager {
 
 	}
 
-	public File getDataFile() {
+	public synchronized File getDataFile() {
 
+		File dataFile = new File(file);
 		dataFile.getParentFile().mkdirs();
 
 		try {
-			if (dataFile.createNewFile()) {
+			if (dataFile.createNewFile() || dataFile.length() == 0) {
 				createDefaultConfig(dataFile);
 			}
 		} catch (IOException e) {
@@ -137,7 +133,7 @@ public class ConfigurationManager {
 		OutputStream out = null;
 
 		try {
-			in = getClass().getResourceAsStream("/defaultSettings.xml");
+			in = getClass().getResourceAsStream(Settings.DEFAULT_SETTINGS_XML);
 			out = new FileOutputStream(dataFile);
 
 			IOUtils.copy(in, out);
@@ -152,7 +148,7 @@ public class ConfigurationManager {
 
 	public boolean isWorldEnabled(String name) {
 
-		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
+		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
 
 		if (worlds.contains(name)) {
 			return false;
@@ -163,7 +159,7 @@ public class ConfigurationManager {
 
 	public void enableWorld(String name) {
 
-		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
+		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
 
 		worlds.remove(name);
 
@@ -171,7 +167,7 @@ public class ConfigurationManager {
 	}
 
 	public void disableWorld(String name) {
-		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
+		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
 
 		if (!worlds.contains(name)) {
 			worlds.add(name);
@@ -181,10 +177,17 @@ public class ConfigurationManager {
 	}
 
 	public int getMaxImageWidth() {
-		return pluginConfig.getGlobalSettings().getMaxImageWidth();
+		return getPluginConfig().getGlobalSettings().getMaxImageWidth();
 	}
 
 	public int getMaxImageHeight() {
-		return pluginConfig.getGlobalSettings().getMaxImageHeight();
+		return getPluginConfig().getGlobalSettings().getMaxImageHeight();
+	}
+
+	private synchronized PluginConfig getPluginConfig() {
+
+		PluginConfig pluginConfig = JAXB.unmarshal(getDataFile(), PluginConfig.class);
+
+		return pluginConfig;
 	}
 }

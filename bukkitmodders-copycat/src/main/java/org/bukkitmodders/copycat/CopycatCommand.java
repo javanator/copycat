@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 
 public class CopycatCommand extends AbstractCopycatCommand {
 
-	public static final String CC = "cc";
 	private final Logger log = LoggerFactory.getLogger(CopycatCommand.class);
 
 	public CopycatCommand(Plugin instance) {
@@ -77,8 +76,8 @@ public class CopycatCommand extends AbstractCopycatCommand {
 
 	@Override
 	public String getCommandString() {
-		// TODO: Get from YML file
-		return "cc";
+
+		return getPlugin().getTriggerString();
 	}
 
 	public static Map<String, Object> getUsageDescMap() {

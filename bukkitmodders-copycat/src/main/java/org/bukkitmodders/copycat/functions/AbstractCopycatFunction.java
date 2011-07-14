@@ -41,7 +41,7 @@ public abstract class AbstractCopycatFunction {
 	}
 
 	protected String getOperationPrefix() {
-		return "/" + CopycatCommand.CC + " " + getFunction() + " ";
+		return getPlugin().getTriggerString();
 	}
 
 	public void giveFunctionHelp(Player player) {

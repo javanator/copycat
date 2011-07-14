@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import org.apache.commons.io.IOUtils;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkitmodders.copycat.functions.AbstractCopycatFunction;
@@ -56,14 +57,10 @@ public class Plugin extends JavaPlugin {
 
 	public void onDisable() {
 
-		getConfigurationManager().save();
-
 		log.info("Plugin Disabled");
 	}
 
 	public void onEnable() {
-
-		PluginManager pm = getServer().getPluginManager();
 
 		CopycatCommand ccCommand = new CopycatCommand(this);
 		PluginCommand command = getCommand(ccCommand.getCommandString());
@@ -72,20 +69,25 @@ public class Plugin extends JavaPlugin {
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " Enabled");
 	}
 
-	public void reloadConfig() {
-		this.configurationManager = null;
-	}
-
 	public ConfigurationManager getConfigurationManager() {
 
 		if (this.configurationManager == null) {
 
-			File dataFile = new File(getDataFolder().getAbsolutePath() + File.separatorChar + DATAFILE);
+			String file = getDataFolder().getAbsolutePath() + File.separatorChar + DATAFILE;
 
-			this.configurationManager = new ConfigurationManager(dataFile);
+			this.configurationManager = new ConfigurationManager(file);
 		}
 
 		return this.configurationManager;
+	}
+
+	public String getTriggerString() {
+		PluginDescriptionFile pdfFile = getDescription();
+
+		@SuppressWarnings("unchecked")
+		Map<String, Object> commands = (Map<String, Object>) pdfFile.getCommands();
+
+		return commands.keySet().iterator().next().toString();
 	}
 
 	public HashMap<String, Stack<Stack<RevertableBlock>>> getUndoBuffers() {
@@ -125,7 +127,7 @@ public class Plugin extends JavaPlugin {
 		yamlData.put("version", pluginVersion);
 
 		Map<String, Object> commands = new HashMap<String, Object>();
-		commands.put(CopycatCommand.CC, CopycatCommand.getUsageDescMap());
+		commands.put(Settings.DEFAULT_COMMAND_TRIGGER, CopycatCommand.getUsageDescMap());
 
 		yamlData.put("commands", commands);
 

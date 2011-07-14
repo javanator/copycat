@@ -40,10 +40,10 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 	@Override
 	public void buildFunctionHelp(StringBuffer sb) {
 		sb.append("==== Shortcut Function Help ====\n");
-		sb.append(getOperationPrefix() + "copy <shortcut name> - Copies Image\n");
-		sb.append(getOperationPrefix() + "add <shortcut name> <image url> - Add shortcut\n");
-		sb.append(getOperationPrefix() + "delete <shortcut name> - Deletes shortcut\n");
-		sb.append(getOperationPrefix() + "list - Lists shortcuts\n");
+		sb.append("/" + getOperationPrefix() + " copy <shortcut name> - Copies Image\n");
+		sb.append("/" + getOperationPrefix() + " add <shortcut name> <image url> - Add shortcut\n");
+		sb.append("/" + getOperationPrefix() + " delete <shortcut name> - Deletes shortcut\n");
+		sb.append("/" + getOperationPrefix() + " list - Lists shortcuts\n");
 	}
 
 	@Override
