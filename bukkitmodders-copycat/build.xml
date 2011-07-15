@@ -1,8 +1,10 @@
 <project default="injectyml" basedir=".">
+
 	<property file="local.properties" />
+
 	<!-- These are expected to be overridden -->
+	<property name="yml.emitter" value="yml main" />
 	<property name="yml.name" value="yml name" />
-	<property name="yml.main" value="yml main" />
 	<property name="yml.version" value="yml version" />
 	<property name="yml.classpath" value="yml classpath" />
 
@@ -20,7 +22,7 @@
 
 		<property name="file" value="${yml.file}" />
 
-		<java failonerror="yes" fork="yes" classname="${yml.main}" classpath="${yml.classpath}${path.separator}${jar.file}">
+		<java failonerror="yes" fork="yes" classname="${yml.emitter}" classpath="${yml.classpath}${path.separator}${jar.file}">
 			<arg value="${yml.file}" />
 			<arg value="${yml.name}" />
 			<arg value="${yml.version}" />

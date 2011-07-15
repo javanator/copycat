@@ -6,8 +6,8 @@
 	<version>0.4</version>
 
 	<properties>
+		<build.yamlemitter.class>org.bukkitmodders.copycat.util.PluginDescriptorEmitter</build.yamlemitter.class>
 		<bukkit.plugin.name>CopyCat</bukkit.plugin.name>
-		<bukkit.plugin.class>org.bukkitmodders.copycat.Plugin</bukkit.plugin.class>
 		<build.path>${project.build.directory}</build.path>
 		<build.artifact>${project.build.finalName}.${project.packaging}</build.artifact>
 	</properties>
@@ -71,11 +71,11 @@
 						<phase>package</phase>
 						<configuration>
 							<tasks>
+								<property name="yml.emitter" value="${build.yamlemitter.class}" />
+
 								<property name="yml.name" value="${bukkit.plugin.name}" />
-								<property name="yml.main" value="${bukkit.plugin.class}" />
 								<property name="yml.version" value="${project.version}" />
 								<property name="yml.classpath" refid="maven.compile.classpath" />
-
 
 								<property name="jar.filename" value="${project.build.finalName}-jar-with-dependencies.jar" />
 								<property name="build.path" value="${build.path}" />
@@ -149,7 +149,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-jdk14</artifactId>
+			<artifactId>slf4j-simple</artifactId>
 			<version>1.6.1</version>
 		</dependency>
 	</dependencies>

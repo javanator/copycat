@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.bukkitmodders</groupId>
 	<artifactId>bukkitmodders-helloworld</artifactId>
@@ -7,10 +6,10 @@
 	<version>0.0.1-SNAPSHOT</version>
 
 	<properties>
+		<build.yamlemitter.class>org.bukkitmodders.helloworld.PluginDescriptorEmitter</build.yamlemitter.class>
 		<bukkit.plugin.name>HelloWorld</bukkit.plugin.name>
 		<build.path>${project.build.directory}</build.path>
 		<build.artifact>${project.build.finalName}.${project.packaging}</build.artifact>
-		<bukkit.plugin.class>org.bukkitmodders.helloworld.MyPlugin</bukkit.plugin.class>
 	</properties>
 
 	<build>
@@ -26,7 +25,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.2-beta-5</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -44,42 +42,25 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
 				<executions>
 					<execution>
-						<id>standalonejar</id>
+						<id>default</id>
 						<phase>package</phase>
 						<configuration>
-							<target>
+							<tasks>
+								<property name="yml.emitter" value="${build.yamlemitter.class}" />
+
 								<property name="yml.name" value="${bukkit.plugin.name}" />
-								<property name="yml.main" value="${bukkit.plugin.class}" />
 								<property name="yml.version" value="${project.version}" />
+								<property name="yml.classpath" refid="maven.compile.classpath" />
 
-								<property name="jar.filename" value="${build.artifact}" />
-								<property name="build.path" value="build.path" />
+								<property name="jar.filename" value="${project.build.finalName}-jar-with-dependencies.jar" />
+								<property name="build.path" value="${build.path}" />
 
-								<ant antfile="build.xml" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>dependencyjar</id>
-						<phase>package</phase>
-						<configuration>
-							<target>
-								<property name="yml.name" value="${bukkit.plugin.name}" />
-								<property name="yml.main" value="${bukkit.plugin.class}" />
-								<property name="yml.version" value="${project.version}" />
-
-								<property name="jar.filename"
-									value="${project.build.finalName}-jar-with-dependencies.jar" />
-								<property name="build.path" value="build.path" />
-
-								<ant antfile="build.xml" />
-							</target>
+								<ant antfile="build.xml" target="injectyml" />
+								<ant antfile="build.xml" target="zipForRelease" />
+								<ant antfile="build.xml" target="deploy" />
+							</tasks>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -98,6 +79,12 @@
 			<type>jar</type>
 		</dependency>
 		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>1.8</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.bukkit</groupId>
 			<artifactId>minecraft-server</artifactId>
 			<version>1.3</version>
@@ -107,12 +94,17 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>1.5.6</version>
+			<version>1.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
-			<version>1.5.6</version>
+			<version>1.6.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>1.3.2</version>
 		</dependency>
 
 	</dependencies>

@@ -1,19 +1,12 @@
 package org.bukkitmodders.copycat;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 
-import org.apache.commons.io.IOUtils;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkitmodders.copycat.functions.AbstractCopycatFunction;
 import org.bukkitmodders.copycat.functions.HelpFunction;
@@ -24,7 +17,6 @@ import org.bukkitmodders.copycat.functions.UndoFunction;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yaml.snakeyaml.Yaml;
 
 public class Plugin extends JavaPlugin {
 	// http://javadoc.lukegb.com/BukkitJD/index.html
@@ -97,49 +89,5 @@ public class Plugin extends JavaPlugin {
 
 	public Map<String, AbstractCopycatFunction> getFunctions() {
 		return functions;
-	}
-
-	public void outputYaml(String fileName, String pluginName, String pluginVersion) throws FileNotFoundException,
-			IOException {
-
-		StringWriter writer = new StringWriter();
-
-		Yaml yaml = new Yaml();
-		yaml.dump(getYamlMap(pluginName, pluginVersion), writer);
-
-		log.info("Generated Yaml:\n" + writer.toString());
-
-		if (fileName != null) {
-
-			File file = new File(fileName);
-			file.delete();
-
-			IOUtils.copy(new StringReader(writer.toString()), new FileOutputStream(file));
-		}
-	}
-
-	private Map<String, Object> getYamlMap(String pluginName, String pluginVersion) {
-
-		Map<String, Object> yamlData = new HashMap<String, Object>();
-
-		yamlData.put("name", pluginName);
-		yamlData.put("main", Plugin.class.getName());
-		yamlData.put("version", pluginVersion);
-
-		Map<String, Object> commands = new HashMap<String, Object>();
-		commands.put(Settings.DEFAULT_COMMAND_TRIGGER, CopycatCommand.getUsageDescMap());
-
-		yamlData.put("commands", commands);
-
-		return yamlData;
-	}
-
-	public static void main(String[] args) throws FileNotFoundException, IOException {
-
-		String yamlFileName = args[0];
-		String pluginName = args[1];
-		String pluginVersion = args[2];
-
-		new Plugin().outputYaml(yamlFileName, pluginName, pluginVersion);
 	}
 }
