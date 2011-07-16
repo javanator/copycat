@@ -6,37 +6,45 @@ import org.bukkit.Location;
 
 public class MatrixUtil {
 
-	private static Matrix4d PLAYER_NORTH_ROT = new Matrix4d();
-	private static Matrix4d PLAYER_EAST_ROT = new Matrix4d();
-	private static Matrix4d PLAYER_SOUTH_ROT = new Matrix4d();
-	private static Matrix4d PLAYER_WEST_ROT = new Matrix4d();
+	private static Matrix4d PLAYER_DEG0 = new Matrix4d();
+	private static Matrix4d PLAYER_DEG90 = new Matrix4d();
+	private static Matrix4d PLAYER_DEG180 = new Matrix4d();
+	private static Matrix4d PLAYER_DEG270 = new Matrix4d();
 
-	private static Matrix4d PLAYER_LOOK_DOWN_ROT = new Matrix4d();
-	private static Matrix4d PLAYER_LOOK_UP_ROT = new Matrix4d();
+	private static Matrix4d XROTNEG90 = new Matrix4d();
+	private static Matrix4d XROTPOS90 = new Matrix4d();
+
+	private static Matrix4d ZROTNEG90 = new Matrix4d();
+	private static Matrix4d ZROTPOS90 = new Matrix4d();
 
 	static {
 
 		Matrix4d rot = new Matrix4d();
 
-		rot.setIdentity();
 		rot.rotY(Math.toRadians(180));
-		PLAYER_NORTH_ROT.set(rot);
+		PLAYER_DEG0.set(rot);
 
-		rot.setIdentity();
 		rot.rotY(Math.toRadians(90));
-		PLAYER_EAST_ROT.set(rot);
+		PLAYER_DEG90.set(rot);
 
-		rot.setIdentity();
 		rot.rotY(Math.toRadians(0));
-		PLAYER_SOUTH_ROT.set(rot);
+		PLAYER_DEG180.set(rot);
 
-		rot.setIdentity();
 		rot.rotY(Math.toRadians(-90));
-		PLAYER_WEST_ROT.set(rot);
+		PLAYER_DEG270.set(rot);
 
-		rot.setIdentity();
-		rot.rotX(-90);
-		PLAYER_LOOK_DOWN_ROT.set(rot);
+		rot.rotX(Math.toRadians(-90));
+		XROTNEG90.set(rot);
+
+		rot.rotX(Math.toRadians(90));
+		XROTPOS90.set(rot);
+
+		rot.rotZ(Math.toRadians(-90));
+		ZROTNEG90.set(rot);
+
+		rot.rotZ(Math.toRadians(90));
+		ZROTPOS90.set(rot);
+
 	}
 
 	public static Matrix4d calculateOrientation(Location location) {
@@ -45,16 +53,16 @@ public class MatrixUtil {
 
 		yaw %= 360;
 
-		double baseAngle = 0; // N
+		double baseAngle = 0;
 		int sign = (location.getYaw() < 0) ? -1 : 1;
 
 		// Snap to a basis vector
 		if (yaw > (90 - 45) & yaw < (90 + 45)) {
-			baseAngle = 90; // E
+			baseAngle = 90;
 		} else if (yaw > (180 - 45) & yaw < (180 + 45)) {
-			baseAngle = 180; // S
+			baseAngle = 180;
 		} else if (yaw > (270 - 45) && yaw < (270 + 45)) {
-			baseAngle = 270; // W
+			baseAngle = 270;
 		}
 
 		if (sign < 0) {
@@ -76,16 +84,36 @@ public class MatrixUtil {
 		orientation.setIdentity();
 
 		if (baseAngle == 0 || baseAngle == 360) {
-			orientation.mul(PLAYER_NORTH_ROT);
+
+			if (down) {
+				orientation.mul(XROTPOS90);
+			}
+
+			orientation.mul(PLAYER_DEG0);
 		} else if (baseAngle == 90) {
-			orientation.mul(PLAYER_EAST_ROT);
+
+			if (down) {
+				orientation.mul(ZROTPOS90);
+			}
+
+			orientation.mul(PLAYER_DEG90);
+
 		} else if (baseAngle == 180) {
-			orientation.mul(PLAYER_SOUTH_ROT);
+
+			if (down) {
+				orientation.mul(XROTNEG90);
+			}
+
+			orientation.mul(PLAYER_DEG180);
 		} else if (baseAngle == 270) {
-			orientation.mul(PLAYER_WEST_ROT);
+
+			if (down) {
+				orientation.mul(ZROTNEG90);
+			}
+
+			orientation.mul(PLAYER_DEG270);
 		}
 
 		return orientation;
 	}
-
 }
