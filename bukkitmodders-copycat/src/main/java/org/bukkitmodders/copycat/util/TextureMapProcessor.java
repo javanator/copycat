@@ -49,7 +49,7 @@ public class TextureMapProcessor {
 
 	private Hashtable<Color, Integer> generateColorTable() {
 
-		MaterialTiles materialTiles = new MaterialTiles(blockProfile);
+		TextureToBlockMapper materialTiles = new TextureToBlockMapper(blockProfile);
 		Hashtable<Color, Integer> properties = new Hashtable<Color, Integer>();
 
 		for (int i = 0; i < tiles; i++) {

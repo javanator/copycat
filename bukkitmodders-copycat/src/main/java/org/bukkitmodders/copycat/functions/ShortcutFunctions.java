@@ -24,6 +24,7 @@ import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
 import org.bukkitmodders.copycat.util.ImageCopier;
 import org.bukkitmodders.copycat.util.ImageUtil;
+import org.bukkitmodders.copycat.util.MatrixUtil;
 import org.bukkitmodders.copycat.util.NeedMoreArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,7 +138,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			location = new Location(requestor.getWorld(), x, y, z);
 			orientationMatrix = new Matrix4d();
 
-			// TODO: parse an orientation
+			// TODO: parse an orientation N S E W. Maybe an angle?
 			args.remove();
 		}
 
@@ -158,7 +159,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			if (location == null) {
 				location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(),
 						targetBlock.getZ());
-				orientationMatrix = calculateOrientation(requestor, targetBlock);
+				orientationMatrix = MatrixUtil.calculateOrientation(requestor.getLocation());
 			}
 
 			BlockProfileType blockProfile = configurationManager.getBlockProfile(playerSettings.getBlockProfile());
@@ -186,92 +187,6 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 		undoBuffers.get(playerName).push(undoBuffer);
 		return undoBuffer;
-	}
-
-	private Matrix4d calculateOrientation(Player player, Block block) {
-
-		Matrix4d orientation = new Matrix4d();
-		orientation.setIdentity();
-		Matrix4d rotXZ = new Matrix4d();
-		orientation.setIdentity();
-
-		Location location = player.getLocation();
-
-		double yaw = Math.abs(location.getYaw());
-
-		yaw %= 360;
-
-		double baseAngle = 0;
-		int sign = (location.getYaw() < 0) ? -1 : 1;
-
-		if (yaw > (90 - 45) & yaw < (90 + 45)) {
-			baseAngle = 90;
-		} else if (yaw > (180 - 45) & yaw < (180 + 45)) {
-			baseAngle = 180;
-		} else if (yaw > (270 - 45) && yaw < (270 + 45)) {
-			baseAngle = 270;
-		}
-
-		if (sign < 0) {
-			baseAngle = 360 - baseAngle;
-		}
-
-		double pitch = location.getPitch();
-		boolean down = false;
-		boolean up = false;
-		// if (pitch > 45) {
-		// down = true;
-		// } else if (pitch < -45) {
-		// up = true;
-		// }
-
-		if (baseAngle == 0 || baseAngle == 360) {
-			if (down || up) {
-				rotXZ.rotX(Math.toRadians(90));
-				orientation.mul(rotXZ);
-			} else {
-				rotXZ.rotX(Math.toRadians(+90));
-				orientation.mul(rotXZ);
-				rotXZ.rotZ(Math.toRadians(-180));
-				orientation.mul(rotXZ);
-				rotXZ.rotX(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-			}
-		} else if (baseAngle == 90) {
-			if (down || up) {
-				rotXZ.rotZ(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-				rotXZ.rotX(Math.toRadians(90));
-				orientation.mul(rotXZ);
-			} else {
-				rotXZ.rotX(Math.toRadians(90));
-				orientation.mul(rotXZ);
-				rotXZ.rotZ(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-				rotXZ.rotX(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-			}
-		} else if (baseAngle == 180) {
-			if (down || up) {
-				rotXZ.rotX(Math.toRadians(-90));
-			}
-		} else if (baseAngle == 270) {
-			if (down || up) {
-				rotXZ.rotZ(Math.toRadians(90));
-				orientation.mul(rotXZ);
-				rotXZ.rotX(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-			} else {
-				rotXZ.rotX(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-				rotXZ.rotZ(Math.toRadians(-90));
-				orientation.mul(rotXZ);
-				rotXZ.rotX(Math.toRadians(90));
-				orientation.mul(rotXZ);
-			}
-		}
-
-		return orientation;
 	}
 
 	@Override

@@ -77,7 +77,7 @@ public class ImageCopier {
 							// Maybe use glass or air??
 						} else {
 							int closestTile = findNearestTileForColor(rgba, blockAt);
-							MaterialTiles.setBlockMaterialToTile(closestTile, blockAt);
+							TextureToBlockMapper.setBlockMaterialToTile(closestTile, blockAt);
 						}
 					}
 				}

@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 
-public class MaterialTiles {
+public class TextureToBlockMapper {
 
 	private static final int NETHERACK = 103;
 	private static final int DIRT = 2;
@@ -56,7 +56,7 @@ public class MaterialTiles {
 
 	private final HashSet<Integer> supportedTiles;
 
-	public MaterialTiles(BlockProfileType blockProfile) {
+	public TextureToBlockMapper(BlockProfileType blockProfile) {
 
 		supportedTiles = new HashSet<Integer>();
 
