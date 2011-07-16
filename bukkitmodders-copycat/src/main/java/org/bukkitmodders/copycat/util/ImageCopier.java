@@ -22,11 +22,11 @@ public class ImageCopier {
 	private Logger log = LoggerFactory.getLogger(ImageCopier.class);
 
 	private final World world;
-	private final Matrix4d mOrientation;
+	private final Matrix4d mRotation;
 	private Matrix4d mWorld;
 	private TextureMapProcessor textureMapProcessor;
 
-	public ImageCopier(BlockProfileType blockProfile, Location location, World world, Matrix4d localTransform) {
+	public ImageCopier(BlockProfileType blockProfile, Location location, World world, Matrix4d rotation) {
 
 		textureMapProcessor = new TextureMapProcessor(blockProfile);
 
@@ -39,7 +39,7 @@ public class ImageCopier {
 
 		this.world = world;
 		this.mWorld = transform;
-		this.mOrientation = localTransform;
+		this.mRotation = rotation;
 
 		log.debug("Draw location set to: " + translation.toString());
 		log.debug("Transformation Matrix: " + transform.toString());
@@ -58,7 +58,7 @@ public class ImageCopier {
 
 				// +Y in minecraft is the image top
 				Point3d point = new Point3d(i, image.getHeight() - j, 0);
-				mOrientation.transform(point);
+				mRotation.transform(point);
 
 				transformToWorld(point);
 				Block blockAt = world.getBlockAt((int) Math.round(point.x), (int) (Math.round(point.y)),

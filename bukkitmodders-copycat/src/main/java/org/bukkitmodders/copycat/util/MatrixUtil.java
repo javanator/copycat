@@ -47,7 +47,7 @@ public class MatrixUtil {
 
 	}
 
-	public static Matrix4d calculateOrientation(Location location) {
+	public static Matrix4d calculateRotation(Location location) {
 
 		double yaw = Math.abs(location.getYaw());
 
@@ -57,11 +57,11 @@ public class MatrixUtil {
 		int sign = (location.getYaw() < 0) ? -1 : 1;
 
 		// Snap to a basis vector
-		if (yaw > (90 - 45) & yaw < (90 + 45)) {
+		if (yaw > (90 - 45) & yaw <= (90 + 45)) {
 			baseAngle = 90;
-		} else if (yaw > (180 - 45) & yaw < (180 + 45)) {
+		} else if (yaw > (180 - 45) & yaw <= (180 + 45)) {
 			baseAngle = 180;
-		} else if (yaw > (270 - 45) && yaw < (270 + 45)) {
+		} else if (yaw > (270 - 45) && yaw <= (270 + 45)) {
 			baseAngle = 270;
 		}
 
@@ -72,12 +72,9 @@ public class MatrixUtil {
 		double pitch = location.getPitch();
 
 		boolean down = false;
-		boolean up = false;
 
 		if (pitch > 45) {
 			down = true;
-		} else if (pitch < -45) {
-			up = true;
 		}
 
 		Matrix4d orientation = new Matrix4d();

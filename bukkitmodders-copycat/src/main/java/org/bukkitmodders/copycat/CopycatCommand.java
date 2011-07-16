@@ -29,8 +29,6 @@ public class CopycatCommand extends AbstractCopycatCommand {
 	protected void performCommand(Player sender, Command command, String label, Queue<String> args)
 			throws NeedMoreArgumentsException {
 
-		Queue<String> argsCopy = new LinkedList<String>(args);
-
 		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager()
 				.getPlayerSettings(sender.getName());
 
@@ -64,10 +62,11 @@ public class CopycatCommand extends AbstractCopycatCommand {
 			Shortcut shortcut = playerSettings.getShortcut(desiredFunction);
 
 			if (shortcut != null) {
-				args.clear();
-				args.add(shortcut.getName());
+				Queue<String> argsCopy = new LinkedList<String>();
+				argsCopy.add(shortcut.getName());
+				argsCopy.addAll(args);
 
-				((ShortcutFunctions) functions.get(ShortcutFunctions.FUNCTION_NAME)).doCopy(sender, args);
+				((ShortcutFunctions) functions.get(ShortcutFunctions.FUNCTION_NAME)).doCopy(sender, argsCopy);
 			}
 		} else {
 			functions.get(HelpFunction.FUNCTION_STRING).performFunction(sender, args);

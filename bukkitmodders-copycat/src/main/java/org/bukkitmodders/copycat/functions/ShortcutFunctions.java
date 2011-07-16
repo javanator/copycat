@@ -124,23 +124,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 		Block targetBlock = requestor.getTargetBlock(null, 100);
 
-		Location location = null;
-		Matrix4d orientationMatrix = null;
-
-		if (args.size() >= 4) {
-
-			// The user has specified position manually
-
-			int x = Integer.parseInt(args.remove());
-			int y = Integer.parseInt(args.remove());
-			int z = Integer.parseInt(args.remove());
-
-			location = new Location(requestor.getWorld(), x, y, z);
-			orientationMatrix = new Matrix4d();
-
-			// TODO: parse an orientation N S E W. Maybe an angle?
-			args.remove();
-		}
+		Location location = parseSpecifiedLocation(requestor, args);
 
 		Shortcut shortcut = playerSettings.getShortcut(shortcutName);
 		InputStream in = null;
@@ -156,15 +140,20 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			requestor.sendMessage("Width: " + image.getWidth() + " Height: " + image.getHeight());
 			Stack<RevertableBlock> undoBuffer = createUndoBuffer(requestor);
 
+			Matrix4d rotationMatrix = null;
 			if (location == null) {
 				location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(),
 						targetBlock.getZ());
-				orientationMatrix = MatrixUtil.calculateOrientation(requestor.getLocation());
+				rotationMatrix = MatrixUtil.calculateRotation(requestor.getLocation());
+			} else {
+				rotationMatrix = MatrixUtil.calculateRotation(location);
 			}
 
 			BlockProfileType blockProfile = configurationManager.getBlockProfile(playerSettings.getBlockProfile());
-			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, requestor.getWorld(), orientationMatrix);
+
+			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, requestor.getWorld(), rotationMatrix);
 			mcGraphics2d.draw(image, undoBuffer);
+
 		} catch (MalformedURLException e) {
 			requestor.sendMessage("Bad URL");
 			log.error("Bad URL during copycat copy", e);
@@ -174,6 +163,28 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 		} finally {
 			IOUtils.closeQuietly(in);
 		}
+	}
+
+	private Location parseSpecifiedLocation(Player requestor, Queue<String> args) {
+
+		if (args.size() >= 5) {
+
+			// The user has specified position manually
+
+			int x = Integer.parseInt(args.remove());
+			int y = Integer.parseInt(args.remove());
+			int z = Integer.parseInt(args.remove());
+			int yaw = Integer.parseInt(args.remove());
+			int pitch = Integer.parseInt(args.remove());
+
+			Location specifiedLocation = new Location(requestor.getWorld(), x, y, z);
+			specifiedLocation.setYaw(yaw);
+			specifiedLocation.setPitch(pitch);
+
+			return specifiedLocation;
+		}
+
+		return null;
 	}
 
 	private Stack<RevertableBlock> createUndoBuffer(Player player) {
