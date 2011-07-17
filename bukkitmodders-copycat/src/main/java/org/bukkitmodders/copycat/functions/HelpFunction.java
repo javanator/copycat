@@ -50,7 +50,7 @@ public class HelpFunction extends AbstractCopycatFunction {
 		function.buildFunctionHelp(sb);
 
 		sb.append("\n");
-		sb.append("<shortcut name> - Same as /cc shortuct copy <shortcut name>");
+		sb.append("/" + getOperationPrefix() + "<shortcut name> - Same as /cc shortuct copy <shortcut name>");
 
 		tellSplitNewline(player, sb);
 	}

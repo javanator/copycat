@@ -23,12 +23,12 @@ public class OpFunctions extends AbstractCopycatFunction {
 	@Override
 	public void buildFunctionHelp(StringBuffer sb) {
 		sb.append("==== OP Function Help =====\n");
-		sb.append(getOperationPrefix() + " undo <player name> - Undoes player's last copy\n");
-		sb.append(getOperationPrefix() + " enable <player name> - Enables plugin for a player\n");
-		sb.append(getOperationPrefix() + " disable <player name> - Disables plugin for a player\n");
-		sb.append(getOperationPrefix() + " enableWorld <world name> - Enables plugin in a world\n");
-		sb.append(getOperationPrefix() + " disableWorld <world name> - Disables plugin in a world\n");
-		sb.append(getOperationPrefix() + " reloadConfig - Reloads the plugin config XML\n");
+		sb.append("/" + getOperationPrefix() + " undo <player name> - Undoes player's last copy\n");
+		sb.append("/" + getOperationPrefix() + " enable <player name> - Enables plugin for a player\n");
+		sb.append("/" + getOperationPrefix() + " disable <player name> - Disables plugin for a player\n");
+		sb.append("/" + getOperationPrefix() + " enableWorld <world name> - Enables plugin in a world\n");
+		sb.append("/" + getOperationPrefix() + " disableWorld <world name> - Disables plugin in a world\n");
+		sb.append("/" + getOperationPrefix() + " reloadConfig - Reloads the plugin config XML\n");
 	}
 
 	@Override
