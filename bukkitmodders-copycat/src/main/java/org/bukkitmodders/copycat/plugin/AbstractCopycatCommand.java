@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat;
+package org.bukkitmodders.copycat.plugin;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkitmodders.copycat.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.util;
+package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
 import java.awt.Transparency;
@@ -12,14 +12,15 @@ import javax.vecmath.Vector3d;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkitmodders.copycat.RevertableBlock;
+import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.util.ColorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ImageCopier {
 
-	private Logger log = LoggerFactory.getLogger(ImageCopier.class);
+	private static final Logger log = LoggerFactory.getLogger(ImageCopier.class);
 
 	private final World world;
 	private final Matrix4d mRotation;

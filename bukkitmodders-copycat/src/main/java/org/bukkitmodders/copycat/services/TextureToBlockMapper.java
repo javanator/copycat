@@ -2,7 +2,7 @@
  * This class's only function is to map tiles from the texture map to their respective materials. 
  */
 
-package org.bukkitmodders.copycat.util;
+package org.bukkitmodders.copycat.services;
 
 import java.util.HashSet;
 
@@ -63,9 +63,6 @@ public class TextureToBlockMapper {
 		for (BlockProfileType.Block block : blockProfile.getBlock()) {
 			supportedTiles.add(block.getTextureIndex());
 		}
-	}
-
-	static {
 	}
 
 	public HashSet<Integer> getSupportedTiles() {

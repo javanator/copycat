@@ -4,10 +4,10 @@ import java.util.Queue;
 import java.util.StringTokenizer;
 
 import org.bukkit.entity.Player;
-import org.bukkitmodders.copycat.CopycatCommand;
 import org.bukkitmodders.copycat.Plugin;
-import org.bukkitmodders.copycat.util.NeedMoreArgumentsException;
-import org.bukkitmodders.copycat.util.NotAnOpException;
+import org.bukkitmodders.copycat.plugin.CopycatCommand;
+import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
+import org.bukkitmodders.copycat.plugin.NotAnOpException;
 
 public abstract class AbstractCopycatFunction {
 

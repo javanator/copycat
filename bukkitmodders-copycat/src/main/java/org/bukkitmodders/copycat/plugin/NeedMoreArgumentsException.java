@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.util;
+package org.bukkitmodders.copycat.plugin;
 
 public class NeedMoreArgumentsException extends Exception {
 

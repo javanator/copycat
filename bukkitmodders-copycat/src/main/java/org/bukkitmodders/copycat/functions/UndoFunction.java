@@ -6,7 +6,7 @@ import java.util.Stack;
 
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
-import org.bukkitmodders.copycat.RevertableBlock;
+import org.bukkitmodders.copycat.plugin.RevertableBlock;
 
 public class UndoFunction extends AbstractCopycatFunction {
 

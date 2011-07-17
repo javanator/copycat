@@ -15,6 +15,8 @@ import org.bukkitmodders.copycat.functions.SetFunction;
 import org.bukkitmodders.copycat.functions.ShortcutFunctions;
 import org.bukkitmodders.copycat.functions.UndoFunction;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
+import org.bukkitmodders.copycat.plugin.CopycatCommand;
+import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -14,7 +14,7 @@ import junit.framework.Assert;
 import org.bukkit.Location;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PluginConfig;
-import org.bukkitmodders.copycat.util.ImageCopier;
+import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.junit.Test;
 import org.slf4j.Logger;

@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat;
+package org.bukkitmodders.copycat.plugin;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;

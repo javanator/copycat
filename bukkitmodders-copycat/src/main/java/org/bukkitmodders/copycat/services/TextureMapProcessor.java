@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.util;
+package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 
 public class TextureMapProcessor {
 
-	private Logger log = LoggerFactory.getLogger(TextureMapProcessor.class);
+	private static final Logger log = LoggerFactory.getLogger(TextureMapProcessor.class);
 
 	private String textureResource = "/terrain.png";
 	private int textureWidth = 16;

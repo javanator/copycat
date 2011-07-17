@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat;
+package org.bukkitmodders.copycat.plugin;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -7,12 +7,12 @@ import java.util.Queue;
 
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import org.bukkitmodders.copycat.Plugin;
 import org.bukkitmodders.copycat.functions.AbstractCopycatFunction;
 import org.bukkitmodders.copycat.functions.HelpFunction;
 import org.bukkitmodders.copycat.functions.ShortcutFunctions;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
-import org.bukkitmodders.copycat.util.NeedMoreArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

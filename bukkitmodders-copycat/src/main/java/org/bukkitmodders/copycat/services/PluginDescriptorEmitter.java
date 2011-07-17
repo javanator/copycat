@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.util;
+package org.bukkitmodders.copycat.services;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -10,9 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bukkitmodders.copycat.CopycatCommand;
 import org.bukkitmodders.copycat.Plugin;
 import org.bukkitmodders.copycat.Settings;
+import org.bukkitmodders.copycat.plugin.CopycatCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;

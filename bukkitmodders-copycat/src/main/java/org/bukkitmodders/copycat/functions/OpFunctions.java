@@ -6,8 +6,8 @@ import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.util.NeedMoreArgumentsException;
-import org.bukkitmodders.copycat.util.NotAnOpException;
+import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
+import org.bukkitmodders.copycat.plugin.NotAnOpException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

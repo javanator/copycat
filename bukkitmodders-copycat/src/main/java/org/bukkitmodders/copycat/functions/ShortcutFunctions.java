@@ -17,15 +17,15 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
-import org.bukkitmodders.copycat.RevertableBlock;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
+import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
+import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
-import org.bukkitmodders.copycat.util.ImageCopier;
+import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.bukkitmodders.copycat.util.MatrixUtil;
-import org.bukkitmodders.copycat.util.NeedMoreArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
