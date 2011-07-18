@@ -35,7 +35,8 @@ public class ConfigurationManager {
 
 	public PlayerSettingsManager getPlayerSettings(String targetPlayerName) {
 
-		List<PlayerSettingsType> playerPreferences = getPluginConfig().getPreferences().getPlayerPreferences();
+		PluginConfig pluginConfig = getPluginConfig();
+		List<PlayerSettingsType> playerPreferences = pluginConfig.getPreferences().getPlayerPreferences();
 
 		PlayerSettingsType toReturn = null;
 
@@ -49,9 +50,6 @@ public class ConfigurationManager {
 		if (toReturn == null) {
 			// Player has no settings. Make a new one.
 			toReturn = createDefaultPlayerSettings(targetPlayerName);
-			playerPreferences.add(toReturn);
-
-			persist();
 		}
 
 		return new PlayerSettingsManager(toReturn, this);
@@ -92,19 +90,38 @@ public class ConfigurationManager {
 		return profiles;
 	}
 
-	synchronized void persist() {
+	private synchronized void persist(PluginConfig pluginConfig) {
 
 		OutputStream out = null;
 
 		try {
 			out = new FileOutputStream(getDataFile());
-			JAXB.marshal(getPluginConfig(), out);
+			JAXB.marshal(pluginConfig, out);
 		} catch (FileNotFoundException e) {
 			log.error("Error persisting config", e);
 		} finally {
 			IOUtils.closeQuietly(out);
 		}
 
+	}
+
+	public synchronized void savePlayerSettings(PlayerSettingsType playerSettings) {
+
+		PluginConfig pluginConfig = getPluginConfig();
+
+		List<PlayerSettingsType> playerPreferences = pluginConfig.getPreferences().getPlayerPreferences();
+
+		for (int i = 0; i < playerPreferences.size(); i++) {
+
+			PlayerSettingsType currentPlayerSettings = playerPreferences.get(i);
+
+			if (currentPlayerSettings.getPlayerName().equalsIgnoreCase(playerSettings.getPlayerName())) {
+				playerPreferences.remove(i);
+			}
+		}
+
+		playerPreferences.add(playerSettings);
+		persist(pluginConfig);
 	}
 
 	private synchronized File getDataFile() {
@@ -155,21 +172,23 @@ public class ConfigurationManager {
 
 	public void enableWorld(String name) {
 
-		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
+		PluginConfig pluginConfig = getPluginConfig();
+		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
 
 		worlds.remove(name);
 
-		persist();
+		persist(pluginConfig);
 	}
 
 	public void disableWorld(String name) {
-		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
+		PluginConfig pluginConfig = getPluginConfig();
+		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
 
 		if (!worlds.contains(name)) {
 			worlds.add(name);
 		}
 
-		persist();
+		persist(pluginConfig);
 	}
 
 	public int getMaxImageWidth() {

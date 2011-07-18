@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
+import org.bukkitmodders.copycat.schema.PluginConfig;
 
 public class PlayerSettingsManager {
 
@@ -39,7 +40,7 @@ public class PlayerSettingsManager {
 		shortcut.setName(name);
 		shortcut.setUrl(url);
 
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void deleteShortcut(String name) {
@@ -50,7 +51,7 @@ public class PlayerSettingsManager {
 			playerSettings.getShortcuts().getShortcut().remove(shortcut);
 		}
 
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void tellShortcuts(Player player) {
@@ -65,12 +66,12 @@ public class PlayerSettingsManager {
 
 	public void disable() {
 		playerSettings.setPlayerEnabled(false);
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void enable() {
 		playerSettings.setPlayerEnabled(true);
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public boolean isEnabled() {
@@ -83,17 +84,17 @@ public class PlayerSettingsManager {
 
 	public void setBlockProfile(String blockProfileName) {
 		playerSettings.setBlockProfile(blockProfileName);
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void setBuildWidth(int width) {
 		playerSettings.setBuildWidth(width);
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void setBuildHeight(int height) {
 		playerSettings.setBuildHeight(height);
-		cm.persist();
+		cm.savePlayerSettings(playerSettings);
 	}
 
 	public int getBuildHeight() {
