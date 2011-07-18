@@ -19,8 +19,7 @@ public class SetFunction extends AbstractCopycatFunction {
 	}
 
 	@Override
-	public void performFunction(Player sender, Queue<String> args) throws NeedMoreArgumentsException,
-			NeedMoreArgumentsException {
+	public void performFunction(Player sender, Queue<String> args) throws NeedMoreArgumentsException, NeedMoreArgumentsException {
 
 		if (args.isEmpty()) {
 			doShow(sender);
@@ -47,8 +46,7 @@ public class SetFunction extends AbstractCopycatFunction {
 			return;
 		}
 
-		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager()
-				.getPlayerSettings(sender.getName());
+		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager().getPlayerSettings(sender.getName());
 
 		String profile = args.remove();
 		if (!getPlugin().getConfigurationManager().getBlockProfiles().containsKey(profile)) {
@@ -74,8 +72,7 @@ public class SetFunction extends AbstractCopycatFunction {
 
 		validateSufficientArgs(2, args);
 
-		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager()
-				.getPlayerSettings(sender.getName());
+		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager().getPlayerSettings(sender.getName());
 		playerSettings.setBuildWidth(Integer.parseInt(args.remove()));
 		playerSettings.setBuildHeight(Integer.parseInt(args.remove()));
 
@@ -98,9 +95,9 @@ public class SetFunction extends AbstractCopycatFunction {
 	public void buildFunctionHelp(StringBuffer sb) {
 		getPlugin().getConfigurationManager().getBlockProfiles().keySet();
 		sb.append("===== Set Functions =====\n");
-		sb.append("/" + getOperationPrefix() + " (no args) - show all settings\n");
-		sb.append("/" + getOperationPrefix() + " dimensions <width> <height> - Set render dimensions\n");
-		sb.append("/" + getOperationPrefix() + " blockProfile <name> - Block profile to use\n");
-		sb.append("/" + getOperationPrefix() + " blockProfile <no args> - Available Block Profiles\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " (no args) - show all settings\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " dimensions <width> <height> - Set render dimensions\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " blockProfile <name> - Block profile to use\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " blockProfile <no args> - Available Block Profiles\n");
 	}
 }

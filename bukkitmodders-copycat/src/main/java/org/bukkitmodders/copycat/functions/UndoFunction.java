@@ -20,7 +20,7 @@ public class UndoFunction extends AbstractCopycatFunction {
 
 	@Override
 	public void buildFunctionHelp(StringBuffer sb) {
-		sb.append("/" + getOperationPrefix() + " - Undo last copy\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " - Undo last copy\n");
 	}
 
 	public UndoFunction(Plugin plugin) {
