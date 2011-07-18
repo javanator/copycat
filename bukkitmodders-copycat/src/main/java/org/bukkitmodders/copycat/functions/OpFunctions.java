@@ -28,7 +28,6 @@ public class OpFunctions extends AbstractCopycatFunction {
 		sb.append("/" + getOperationPrefix() + " disable <player name> - Disables plugin for a player\n");
 		sb.append("/" + getOperationPrefix() + " enableWorld <world name> - Enables plugin in a world\n");
 		sb.append("/" + getOperationPrefix() + " disableWorld <world name> - Disables plugin in a world\n");
-		sb.append("/" + getOperationPrefix() + " reloadConfig - Reloads the plugin config XML\n");
 	}
 
 	@Override
