@@ -4,7 +4,6 @@ import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
-import org.bukkitmodders.copycat.schema.PluginConfig;
 
 public class PlayerSettingsManager {
 

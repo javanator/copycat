@@ -12,9 +12,11 @@ import javax.xml.bind.JAXB;
 import junit.framework.Assert;
 
 import org.bukkit.Location;
+import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PluginConfig;
 import org.bukkitmodders.copycat.services.ImageCopier;
+import org.bukkitmodders.copycat.services.TextureMapProcessor;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,8 +28,7 @@ public class McGraphics2dTest {
 
 	public static BlockProfileType getDefaultBlockProfile() {
 
-		PluginConfig config = JAXB.unmarshal(McGraphics2dTest.class.getResourceAsStream("/defaultSettings.xml"),
-				PluginConfig.class);
+		PluginConfig config = JAXB.unmarshal(McGraphics2dTest.class.getResourceAsStream(Settings.DEFAULT_SETTINGS_XML), PluginConfig.class);
 		return config.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0);
 	}
 
@@ -68,7 +69,7 @@ public class McGraphics2dTest {
 	@Test
 	public void transparencyTest() throws Exception {
 		try {
-			BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/PikachuTransparent.gif"));
+			BufferedImage image = ImageIO.read(getClass().getResourceAsStream(Settings.PIKACHU_TRANSPARENT));
 			if (image.getTransparency() == Transparency.BITMASK) {
 				log.info("Transparency is bitmask");
 			} else if (image.getTransparency() == Transparency.TRANSLUCENT) {
@@ -82,23 +83,14 @@ public class McGraphics2dTest {
 		}
 	}
 
-	// @Test
-	// public void nearestColorGeneratorTest() {
-	//
-	// TextureMapProcessor nearestColorGenerator = new TextureMapProcessor();
-	//
-	// for (int i : MaterialTiles.getSupportedTiles()) {
-	// BufferedImage tile = nearestColorGenerator.getTile(i);
-	//
-	// try {
-	// new File("target/tiles").mkdirs();
-	// ImageIO.write(tile, "png", new File("target/tiles/tile" + i + ".png"));
-	//
-	// } catch (IOException e) {
-	//
-	// }
-	// }
-	// }
+	@Test
+	public void nearestColorGeneratorTest() {
+		PluginConfig unmarshal = JAXB.unmarshal(getClass().getResource(Settings.DEFAULT_SETTINGS_XML), PluginConfig.class);
+
+		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0));
+		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(1));
+		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(2));
+	}
 
 	@Test
 	public void scaleImageTest() throws Exception {

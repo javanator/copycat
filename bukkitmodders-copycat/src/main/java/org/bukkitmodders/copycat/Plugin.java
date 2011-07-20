@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -25,7 +26,7 @@ public class Plugin extends JavaPlugin {
 
 	private static final String DATAFILE = "pluginSettings.xml";
 	private static final Logger log = LoggerFactory.getLogger(Plugin.class);
-	private final HashMap<String, Stack<Stack<RevertableBlock>>> undoBuffers = new HashMap<String, Stack<Stack<RevertableBlock>>>();
+	private final HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>> undoBuffers = new HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>>();
 	private ConfigurationManager configurationManager;
 	private final Map<String, AbstractCopycatFunction> functions = new HashMap<String, AbstractCopycatFunction>();
 
@@ -57,6 +58,7 @@ public class Plugin extends JavaPlugin {
 	public void onEnable() {
 
 		CopycatCommand ccCommand = new CopycatCommand(this);
+
 		PluginCommand command = getCommand(ccCommand.getCommandString());
 		command.setExecutor(ccCommand);
 
@@ -84,7 +86,7 @@ public class Plugin extends JavaPlugin {
 		return commands.keySet().iterator().next().toString();
 	}
 
-	public HashMap<String, Stack<Stack<RevertableBlock>>> getUndoBuffers() {
+	public HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>> getUndoBuffers() {
 
 		return undoBuffers;
 	}

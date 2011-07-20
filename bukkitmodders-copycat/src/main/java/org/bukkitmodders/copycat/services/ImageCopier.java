@@ -53,33 +53,32 @@ public class ImageCopier {
 	 */
 	public void draw(BufferedImage image, Stack<RevertableBlock> undoBuffer) {
 
+		Point3d point = new Point3d();
+
 		for (int i = 0; i < image.getWidth(); i++) {
 
 			for (int j = 0; j < image.getHeight(); j++) {
 
 				// +Y in minecraft is the image top
-				Point3d point = new Point3d(i, image.getHeight() - j, 0);
+				point.set(i, image.getHeight() - j, 0);
 				mRotation.transform(point);
 
 				transformToWorld(point);
-				Block blockAt = world.getBlockAt((int) Math.round(point.x), (int) (Math.round(point.y)),
-						(int) Math.round(point.z));
+				Block blockAt = world.getBlockAt((int) Math.round(point.x), (int) (Math.round(point.y)), (int) Math.round(point.z));
 
-				synchronized (blockAt) {
-					if (blockAt != null) {
+				if (blockAt != null) {
 
-						undoBuffer.push(new RevertableBlock(blockAt));
+					undoBuffer.push(new RevertableBlock(blockAt));
 
-						int rgba = image.getRGB(i, j);
-						int alpha = (rgba >> 24) & 0xff;
+					int rgba = image.getRGB(i, j);
+					int alpha = (rgba >> 24) & 0xff;
 
-						if (alpha == 0 || image.getTransparency() == Transparency.BITMASK) {
-							// If this is a transparent pixel, Do Nothing
-							// Maybe use glass or air??
-						} else {
-							int closestTile = findNearestTileForColor(rgba, blockAt);
-							TextureToBlockMapper.setBlockMaterialToTile(closestTile, blockAt);
-						}
+					if (alpha == 0 || image.getTransparency() == Transparency.BITMASK) {
+						// If this is a transparent pixel, Do Nothing
+						// Maybe use glass or air??
+					} else {
+						int closestTile = findNearestTileForColor(rgba, blockAt);
+						TextureToBlockMapper.setBlockMaterialToTile(closestTile, blockAt);
 					}
 				}
 			}

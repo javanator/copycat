@@ -3,6 +3,7 @@ package org.bukkitmodders.copycat.functions;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
@@ -39,7 +40,7 @@ public class UndoFunction extends AbstractCopycatFunction {
 
 	public void doUndo(Player requestor, String playerName) {
 
-		HashMap<String, Stack<Stack<RevertableBlock>>> undoBuffers = getPlugin().getUndoBuffers();
+		HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>> undoBuffers = getPlugin().getUndoBuffers();
 
 		if (undoBuffers.containsKey(playerName) && !undoBuffers.get(playerName).isEmpty()) {
 

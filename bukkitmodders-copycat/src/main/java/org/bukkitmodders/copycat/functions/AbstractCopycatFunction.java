@@ -5,7 +5,6 @@ import java.util.StringTokenizer;
 
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
-import org.bukkitmodders.copycat.plugin.CopycatCommand;
 import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
 import org.bukkitmodders.copycat.plugin.NotAnOpException;
 

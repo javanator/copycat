@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.imageio.ImageIO;
 import javax.vecmath.Matrix4d;
@@ -17,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Plugin;
+import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
@@ -107,8 +109,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 		String shortcutName = args.remove();
 		ConfigurationManager configurationManager = getPlugin().getConfigurationManager();
 
-		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager().getPlayerSettings(
-				requestor.getName());
+		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager().getPlayerSettings(requestor.getName());
 
 		if (!playerSettings.isEnabled()) {
 			requestor.sendMessage("You are disabled");
@@ -138,20 +139,19 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 			requestor.sendMessage("Copying your image: " + shortcut.getUrl());
 			requestor.sendMessage("Width: " + image.getWidth() + " Height: " + image.getHeight());
-			Stack<RevertableBlock> undoBuffer = createUndoBuffer(requestor);
 
 			Matrix4d rotationMatrix = null;
 			if (location == null) {
-				location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(),
-						targetBlock.getZ());
+				location = new Location(requestor.getWorld(), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
 				rotationMatrix = MatrixUtil.calculateRotation(requestor.getLocation());
 			} else {
 				rotationMatrix = MatrixUtil.calculateRotation(location);
 			}
 
 			BlockProfileType blockProfile = configurationManager.getBlockProfile(playerSettings.getBlockProfile());
-
+			Stack<RevertableBlock> undoBuffer = createUndoBuffer(requestor);
 			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, requestor.getWorld(), rotationMatrix);
+			
 			mcGraphics2d.draw(image, undoBuffer);
 
 		} catch (MalformedURLException e) {
@@ -189,11 +189,11 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 
 	private Stack<RevertableBlock> createUndoBuffer(Player player) {
 		Stack<RevertableBlock> undoBuffer = new Stack<RevertableBlock>();
-		HashMap<String, Stack<Stack<RevertableBlock>>> undoBuffers = getPlugin().getUndoBuffers();
+		HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>> undoBuffers = getPlugin().getUndoBuffers();
 		String playerName = player.getName();
 
 		if (!undoBuffers.containsKey(playerName)) {
-			undoBuffers.put(playerName, new Stack<Stack<RevertableBlock>>());
+			undoBuffers.put(playerName, new LinkedBlockingDeque<Stack<RevertableBlock>>(Settings.MAX_GLOBAL_UNDO));
 		}
 
 		undoBuffers.get(playerName).push(undoBuffer);

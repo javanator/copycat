@@ -27,15 +27,14 @@ public abstract class AbstractCopycatCommand implements CommandExecutor {
 	}
 
 	@Override
-	final public boolean onCommand(final CommandSender sender, final Command command, final String label,
-			final String[] args) {
+	final public boolean onCommand(final CommandSender sender, final Command command, final String label, final String[] args) {
 
 		if (sender instanceof Player) {
 
-			Queue<String> argsQueue = new LinkedList<String>();
-			argsQueue.addAll(Arrays.asList(args));
-
 			try {
+				Queue<String> argsQueue = new LinkedList<String>();
+				argsQueue.addAll(Arrays.asList(args));
+
 				performCommand((Player) sender, command, label, argsQueue);
 			} catch (Exception e) {
 
@@ -46,15 +45,13 @@ public abstract class AbstractCopycatCommand implements CommandExecutor {
 				} else {
 					sender.sendMessage("Something very unexpected happened. See server log.");
 				}
-
 			}
 		}
 
 		return true;
 	}
 
-	protected abstract void performCommand(Player sender, Command command, String label, Queue<String> argsQueue)
-			throws Exception;
+	protected abstract void performCommand(Player sender, Command command, String label, Queue<String> argsQueue) throws Exception;
 
 	public abstract String getCommandString();
 }

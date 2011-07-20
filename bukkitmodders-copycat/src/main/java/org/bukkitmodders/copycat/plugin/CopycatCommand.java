@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 public class CopycatCommand extends AbstractCopycatCommand {
 
-	private final Logger log = LoggerFactory.getLogger(CopycatCommand.class);
+	private static final Logger log = LoggerFactory.getLogger(CopycatCommand.class);
 
 	public CopycatCommand(Plugin instance) {
 
@@ -26,11 +26,9 @@ public class CopycatCommand extends AbstractCopycatCommand {
 	}
 
 	@Override
-	protected void performCommand(Player sender, Command command, String label, Queue<String> args)
-			throws NeedMoreArgumentsException {
+	protected void performCommand(Player sender, Command command, String label, Queue<String> args) throws NeedMoreArgumentsException {
 
-		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager()
-				.getPlayerSettings(sender.getName());
+		PlayerSettingsManager playerSettings = getPlugin().getConfigurationManager().getPlayerSettings(sender.getName());
 
 		Map<String, AbstractCopycatFunction> functions = getPlugin().getFunctions();
 
@@ -83,7 +81,6 @@ public class CopycatCommand extends AbstractCopycatCommand {
 
 		HashMap<String, Object> ccCommand = new HashMap<String, Object>();
 
-		ccCommand = new HashMap<String, Object>();
 		ccCommand.put("description", "Copycat renders images into the game world");
 		ccCommand.put("usage", "Type /cc help for help");
 

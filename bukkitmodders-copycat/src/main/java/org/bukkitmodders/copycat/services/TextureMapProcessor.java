@@ -7,6 +7,7 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,7 +115,7 @@ public class TextureMapProcessor {
 
 	private BufferedImage getImage() throws IOException {
 
-		return ImageIO.read(getClass().getResourceAsStream("/terrain.png"));
+		return ImageIO.read(getClass().getResourceAsStream(Settings.TERRAIN));
 	}
 
 	public Hashtable<Color, Integer> getColorTable() {

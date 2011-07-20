@@ -37,7 +37,7 @@
 		<zip destfile="${build.path}/${yml.name}.zip" basedir="${build.path}" includes="${releasejar.name}" />
 	</target>
 
-	<target name="deploy">
+	<target name="deploy" if="minecraft.plugins">
 		<copy todir="${minecraft.plugins}" file="${jar.file}" />
 	</target>
 </project>
