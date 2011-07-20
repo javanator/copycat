@@ -87,9 +87,11 @@ public class McGraphics2dTest {
 	public void nearestColorGeneratorTest() {
 		PluginConfig unmarshal = JAXB.unmarshal(getClass().getResource(Settings.DEFAULT_SETTINGS_XML), PluginConfig.class);
 
-		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0));
+		TextureMapProcessor tmp01 = new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0));
 		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(1));
 		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(2));
+		
+		tmp01.getColorTable();
 	}
 
 	@Test

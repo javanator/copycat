@@ -4,7 +4,10 @@
 
 package org.bukkitmodders.copycat.services;
 
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -13,160 +16,143 @@ import org.bukkitmodders.copycat.schema.BlockProfileType;
 
 public class TextureToBlockMapper {
 
-	private static final int NETHERACK = 103;
-	private static final int DIRT = 2;
-	private static final int STONE = 1;
-	private static final int SANDSTONE = 192;
-	private static final int BRICK = 7;
-	private static final int SNOW_BLOCK = 66;
-	private static final int CLAY = 72;
-	private static final int WOOD_PLANK = 4;
-	private static final int IRON_BLOCK = 22;
-	private static final int GOLD_BLOCK = 23;
-	private static final int DIAMOND_BLOCK = 24;
-	private static final int GLOWSTONE = 105;
-	private static final int LAPIS_LAZULI_BLOCK = 144;
-	private static final int LAPIS_LAZULI_ORE = 160;
-	private static final int OBSIDIAN = 37;
-	private static final int NOTE_BLOCK = 74;
-	private static final int MOSSY_COBBLESTONE = 36;
-	private static final int IRON_ORE = 33;
-	private static final int COAL_ORE = 34;
-	private static final int DIAMOND_ORE = 50;
-	private static final int GOLD_ORE = 32;
-	private static final int REDSTONE_ORE = 51;
-	private static final int COBBLESTONE = 16;
+	private enum TextureMappedBlock {
 
-	private static final int WOOL_WHITE = 64;
-	private static final int WOOL_BLACK = 113;
-	private static final int WOOL_GRAY = 114;
-	private static final int WOOL_RED = 129;
-	private static final int WOOL_PINK = 130;
-	private static final int WOOL_GREEN = 145;
-	private static final int WOOL_LIGHT_GREEN = 146;
-	private static final int WOOL_BROWN = 161;
-	private static final int WOOL_YELLOW = 162;
-	private static final int WOOL_BLUE = 177;
-	private static final int WOOL_LIGHT_BLUE = 178;
-	private static final int WOOL_PURPLE = 193;
-	private static final int WOOL_LIGHT_PURPLE = 194;
-	private static final int WOOL_CYAN = 209;
-	private static final int WOOL_ORANGE = 210;
-	private static final int WOOL_LIGHT_GRAY = 225;
+		NETHERACK(103, Material.NETHERRACK, (byte) 0),
+		DIRT(2, Material.DIRT, (byte) 0),
+		STONE(1, Material.STONE, (byte) 0),
+		SANDSTONE(192, Material.SANDSTONE, (byte) 0),
+		BRICK(7, Material.BRICK, (byte) 0),
+		SNOW_BLOCK(66, Material.SNOW_BLOCK, (byte) 0),
+		CLAY(72, Material.CLAY, (byte) 0),
+		WOOD_PLANK(4, Material.WOOD, (byte) 0),
+		IRON_BLOCK(22, Material.IRON_BLOCK, (byte) 0),
+		GOLD_BLOCK(23, Material.GOLD_BLOCK, (byte) 0),
+		DIAMOND_BLOCK(24, Material.DIAMOND_BLOCK, (byte) 0),
+		GLOWSTONE(105, Material.GLOWSTONE, (byte) 0),
+		LAPIS_LAZULI_BLOCK(144, Material.LAPIS_BLOCK, (byte) 0),
+		LAPIS_LAZULI_ORE(160, Material.LAPIS_ORE, (byte) 0),
+		OBSIDIAN(37, Material.OBSIDIAN, (byte) 0),
+		NOTE_BLOCK(74, Material.NOTE_BLOCK, (byte) 0),
+		MOSSY_COBBLESTONE(36, Material.MOSSY_COBBLESTONE, (byte) 0),
+		IRON_ORE(33, Material.IRON_ORE, (byte) 0),
+		COAL_ORE(34, Material.COAL_ORE, (byte) 0),
+		DIAMOND_ORE(50, Material.DIAMOND_ORE, (byte) 0),
+		GOLD_ORE(32, Material.GOLD_ORE, (byte) 0),
+		REDSTONE_ORE(51, Material.REDSTONE_ORE, (byte) 0),
+		COBBLESTONE(16, Material.COBBLESTONE, (byte) 0),
 
-	private final HashSet<Integer> supportedTiles;
+		WOOL_WHITE(64, Material.WOOL, DyeColor.WHITE.getData()),
+		WOOL_BLACK(113, Material.WOOL, DyeColor.BLACK.getData()),
+		WOOL_GRAY(114, Material.WOOL, DyeColor.GRAY.getData()),
+		WOOL_RED(129, Material.WOOL, DyeColor.RED.getData()),
+		WOOL_PINK(130, Material.WOOL, DyeColor.PINK.getData()),
+		WOOL_GREEN(145, Material.WOOL, DyeColor.GREEN.getData()),
+		WOOL_LIGHT_GREEN(146, Material.WOOL, DyeColor.LIME.getData()),
+		WOOL_BROWN(161, Material.WOOL, DyeColor.BROWN.getData()),
+		WOOL_YELLOW(162, Material.WOOL, DyeColor.YELLOW.getData()),
+		WOOL_BLUE(177, Material.WOOL, DyeColor.BLUE.getData()),
+		WOOL_LIGHT_BLUE(178, Material.WOOL, DyeColor.LIGHT_BLUE.getData()),
+		WOOL_PURPLE(193, Material.WOOL, DyeColor.PURPLE.getData()),
+		WOOL_LIGHT_PURPLE(194, Material.WOOL, DyeColor.MAGENTA.getData()),
+		WOOL_CYAN(209, Material.WOOL, DyeColor.CYAN.getData()),
+		WOOL_ORANGE(210, Material.WOOL, DyeColor.ORANGE.getData()),
+		WOOL_LIGHT_GRAY(225, Material.WOOL, DyeColor.SILVER.getData());
 
-	public TextureToBlockMapper(BlockProfileType blockProfile) {
+		private final byte data;
+		private final Material material;
+		private final int tile;
 
-		supportedTiles = new HashSet<Integer>();
+		private TextureMappedBlock(int tile, Material material, byte data) {
+			this.tile = tile;
+			this.material = material;
+			this.data = data;
+		}
 
-		for (BlockProfileType.Block block : blockProfile.getBlock()) {
-			supportedTiles.add(block.getTextureIndex());
+		public void setBlock(Block block) {
+
+			block.setType(material);
+
+			if (data != 0) {
+				block.setData(data);
+			}
+		}
+
+		public int getTile() {
+			return tile;
 		}
 	}
 
-	public HashSet<Integer> getSupportedTiles() {
-		return supportedTiles;
+	private static Hashtable<Integer, TextureMappedBlock> SUPPORTED_BLOCKS = new Hashtable<Integer, TextureMappedBlock>();
+
+	static {
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.NETHERACK.getTile(), TextureMappedBlock.NETHERACK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIRT.getTile(), TextureMappedBlock.DIRT);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.STONE.getTile(), TextureMappedBlock.STONE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.SANDSTONE.getTile(), TextureMappedBlock.SANDSTONE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.BRICK.getTile(), TextureMappedBlock.BRICK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.SNOW_BLOCK.getTile(), TextureMappedBlock.SNOW_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.CLAY.getTile(), TextureMappedBlock.CLAY);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOD_PLANK.getTile(), TextureMappedBlock.WOOD_PLANK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.IRON_BLOCK.getTile(), TextureMappedBlock.IRON_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.GOLD_BLOCK.getTile(), TextureMappedBlock.GOLD_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIAMOND_BLOCK.getTile(), TextureMappedBlock.DIAMOND_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.GLOWSTONE.getTile(), TextureMappedBlock.GLOWSTONE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.LAPIS_LAZULI_BLOCK.getTile(), TextureMappedBlock.LAPIS_LAZULI_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.LAPIS_LAZULI_ORE.getTile(), TextureMappedBlock.LAPIS_LAZULI_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.OBSIDIAN.getTile(), TextureMappedBlock.OBSIDIAN);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.NOTE_BLOCK.getTile(), TextureMappedBlock.NOTE_BLOCK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.MOSSY_COBBLESTONE.getTile(), TextureMappedBlock.MOSSY_COBBLESTONE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.IRON_ORE.getTile(), TextureMappedBlock.IRON_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.COAL_ORE.getTile(), TextureMappedBlock.COAL_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIAMOND_ORE.getTile(), TextureMappedBlock.DIAMOND_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.GOLD_ORE.getTile(), TextureMappedBlock.GOLD_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.REDSTONE_ORE.getTile(), TextureMappedBlock.REDSTONE_ORE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.COBBLESTONE.getTile(), TextureMappedBlock.COBBLESTONE);
+
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_WHITE.getTile(), TextureMappedBlock.WOOL_WHITE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BLACK.getTile(), TextureMappedBlock.WOOL_BLACK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_GRAY.getTile(), TextureMappedBlock.WOOL_GRAY);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_RED.getTile(), TextureMappedBlock.WOOL_RED);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_PINK.getTile(), TextureMappedBlock.WOOL_PINK);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_GREEN.getTile(), TextureMappedBlock.WOOL_GREEN);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_GREEN.getTile(), TextureMappedBlock.WOOL_LIGHT_GREEN);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BROWN.getTile(), TextureMappedBlock.WOOL_BROWN);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_YELLOW.getTile(), TextureMappedBlock.WOOL_YELLOW);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BLUE.getTile(), TextureMappedBlock.WOOL_BLUE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_BLUE.getTile(), TextureMappedBlock.WOOL_LIGHT_BLUE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_PURPLE.getTile(), TextureMappedBlock.WOOL_PURPLE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_PURPLE.getTile(), TextureMappedBlock.WOOL_LIGHT_PURPLE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_CYAN.getTile(), TextureMappedBlock.WOOL_CYAN);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_ORANGE.getTile(), TextureMappedBlock.WOOL_ORANGE);
+		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_GRAY.getTile(), TextureMappedBlock.WOOL_LIGHT_GRAY);
+	}
+
+	private Map<Integer, TextureMappedBlock> supportedBlocks = new HashMap<Integer, TextureMappedBlock>();
+
+	public TextureToBlockMapper(BlockProfileType blockProfile) {
+		for (org.bukkitmodders.copycat.schema.BlockProfileType.Block block : blockProfile.getBlock()) {
+
+			int tileNumber = block.getTextureIndex();
+
+			if (SUPPORTED_BLOCKS.containsKey(tileNumber)) {
+				supportedBlocks.put(tileNumber, SUPPORTED_BLOCKS.get(tileNumber));
+			} else {
+				throw new RuntimeException("Tile " + tileNumber + " is not a supported block.");
+			}
+		}
+	}
+
+	public Set<Integer> getSupportedTiles() {
+		return supportedBlocks.keySet();
 	}
 
 	public static void setBlockMaterialToTile(int tile, Block block) {
 
-		if (tile == WOOL_WHITE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.WHITE.getData());
-		} else if (tile == WOOL_BLACK) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.BLACK.getData());
-		} else if (tile == WOOL_GRAY) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.GRAY.getData());
-		} else if (tile == WOOL_RED) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.RED.getData());
-		} else if (tile == WOOL_PINK) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.PINK.getData());
-		} else if (tile == WOOL_GREEN) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.GREEN.getData());
-		} else if (tile == WOOL_LIGHT_GREEN) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.LIME.getData());
-		} else if (tile == WOOL_BROWN) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.BROWN.getData());
-		} else if (tile == WOOL_YELLOW) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.YELLOW.getData());
-		} else if (tile == WOOL_BLUE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.BLUE.getData());
-		} else if (tile == WOOL_LIGHT_BLUE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.LIGHT_BLUE.getData());
-		} else if (tile == WOOL_PURPLE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.PURPLE.getData());
-		} else if (tile == WOOL_LIGHT_PURPLE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.MAGENTA.getData());
-		} else if (tile == WOOL_CYAN) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.CYAN.getData());
-		} else if (tile == WOOL_ORANGE) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.ORANGE.getData());
-		} else if (tile == WOOL_LIGHT_GRAY) {
-			block.setType(Material.WOOL);
-			block.setData(DyeColor.SILVER.getData());
-		} else if (tile == COBBLESTONE) {
-			block.setType(Material.COBBLESTONE);
-		} else if (tile == NETHERACK) {
-			block.setType(Material.NETHERRACK);
-		} else if (tile == DIRT) {
-			block.setType(Material.DIRT);
-		} else if (tile == STONE) {
-			block.setType(Material.STONE);
-		} else if (tile == SANDSTONE) {
-			block.setType(Material.SANDSTONE);
-		} else if (tile == BRICK) {
-			block.setType(Material.BRICK);
-		} else if (tile == SNOW_BLOCK) {
-			block.setType(Material.SNOW_BLOCK);
-		} else if (tile == WOOD_PLANK) {
-			block.setType(Material.WOOD);
-		} else if (tile == CLAY) {
-			block.setType(Material.CLAY);
-		} else if (tile == IRON_BLOCK) {
-			block.setType(Material.IRON_BLOCK);
-		} else if (tile == GOLD_BLOCK) {
-			block.setType(Material.GOLD_BLOCK);
-		} else if (tile == DIAMOND_BLOCK) {
-			block.setType(Material.DIAMOND_BLOCK);
-		} else if (tile == GLOWSTONE) {
-			block.setType(Material.GLOWSTONE);
-		} else if (tile == REDSTONE_ORE) {
-			block.setType(Material.REDSTONE_ORE);
-		} else if (tile == LAPIS_LAZULI_BLOCK) {
-			block.setType(Material.LAPIS_BLOCK);
-		} else if (tile == LAPIS_LAZULI_ORE) {
-			block.setType(Material.LAPIS_ORE);
-		} else if (tile == NOTE_BLOCK) {
-			block.setType(Material.NOTE_BLOCK);
-		} else if (tile == MOSSY_COBBLESTONE) {
-			block.setType(Material.MOSSY_COBBLESTONE);
-		} else if (tile == OBSIDIAN) {
-			block.setType(Material.OBSIDIAN);
-		} else if (tile == IRON_ORE) {
-			block.setType(Material.IRON_ORE);
-		} else if (tile == COAL_ORE) {
-			block.setType(Material.COAL_ORE);
-		} else if (tile == DIAMOND_ORE) {
-			block.setType(Material.DIAMOND_ORE);
-		} else if (tile == GOLD_ORE) {
-			block.setType(Material.GOLD_ORE);
+		if (SUPPORTED_BLOCKS.containsKey(tile)) {
+			SUPPORTED_BLOCKS.get(tile).setBlock(block);
 		} else {
-			throw new RuntimeException("Unsupported Tile Number: " + tile);
+			throw new RuntimeException("Cannot map texture tile to a block. " + tile);
 		}
 	}
 }
