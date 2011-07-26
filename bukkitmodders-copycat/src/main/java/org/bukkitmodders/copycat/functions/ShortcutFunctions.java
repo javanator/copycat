@@ -43,10 +43,10 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 	@Override
 	public void buildFunctionHelp(StringBuffer sb) {
 		sb.append("==== Shortcut Function Help ====\n");
-		sb.append("/" + getOperationPrefix() + " copy <shortcut name> - Copies Image\n");
-		sb.append("/" + getOperationPrefix() + " add <shortcut name> <image url> - Add shortcut\n");
-		sb.append("/" + getOperationPrefix() + " delete <shortcut name> - Deletes shortcut\n");
-		sb.append("/" + getOperationPrefix() + " list - Lists shortcuts\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " copy <shortcut name> - Copies Image\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " add <shortcut name> <image url> - Add shortcut\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " delete <shortcut name> - Deletes shortcut\n");
+		sb.append("/" + getOperationPrefix() + " " + getFunction() + " list - Lists shortcuts\n");
 	}
 
 	@Override
@@ -151,7 +151,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 			BlockProfileType blockProfile = configurationManager.getBlockProfile(playerSettings.getBlockProfile());
 			Stack<RevertableBlock> undoBuffer = createUndoBuffer(requestor);
 			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, requestor.getWorld(), rotationMatrix);
-			
+
 			mcGraphics2d.draw(image, undoBuffer);
 
 		} catch (MalformedURLException e) {
@@ -193,7 +193,7 @@ public class ShortcutFunctions extends AbstractCopycatFunction {
 		String playerName = player.getName();
 
 		if (!undoBuffers.containsKey(playerName)) {
-			undoBuffers.put(playerName, new LinkedBlockingDeque<Stack<RevertableBlock>>(Settings.MAX_GLOBAL_UNDO));
+			undoBuffers.put(playerName, new LinkedBlockingDeque<Stack<RevertableBlock>>(Settings.MAX_PLAYER_UNDO));
 		}
 
 		undoBuffers.get(playerName).push(undoBuffer);

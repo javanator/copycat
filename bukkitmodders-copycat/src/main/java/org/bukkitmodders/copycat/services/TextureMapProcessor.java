@@ -52,7 +52,7 @@ public class TextureMapProcessor {
 
 		TextureToBlockMapper materialTiles = new TextureToBlockMapper(blockProfile);
 		Hashtable<Color, Integer> properties = new Hashtable<Color, Integer>();
-
+		log.debug("Generating color table for block profile: " + blockProfile.getName());
 		for (int i = 0; i < tiles; i++) {
 			BufferedImage tile = getTile(i);
 
