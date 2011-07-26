@@ -3,7 +3,7 @@
 	<groupId>org.bukkitmodders</groupId>
 	<artifactId>bukkitmodders-copycat</artifactId>
 	<description></description>
-	<version>0.4</version>
+	<version>0.5</version>
 
 	<properties>
 		<build.yamlemitter.class>org.bukkitmodders.copycat.services.PluginDescriptorEmitter</build.yamlemitter.class>
