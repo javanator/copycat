@@ -16,7 +16,7 @@ public class TextureMapProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(TextureMapProcessor.class);
 
-	private String textureResource = "/terrain.png";
+	private String textureResource = Settings.TERRAIN;
 	private int textureWidth = 16;
 	private int textureHeight = 16;
 	private BufferedImage image;
