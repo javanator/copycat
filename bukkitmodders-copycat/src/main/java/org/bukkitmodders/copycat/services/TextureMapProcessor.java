@@ -95,7 +95,7 @@ public class TextureMapProcessor {
 		return new Color(r, g, b);
 	}
 
-	private BufferedImage getTile(int tileNumber) {
+	public BufferedImage getTile(int tileNumber) {
 
 		int row = tileNumber / rows;
 		int col = tileNumber % cols;

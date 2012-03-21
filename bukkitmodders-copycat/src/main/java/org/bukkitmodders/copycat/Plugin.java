@@ -80,8 +80,7 @@ public class Plugin extends JavaPlugin {
 	public String getTriggerString() {
 		PluginDescriptionFile pdfFile = getDescription();
 
-		@SuppressWarnings("unchecked")
-		Map<String, Map<String, Object>> commands =pdfFile.getCommands();
+		Map<String, Map<String, Object>> commands = pdfFile.getCommands();
 
 		return commands.keySet().iterator().next().toString();
 	}

@@ -128,7 +128,7 @@
 			<artifactId>bukkit</artifactId>
 			<version>1.2.3-R0.3-SNAPSHOT</version>
 			<type>jar</type>
-			<scope>compile</scope>
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>

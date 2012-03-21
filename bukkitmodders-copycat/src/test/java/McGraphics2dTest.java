@@ -14,9 +14,12 @@ import junit.framework.Assert;
 import org.bukkit.Location;
 import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.schema.BlockProfileType.Block;
 import org.bukkitmodders.copycat.schema.PluginConfig;
 import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.services.TextureMapProcessor;
+import org.bukkitmodders.copycat.services.TextureToBlockMapper;
+import org.bukkitmodders.copycat.services.TextureToBlockMapper.TextureMappedBlock;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,17 +29,30 @@ public class McGraphics2dTest {
 
 	private Logger log = LoggerFactory.getLogger(McGraphics2dTest.class);
 
-	public static BlockProfileType getDefaultBlockProfile() {
+	public static BlockProfileType getBlockProfile(String name) {
 
 		PluginConfig config = JAXB.unmarshal(McGraphics2dTest.class.getResourceAsStream(Settings.DEFAULT_SETTINGS_XML), PluginConfig.class);
-		return config.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0);
+		for (BlockProfileType blockProfile : config.getGlobalSettings().getBlockProfiles().getBlockProfile()) {
+			if (blockProfile.getName().equalsIgnoreCase(name)) {
+				return blockProfile;
+			}
+		}
+
+		return null;
+	}
+
+	@Test
+	public void scaleImageTest() throws Exception {
+		BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/PikachuTransparent.gif"));
+		Image scaledImage = ImageUtil.scaleImage(image, image.getWidth(), image.getHeight());
+		ImageIO.write((RenderedImage) scaledImage, "gif", new File("target/scaledTransparent.gif"));
 	}
 
 	@Test
 	public void TranslateTest01() {
 
 		Location location = new Location(null, 10, 10, 10);
-		ImageCopier mcGraphics2d = new ImageCopier(getDefaultBlockProfile(), location, null, null);
+		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null, null);
 
 		Point3d point = new Point3d(1, 1, 0);
 
@@ -53,7 +69,7 @@ public class McGraphics2dTest {
 	public void TranslateTest02() {
 
 		Location location = new Location(null, 10, 10, 10);
-		ImageCopier mcGraphics2d = new ImageCopier(getDefaultBlockProfile(), location, null, null);
+		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null, null);
 
 		Point3d point = new Point3d(10, 10, 0);
 
@@ -85,19 +101,26 @@ public class McGraphics2dTest {
 
 	@Test
 	public void nearestColorGeneratorTest() {
-		PluginConfig unmarshal = JAXB.unmarshal(getClass().getResource(Settings.DEFAULT_SETTINGS_XML), PluginConfig.class);
 
-		TextureMapProcessor tmp01 = new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(0));
-		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(1));
-		new TextureMapProcessor(unmarshal.getGlobalSettings().getBlockProfiles().getBlockProfile().get(2));
-		
+		TextureMapProcessor tmp01 = new TextureMapProcessor(getBlockProfile("default"));
+		new TextureMapProcessor(getBlockProfile("earth"));
+		new TextureMapProcessor(getBlockProfile("wool"));
+
 		tmp01.getColorTable();
 	}
 
 	@Test
-	public void scaleImageTest() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/PikachuTransparent.gif"));
-		Image scaledImage = ImageUtil.scaleImage(image, image.getWidth(), image.getHeight());
-		ImageIO.write((RenderedImage) scaledImage, "gif", new File("target/scaledTransparent.gif"));
+	public void textureMapTest() throws Exception {
+		BlockProfileType blockProfile = getBlockProfile("test");
+		TextureMapProcessor tmp = new TextureMapProcessor(blockProfile);
+
+		for (Block block : blockProfile.getBlock()) {
+			BufferedImage tileImage = tmp.getTile(block.getTextureIndex());
+
+			TextureMappedBlock textureMappedBlock = TextureToBlockMapper.SUPPORTED_BLOCKS.get(block.getTextureIndex());
+			String pathname = "target/" + block.getName() + "material-" + textureMappedBlock.getMaterialName()+".gif";
+			ImageIO.write((RenderedImage) tileImage, "gif", new File(pathname));
+		}
+
 	}
 }

@@ -16,7 +16,43 @@ import org.bukkitmodders.copycat.schema.BlockProfileType;
 
 public class TextureToBlockMapper {
 
-	private enum TextureMappedBlock {
+	public static Hashtable<Integer, TextureMappedBlock> SUPPORTED_BLOCKS = new Hashtable<Integer, TextureMappedBlock>();
+	private Map<Integer, TextureMappedBlock> supportedBlocks = new HashMap<Integer, TextureMappedBlock>();
+
+	static {
+
+		for (TextureMappedBlock block : TextureMappedBlock.values()) {
+			SUPPORTED_BLOCKS.put(block.getTile(), block);
+		}
+	}
+
+	public TextureToBlockMapper(BlockProfileType blockProfile) {
+		for (org.bukkitmodders.copycat.schema.BlockProfileType.Block block : blockProfile.getBlock()) {
+
+			int tileNumber = block.getTextureIndex();
+
+			if (SUPPORTED_BLOCKS.containsKey(tileNumber)) {
+				supportedBlocks.put(tileNumber, SUPPORTED_BLOCKS.get(tileNumber));
+			} else {
+				throw new RuntimeException("Tile " + tileNumber + " is not a supported block.");
+			}
+		}
+	}
+
+	public Set<Integer> getSupportedTiles() {
+		return supportedBlocks.keySet();
+	}
+	
+	public static void setBlockMaterialToTile(int tile, Block block) {
+
+		if (SUPPORTED_BLOCKS.containsKey(tile)) {
+			SUPPORTED_BLOCKS.get(tile).setBlock(block);
+		} else {
+			throw new RuntimeException("Cannot map texture tile to a block. " + tile);
+		}
+	}
+
+	public enum TextureMappedBlock {
 
 		NETHERACK(103, Material.NETHERRACK, (byte) 0),
 		DIRT(2, Material.DIRT, (byte) 0),
@@ -41,6 +77,10 @@ public class TextureToBlockMapper {
 		GOLD_ORE(32, Material.GOLD_ORE, (byte) 0),
 		REDSTONE_ORE(51, Material.REDSTONE_ORE, (byte) 0),
 		COBBLESTONE(16, Material.COBBLESTONE, (byte) 0),
+
+		ENDER_STONE(175, Material.ENDER_STONE, (byte) 0),
+		SPONGE(48, Material.SPONGE, (byte) 0),
+		NETHER_BRICK(224, Material.NETHER_BRICK, (byte) 0),
 
 		WOOL_WHITE(64, Material.WOOL, DyeColor.WHITE.getData()),
 		WOOL_BLACK(113, Material.WOOL, DyeColor.BLACK.getData()),
@@ -81,78 +121,10 @@ public class TextureToBlockMapper {
 		public int getTile() {
 			return tile;
 		}
-	}
 
-	private static Hashtable<Integer, TextureMappedBlock> SUPPORTED_BLOCKS = new Hashtable<Integer, TextureMappedBlock>();
-
-	static {
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.NETHERACK.getTile(), TextureMappedBlock.NETHERACK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIRT.getTile(), TextureMappedBlock.DIRT);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.STONE.getTile(), TextureMappedBlock.STONE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.SANDSTONE.getTile(), TextureMappedBlock.SANDSTONE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.BRICK.getTile(), TextureMappedBlock.BRICK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.SNOW_BLOCK.getTile(), TextureMappedBlock.SNOW_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.CLAY.getTile(), TextureMappedBlock.CLAY);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOD_PLANK.getTile(), TextureMappedBlock.WOOD_PLANK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.IRON_BLOCK.getTile(), TextureMappedBlock.IRON_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.GOLD_BLOCK.getTile(), TextureMappedBlock.GOLD_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIAMOND_BLOCK.getTile(), TextureMappedBlock.DIAMOND_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.GLOWSTONE.getTile(), TextureMappedBlock.GLOWSTONE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.LAPIS_LAZULI_BLOCK.getTile(), TextureMappedBlock.LAPIS_LAZULI_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.LAPIS_LAZULI_ORE.getTile(), TextureMappedBlock.LAPIS_LAZULI_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.OBSIDIAN.getTile(), TextureMappedBlock.OBSIDIAN);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.NOTE_BLOCK.getTile(), TextureMappedBlock.NOTE_BLOCK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.MOSSY_COBBLESTONE.getTile(), TextureMappedBlock.MOSSY_COBBLESTONE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.IRON_ORE.getTile(), TextureMappedBlock.IRON_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.COAL_ORE.getTile(), TextureMappedBlock.COAL_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.DIAMOND_ORE.getTile(), TextureMappedBlock.DIAMOND_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.GOLD_ORE.getTile(), TextureMappedBlock.GOLD_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.REDSTONE_ORE.getTile(), TextureMappedBlock.REDSTONE_ORE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.COBBLESTONE.getTile(), TextureMappedBlock.COBBLESTONE);
-
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_WHITE.getTile(), TextureMappedBlock.WOOL_WHITE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BLACK.getTile(), TextureMappedBlock.WOOL_BLACK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_GRAY.getTile(), TextureMappedBlock.WOOL_GRAY);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_RED.getTile(), TextureMappedBlock.WOOL_RED);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_PINK.getTile(), TextureMappedBlock.WOOL_PINK);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_GREEN.getTile(), TextureMappedBlock.WOOL_GREEN);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_GREEN.getTile(), TextureMappedBlock.WOOL_LIGHT_GREEN);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BROWN.getTile(), TextureMappedBlock.WOOL_BROWN);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_YELLOW.getTile(), TextureMappedBlock.WOOL_YELLOW);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_BLUE.getTile(), TextureMappedBlock.WOOL_BLUE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_BLUE.getTile(), TextureMappedBlock.WOOL_LIGHT_BLUE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_PURPLE.getTile(), TextureMappedBlock.WOOL_PURPLE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_PURPLE.getTile(), TextureMappedBlock.WOOL_LIGHT_PURPLE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_CYAN.getTile(), TextureMappedBlock.WOOL_CYAN);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_ORANGE.getTile(), TextureMappedBlock.WOOL_ORANGE);
-		SUPPORTED_BLOCKS.put(TextureMappedBlock.WOOL_LIGHT_GRAY.getTile(), TextureMappedBlock.WOOL_LIGHT_GRAY);
-	}
-
-	private Map<Integer, TextureMappedBlock> supportedBlocks = new HashMap<Integer, TextureMappedBlock>();
-
-	public TextureToBlockMapper(BlockProfileType blockProfile) {
-		for (org.bukkitmodders.copycat.schema.BlockProfileType.Block block : blockProfile.getBlock()) {
-
-			int tileNumber = block.getTextureIndex();
-
-			if (SUPPORTED_BLOCKS.containsKey(tileNumber)) {
-				supportedBlocks.put(tileNumber, SUPPORTED_BLOCKS.get(tileNumber));
-			} else {
-				throw new RuntimeException("Tile " + tileNumber + " is not a supported block.");
-			}
+		public String getMaterialName() {
+			return material.name();
 		}
 	}
 
-	public Set<Integer> getSupportedTiles() {
-		return supportedBlocks.keySet();
-	}
-
-	public static void setBlockMaterialToTile(int tile, Block block) {
-
-		if (SUPPORTED_BLOCKS.containsKey(tile)) {
-			SUPPORTED_BLOCKS.get(tile).setBlock(block);
-		} else {
-			throw new RuntimeException("Cannot map texture tile to a block. " + tile);
-		}
-	}
 }

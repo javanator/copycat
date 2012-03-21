@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<cc:configFile xmlns:cc="http://www.example.org/pluginSettings"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.example.org/pluginSettings pluginSettings.xsd ">
+<cc:configFile xmlns:cc="http://www.example.org/pluginSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/pluginSettings pluginSettings.xsd ">
 	<globalSettings>
 		<prohibitedWorlds>
 			<world>prohibitedWorld</world>
@@ -54,6 +52,9 @@
 				<block textureIndex="32" name="GOLD_ORE" />
 				<block textureIndex="51" name="REDSTONE_ORE" />
 				<block textureIndex="16" name="COBBLESTONE" />
+				<block textureIndex="175" name="ENDER_STONE" />
+				<block textureIndex="48" name="SPONGE" />
+				<block textureIndex="224" name="NETHER_BRICK" />
 			</blockProfile>
 			<blockProfile name="default">
 				<block textureIndex="103" name="NETHERACK" />
@@ -95,6 +96,9 @@
 				<block textureIndex="209" name="WOOL_CYAN" />
 				<block textureIndex="210" name="WOOL_ORANGE" />
 				<block textureIndex="225" name="WOOL_LIGHT_GRAY" />
+				<block textureIndex="175" name="ENDER_STONE" />
+				<block textureIndex="48" name="SPONGE" />
+				<block textureIndex="224" name="NETHER_BRICK" />
 			</blockProfile>
 		</blockProfiles>
 
