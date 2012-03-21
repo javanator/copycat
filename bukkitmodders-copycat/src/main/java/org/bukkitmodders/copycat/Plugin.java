@@ -81,7 +81,7 @@ public class Plugin extends JavaPlugin {
 		PluginDescriptionFile pdfFile = getDescription();
 
 		@SuppressWarnings("unchecked")
-		Map<String, Object> commands = (Map<String, Object>) pdfFile.getCommands();
+		Map<String, Map<String, Object>> commands =pdfFile.getCommands();
 
 		return commands.keySet().iterator().next().toString();
 	}
