@@ -111,7 +111,7 @@ public class McGraphics2dTest {
 
 	@Test
 	public void textureMapTest() throws Exception {
-		BlockProfileType blockProfile = getBlockProfile("test");
+		BlockProfileType blockProfile = getBlockProfile("default");
 		TextureMapProcessor tmp = new TextureMapProcessor(blockProfile);
 
 		for (Block block : blockProfile.getBlock()) {
