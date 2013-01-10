@@ -37,7 +37,7 @@
 				maxOccurs="1" default="64" />
 			<element name="buildHeight" type="int" minOccurs="1"
 				maxOccurs="1" default="64" />
-
+			<element name="activeShortcut" type="string" />
 			<element name="shortcuts" minOccurs="1" maxOccurs="1">
 				<complexType>
 					<sequence>

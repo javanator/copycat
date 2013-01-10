@@ -1,14 +1,25 @@
 package org.bukkitmodders.copycat.managers;
 
+import java.awt.image.BufferedImage;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PlayerSettingsManager {
 
 	private final PlayerSettingsType playerSettings;
 	private final ConfigurationManager cm;
+	private final Logger log = LoggerFactory.getLogger(PlayerSettingsManager.class);
 
 	PlayerSettingsManager(PlayerSettingsType playerSettings, ConfigurationManager configurationManager) {
 
@@ -63,16 +74,6 @@ public class PlayerSettingsManager {
 		}
 	}
 
-	public void disable() {
-		playerSettings.setPlayerEnabled(false);
-		cm.savePlayerSettings(playerSettings);
-	}
-
-	public void enable() {
-		playerSettings.setPlayerEnabled(true);
-		cm.savePlayerSettings(playerSettings);
-	}
-
 	public boolean isEnabled() {
 		return playerSettings.isPlayerEnabled();
 	}
@@ -104,5 +105,30 @@ public class PlayerSettingsManager {
 	public int getBuildWidth() {
 
 		return Math.min(cm.getMaxImageWidth(), playerSettings.getBuildWidth());
+	}
+
+	public Shortcut getActiveShortcut() {
+
+		Shortcut shortcut = getShortcut(playerSettings.getActiveShortcut());
+
+		return shortcut;
+	}
+
+	public void cleanShortcuts(Player player) {
+		List<Shortcut> shortcuts = playerSettings.getShortcuts().getShortcut();
+		Iterator<Shortcut> shortcutsIterator = shortcuts.iterator();
+
+		while (shortcutsIterator.hasNext()) {
+			Shortcut shortcut = shortcutsIterator.next();
+			try {
+				InputStream in = new URL(shortcut.getUrl()).openStream();
+				BufferedImage image = ImageIO.read(in);
+				image.getType();
+			} catch (Exception e) {
+				shortcutsIterator.remove();
+				player.sendMessage("URL is not an image or is invalid. Removed: " + shortcut.getName() + " " + shortcut.getUrl());
+			}
+		}
+
 	}
 }

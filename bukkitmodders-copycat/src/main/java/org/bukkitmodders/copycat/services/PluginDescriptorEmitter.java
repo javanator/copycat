@@ -11,13 +11,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bukkitmodders.copycat.AdminCommand;
 import org.bukkitmodders.copycat.ImgCommand;
 import org.bukkitmodders.copycat.Nouveau;
-import org.bukkitmodders.copycat.Plugin;
 import org.bukkitmodders.copycat.SetCommand;
-import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.UndoCommand;
-import org.bukkitmodders.copycat.plugin.CopycatCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -56,21 +54,7 @@ public class PluginDescriptorEmitter {
 		commands.put(ImgCommand.getCommandString(), ImgCommand.getDescription());
 		commands.put(SetCommand.getCommandString(), SetCommand.getDescription());
 		commands.put(UndoCommand.getCommandString(), UndoCommand.getDescription());
-
-		yamlData.put("commands", commands);
-
-		return yamlData;
-	}
-
-	private Map<String, Object> getold(String pluginName, String pluginVersion) {
-		Map<String, Object> yamlData = new HashMap<String, Object>();
-
-		yamlData.put("name", pluginName);
-		yamlData.put("main", Plugin.class.getName());
-		yamlData.put("version", pluginVersion);
-
-		Map<String, Object> commands = new HashMap<String, Object>();
-		commands.put(Settings.DEFAULT_COMMAND_TRIGGER, CopycatCommand.getUsageDescMap());
+		commands.put(AdminCommand.getCommandString(), AdminCommand.getDescription());
 
 		yamlData.put("commands", commands);
 

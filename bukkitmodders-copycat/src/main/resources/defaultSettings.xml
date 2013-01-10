@@ -111,7 +111,7 @@
 			<blockProfile>default</blockProfile>
 			<buildWidth>64</buildWidth>
 			<buildHeight>64</buildHeight>
-
+			<activeShortcut></activeShortcut>
 			<shortcuts>
 				<shortcut name="shortuctname" url="http://aurl" />
 				<shortcut name="anothershortuctname" url="file://aurl" />
