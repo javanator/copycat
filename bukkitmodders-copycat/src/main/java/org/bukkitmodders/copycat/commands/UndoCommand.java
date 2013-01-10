@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat;
+package org.bukkitmodders.copycat.commands;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -11,6 +11,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
+import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
 
 public class UndoCommand implements CommandExecutor {

@@ -11,11 +11,11 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.bukkitmodders.copycat.AdminCommand;
-import org.bukkitmodders.copycat.ImgCommand;
 import org.bukkitmodders.copycat.Nouveau;
-import org.bukkitmodders.copycat.SetCommand;
-import org.bukkitmodders.copycat.UndoCommand;
+import org.bukkitmodders.copycat.commands.AdminCommand;
+import org.bukkitmodders.copycat.commands.ImgCommand;
+import org.bukkitmodders.copycat.commands.SetCommand;
+import org.bukkitmodders.copycat.commands.UndoCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;

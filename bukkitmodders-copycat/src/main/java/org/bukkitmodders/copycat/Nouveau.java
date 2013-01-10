@@ -6,6 +6,9 @@ import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkitmodders.copycat.commands.ImgCommand;
+import org.bukkitmodders.copycat.commands.SetCommand;
+import org.bukkitmodders.copycat.commands.UndoCommand;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.slf4j.Logger;

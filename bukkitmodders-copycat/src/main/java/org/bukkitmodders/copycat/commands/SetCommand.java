@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat;
+package org.bukkitmodders.copycat.commands;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -9,6 +9,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
