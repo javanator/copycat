@@ -7,11 +7,16 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bukkitmodders.copycat.ImgCommand;
+import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.Plugin;
+import org.bukkitmodders.copycat.SetCommand;
 import org.bukkitmodders.copycat.Settings;
+import org.bukkitmodders.copycat.UndoCommand;
 import org.bukkitmodders.copycat.plugin.CopycatCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +26,7 @@ public class PluginDescriptorEmitter {
 
 	private static final Logger log = LoggerFactory.getLogger(PluginDescriptorEmitter.class);
 
-	private void outputYaml(String fileName, String pluginName, String pluginVersion) throws FileNotFoundException,
-			IOException {
+	private void outputYaml(String fileName, String pluginName, String pluginVersion) throws FileNotFoundException, IOException {
 
 		StringWriter writer = new StringWriter();
 
@@ -42,6 +46,23 @@ public class PluginDescriptorEmitter {
 
 	private Map<String, Object> getYamlMap(String pluginName, String pluginVersion) {
 
+		Map<String, Object> yamlData = new LinkedHashMap<String, Object>();
+
+		yamlData.put("name", pluginName);
+		yamlData.put("main", Nouveau.class.getName());
+		yamlData.put("version", pluginVersion);
+
+		Map<String, Object> commands = new HashMap<String, Object>();
+		commands.put(ImgCommand.getCommandString(), ImgCommand.getDescription());
+		commands.put(SetCommand.getCommandString(), SetCommand.getDescription());
+		commands.put(UndoCommand.getCommandString(), UndoCommand.getDescription());
+
+		yamlData.put("commands", commands);
+
+		return yamlData;
+	}
+
+	private Map<String, Object> getold(String pluginName, String pluginVersion) {
 		Map<String, Object> yamlData = new HashMap<String, Object>();
 
 		yamlData.put("name", pluginName);

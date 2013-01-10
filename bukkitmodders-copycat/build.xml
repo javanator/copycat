@@ -38,6 +38,6 @@
 	</target>
 
 	<target name="deploy" if="minecraft.plugins">
-		<copy todir="${minecraft.plugins}" file="${jar.file}" />
+		<copy tofile="${minecraft.plugins}/${yml.name}.jar" file="${jar.file}" />
 	</target>
 </project>

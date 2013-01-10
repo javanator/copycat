@@ -31,7 +31,7 @@ public class Plugin extends JavaPlugin {
 	private final Map<String, AbstractCopycatFunction> functions = new HashMap<String, AbstractCopycatFunction>();
 
 	public Plugin() {
-
+		
 		AbstractCopycatFunction function = null;
 
 		function = new HelpFunction(this);
