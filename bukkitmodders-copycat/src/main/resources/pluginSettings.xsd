@@ -6,14 +6,6 @@
 
 	<complexType name="globalSettingsType">
 		<sequence>
-			<element name="prohibitedWorlds" minOccurs="1" maxOccurs="1">
-				<complexType>
-					<sequence>
-						<element name="world" type="string" minOccurs="0"
-							maxOccurs="unbounded" />
-					</sequence>
-				</complexType>
-			</element>
 			<element name="maxImageWidth" type="int" minOccurs="1"
 				maxOccurs="1" />
 			<element name="maxImageHeight" type="int" minOccurs="1"
@@ -38,6 +30,7 @@
 			<element name="buildHeight" type="int" minOccurs="1"
 				maxOccurs="1" default="64" />
 			<element name="activeShortcut" type="string" />
+			<element name="trigger" type="string" />
 			<element name="shortcuts" minOccurs="1" maxOccurs="1">
 				<complexType>
 					<sequence>
@@ -52,7 +45,7 @@
 			</element>
 		</sequence>
 		<attribute name="playerName" type="string" use="required" />
-		<attribute name="playerEnabled" type="boolean" use="required" />
+		<attribute name="copyEnabled" type="boolean" use="required" />
 	</complexType>
 
 	<complexType name="blockProfileType">

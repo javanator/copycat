@@ -6,6 +6,7 @@ import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.ImgCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
 import org.bukkitmodders.copycat.commands.UndoCommand;
@@ -26,6 +27,7 @@ public class Nouveau extends JavaPlugin {
 		getCommand(ImgCommand.getCommandString()).setExecutor(null);
 		getCommand(SetCommand.getCommandString()).setExecutor(null);
 		getCommand(UndoCommand.getCommandString()).setExecutor(null);
+		getCommand(AdminCommand.getCommandString()).setExecutor(null);
 
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " Disabled");
 	}
@@ -36,6 +38,7 @@ public class Nouveau extends JavaPlugin {
 		getCommand(ImgCommand.getCommandString()).setExecutor(new ImgCommand(this));
 		getCommand(SetCommand.getCommandString()).setExecutor(new SetCommand(this));
 		getCommand(UndoCommand.getCommandString()).setExecutor(new UndoCommand(this));
+		getCommand(AdminCommand.getCommandString()).setExecutor(new AdminCommand(this));
 
 		getServer().getPluginManager().registerEvents(new CopycatPlayerListener(this), this);
 

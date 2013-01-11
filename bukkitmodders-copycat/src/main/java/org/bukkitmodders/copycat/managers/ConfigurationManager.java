@@ -59,9 +59,10 @@ public class ConfigurationManager {
 
 		PlayerSettingsType playerSettings = of.createPlayerSettingsType();
 		playerSettings.setPlayerName(playerName);
-		playerSettings.setPlayerEnabled(true);
+		playerSettings.setCopyEnabled(false);
 		playerSettings.setShortcuts(of.createPlayerSettingsTypeShortcuts());
 		playerSettings.setBlockProfile("default");
+		playerSettings.setActiveShortcut("");
 		playerSettings.setBuildWidth(getPluginConfig().getGlobalSettings().getMaxImageWidth());
 		playerSettings.setBuildHeight(getPluginConfig().getGlobalSettings().getMaxImageHeight());
 
@@ -157,38 +158,6 @@ public class ConfigurationManager {
 			IOUtils.closeQuietly(in);
 			IOUtils.closeQuietly(out);
 		}
-	}
-
-	public boolean isWorldEnabled(String name) {
-
-		List<String> worlds = getPluginConfig().getGlobalSettings().getProhibitedWorlds().getWorld();
-
-		if (worlds.contains(name)) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public void enableWorld(String name) {
-
-		PluginConfig pluginConfig = getPluginConfig();
-		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
-
-		worlds.remove(name);
-
-		persist(pluginConfig);
-	}
-
-	public void disableWorld(String name) {
-		PluginConfig pluginConfig = getPluginConfig();
-		List<String> worlds = pluginConfig.getGlobalSettings().getProhibitedWorlds().getWorld();
-
-		if (!worlds.contains(name)) {
-			worlds.add(name);
-		}
-
-		persist(pluginConfig);
 	}
 
 	public int getMaxImageWidth() {

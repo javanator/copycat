@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Queue;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -50,13 +49,22 @@ public class CopycatPlayerListener implements Listener {
 		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(requestor.getName());
 
-		if (playerSettings.getActiveShortcut() == null) {
-			requestor.sendMessage("Copycat is on, but you have no active image set");
+		boolean isBuildSet = requestor.isPermissionSet("permissions.build");
+		boolean isBuilder = requestor.hasPermission("permissions.build");
+
+		log.debug("isBuildSet: " + isBuildSet + " isBuilder: " + isBuilder);
+		if (isBuildSet && !isBuilder) {
+			requestor.sendMessage("You do not have permissions.build");
 			return;
 		}
-		
-		if (!configurationManager.isWorldEnabled(requestor.getWorld().getName())) {
-			requestor.sendMessage("World is disabled");
+
+		if (!playerSettings.isCopyEnabled()) {
+			log.debug("Copying is disabled. Not doing anything.");
+			return;
+		}
+
+		if (playerSettings.getActiveShortcut() == null) {
+			requestor.sendMessage("Copycat is on, but you have no active image set");
 			return;
 		}
 
@@ -103,8 +111,6 @@ public class CopycatPlayerListener implements Listener {
 	public void onEvent(PlayerInteractEntityEvent e) {
 		log.debug("Player RIGHT click activation: " + e.getPlayer().getName());
 	}
-
-
 
 	private Stack<RevertableBlock> createUndoBuffer(Player player) {
 		Stack<RevertableBlock> undoBuffer = new Stack<RevertableBlock>();

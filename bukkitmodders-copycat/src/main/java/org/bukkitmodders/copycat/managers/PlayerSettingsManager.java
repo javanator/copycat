@@ -74,8 +74,8 @@ public class PlayerSettingsManager {
 		}
 	}
 
-	public boolean isEnabled() {
-		return playerSettings.isPlayerEnabled();
+	public boolean isCopyEnabled() {
+		return playerSettings.isCopyEnabled();
 	}
 
 	public String getBlockProfile() {
@@ -87,12 +87,8 @@ public class PlayerSettingsManager {
 		cm.savePlayerSettings(playerSettings);
 	}
 
-	public void setBuildWidth(int width) {
+	public void setBuildDimensions(int width, int height) {
 		playerSettings.setBuildWidth(width);
-		cm.savePlayerSettings(playerSettings);
-	}
-
-	public void setBuildHeight(int height) {
 		playerSettings.setBuildHeight(height);
 		cm.savePlayerSettings(playerSettings);
 	}
@@ -130,5 +126,21 @@ public class PlayerSettingsManager {
 			}
 		}
 
+		cm.savePlayerSettings(playerSettings);
+	}
+
+	public void setTrigger(String heldItemName) {
+		playerSettings.setTrigger(heldItemName);
+		cm.savePlayerSettings(playerSettings);
+	}
+
+	public void setCopyEnabled(boolean isCopyEnabled) {
+		playerSettings.setCopyEnabled(isCopyEnabled);
+		cm.savePlayerSettings(playerSettings);
+	}
+
+	public void setActiveShortcut(String poll) {
+		playerSettings.setActiveShortcut(poll);
+		cm.savePlayerSettings(playerSettings);
 	}
 }

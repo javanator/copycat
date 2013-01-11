@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.plugin.NeedMoreArgumentsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +29,12 @@ public class ImgCommand implements CommandExecutor {
 		return "ccimg";
 	}
 
+	/**
+	 * Used during build time to generate the plugin.yml file. Not used during
+	 * runtime.
+	 * 
+	 * @return
+	 */
 	public static Map<String, Object> getDescription() {
 
 		StringBuffer sb = new StringBuffer();
@@ -47,41 +52,70 @@ public class ImgCommand implements CommandExecutor {
 		return desc;
 	}
 
+	public static Map<String, Object> getPermissions() {
+
+		Map<String, Object> permissions = new LinkedHashMap<String, Object>();
+		permissions.put("description", "Image management functions");
+		permissions.put("default", "true");
+
+		return permissions;
+	}
+
+	public static String getPermissionNode() {
+		return "copycat.ccimg";
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 		try {
+			Queue<String> argsQueue = new LinkedList<String>();
+			argsQueue.addAll(Arrays.asList(args));
+			String operation = argsQueue.poll();
+
 			if (!(sender instanceof Player || args.length == 0)) {
 				return false;
 			}
 
-			Queue<String> argsQueue = new LinkedList<String>();
-			argsQueue.addAll(Arrays.asList(args));
+			if (operation == null) {
+				return false;
+			}
+
+			if (!sender.hasPermission(getPermissionNode())) {
+				sender.sendMessage("You do not have permission");
+			}
+
 			Player player = (Player) sender;
 
 			ConfigurationManager configurationManager = plugin.getConfigurationManager();
 			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(player.getName());
 
-			String operation = argsQueue.poll();
-
 			if ("add".equalsIgnoreCase(operation)) {
-				if (argsQueue.size() < 2) {
-					throw new NeedMoreArgumentsException("No image name and URL in parameters. Received: " + Arrays.toString(args));
-				}
 
 				String imageName = argsQueue.poll();
 				String imageUrl = argsQueue.poll();
 
-				playerSettings.addShortcut(imageName, imageUrl);
-			} else if ("del".equalsIgnoreCase(operation)) {
-				if (argsQueue.size() < 1) {
-					throw new NeedMoreArgumentsException("No image named in parameters. Received: " + Arrays.toString(args));
+				if (imageName == null) {
+					player.sendMessage("No image name specified");
 				}
 
+				if (imageUrl == null) {
+					player.sendMessage("No image URL specified");
+				}
+
+				playerSettings.addShortcut(imageName, imageUrl);
+				player.sendMessage(imageName + " added");
+			} else if ("del".equalsIgnoreCase(operation)) {
+
 				String imageName = argsQueue.poll();
+				if (imageName == null) {
+					player.sendMessage("No image name specified");
+				}
 
 				playerSettings.deleteShortcut(imageName);
 			} else if ("clean".equalsIgnoreCase(operation)) {
+				player.sendMessage("Cleaning up your URLs. Removing bad URLs and non-images");
 				playerSettings.cleanShortcuts(player);
+				player.sendMessage("Done with URL cleanup");
 			} else if ("list".equalsIgnoreCase(operation)) {
 				playerSettings.tellShortcuts(player);
 			} else if ("copy".equalsIgnoreCase(operation)) {
@@ -89,8 +123,6 @@ public class ImgCommand implements CommandExecutor {
 			}
 
 			return true;
-		} catch (NeedMoreArgumentsException e) {
-			sender.sendMessage(e.getMessage());
 		} catch (Exception e) {
 			log.error("Something Unexpected Happened", e);
 		}

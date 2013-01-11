@@ -7,7 +7,7 @@
 	<version>1.0</version>
 
 	<properties>
-		<build.yamlemitter.class>org.bukkitmodders.copycat.services.PluginDescriptorEmitter</build.yamlemitter.class>
+		<build.yamlemitter.class>org.bukkitmodders.copycat.util.PluginDescriptorEmitter</build.yamlemitter.class>
 		<bukkit.plugin.name>CopyCat</bukkit.plugin.name>
 		<build.path>${project.build.directory}</build.path>
 		<build.artifact>${project.build.finalName}.${project.packaging}</build.artifact>

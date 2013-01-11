@@ -37,6 +37,19 @@ public class UndoCommand implements CommandExecutor {
 		return desc;
 	}
 
+	public static Map<String, Object> getPermissions() {
+
+		Map<String, Object> permissions = new LinkedHashMap<String, Object>();
+		permissions.put("description", "Undo capability");
+		permissions.put("default", "true");
+
+		return permissions;
+	}
+
+	public static String getPermissionNode() {
+		return "copycat.ccundo";
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 

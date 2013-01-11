@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.services;
+package org.bukkitmodders.copycat.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,13 +50,21 @@ public class PluginDescriptorEmitter {
 		yamlData.put("main", Nouveau.class.getName());
 		yamlData.put("version", pluginVersion);
 
-		Map<String, Object> commands = new HashMap<String, Object>();
+		Map<String, Object> commands = new LinkedHashMap<String, Object>();
 		commands.put(ImgCommand.getCommandString(), ImgCommand.getDescription());
 		commands.put(SetCommand.getCommandString(), SetCommand.getDescription());
 		commands.put(UndoCommand.getCommandString(), UndoCommand.getDescription());
 		commands.put(AdminCommand.getCommandString(), AdminCommand.getDescription());
 
 		yamlData.put("commands", commands);
+
+		Map<String, Object> permissions = new LinkedHashMap<String, Object>();
+		permissions.put(ImgCommand.getPermissionNode(), ImgCommand.getPermissions());
+		permissions.put(SetCommand.getPermissionNode(), SetCommand.getPermissions());
+		permissions.put(UndoCommand.getPermissionNode(), UndoCommand.getPermissions());
+		permissions.put(AdminCommand.getPermissionNode(), AdminCommand.getPermissions());
+
+		yamlData.put("permissions", permissions);
 
 		return yamlData;
 	}

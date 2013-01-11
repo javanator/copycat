@@ -112,6 +112,7 @@
 			<buildWidth>64</buildWidth>
 			<buildHeight>64</buildHeight>
 			<activeShortcut></activeShortcut>
+			<trigger></trigger>
 			<shortcuts>
 				<shortcut name="shortuctname" url="http://aurl" />
 				<shortcut name="anothershortuctname" url="file://aurl" />
