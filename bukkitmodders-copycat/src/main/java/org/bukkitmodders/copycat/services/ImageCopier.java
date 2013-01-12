@@ -10,6 +10,7 @@ import javax.vecmath.Point3d;
 import javax.vecmath.Vector3d;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
@@ -76,6 +77,7 @@ public class ImageCopier {
 					if (alpha == 0 || image.getTransparency() == Transparency.BITMASK) {
 						// If this is a transparent pixel, Do Nothing
 						// Maybe use glass or air??
+						blockAt.setType(Material.AIR);
 					} else {
 						int closestTile = findNearestTileForColor(rgba, blockAt);
 						TextureToBlockMapper.setBlockMaterialToTile(closestTile, blockAt);

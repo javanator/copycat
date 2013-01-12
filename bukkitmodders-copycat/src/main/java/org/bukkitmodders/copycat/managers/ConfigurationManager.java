@@ -59,10 +59,11 @@ public class ConfigurationManager {
 
 		PlayerSettingsType playerSettings = of.createPlayerSettingsType();
 		playerSettings.setPlayerName(playerName);
-		playerSettings.setCopyEnabled(false);
+		playerSettings.setWandActivated(false);
 		playerSettings.setShortcuts(of.createPlayerSettingsTypeShortcuts());
 		playerSettings.setBlockProfile("default");
 		playerSettings.setActiveShortcut("");
+		playerSettings.setTrigger("");
 		playerSettings.setBuildWidth(getPluginConfig().getGlobalSettings().getMaxImageWidth());
 		playerSettings.setBuildHeight(getPluginConfig().getGlobalSettings().getMaxImageHeight());
 

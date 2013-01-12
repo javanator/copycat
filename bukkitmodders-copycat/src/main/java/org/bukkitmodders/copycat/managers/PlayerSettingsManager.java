@@ -11,8 +11,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.imageio.ImageIO;
 
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
@@ -93,8 +93,8 @@ public class PlayerSettingsManager {
 		}
 	}
 
-	public boolean isCopyEnabled() {
-		return playerSettings.isCopyEnabled();
+	public boolean isWandActivated() {
+		return playerSettings.isWandActivated();
 	}
 
 	public String getBlockProfile() {
@@ -162,14 +162,18 @@ public class PlayerSettingsManager {
 		cm.savePlayerSettings(playerSettings);
 	}
 
-	public void setCopyEnabled(boolean isCopyEnabled) {
-		playerSettings.setCopyEnabled(isCopyEnabled);
+	public void setCopyEnabled(boolean isWandActivated) {
+		playerSettings.setWandActivated(isWandActivated);
 		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void setActiveShortcut(String poll) {
 		playerSettings.setActiveShortcut(poll);
 		cm.savePlayerSettings(playerSettings);
+	}
+
+	public String getTrigger() {
+		return playerSettings.getTrigger();
 	}
 
 }

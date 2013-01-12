@@ -35,7 +35,7 @@ public class Nouveau extends JavaPlugin {
 		getCommand(UndoCommand.getCommandString()).setExecutor(new UndoCommand(this));
 		getCommand(AdminCommand.getCommandString()).setExecutor(new AdminCommand(this));
 
-		getServer().getPluginManager().registerEvents(new CopycatPlayerListener(this), this);
+		getServer().getPluginManager().registerEvents(new WandListener(this), this);
 
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " Enabled");
 	}

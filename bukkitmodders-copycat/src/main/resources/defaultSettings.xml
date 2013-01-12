@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <cc:configFile xmlns:cc="http://www.example.org/pluginSettings" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/pluginSettings pluginSettings.xsd ">
 	<globalSettings>
-		<prohibitedWorlds>
-			<world>prohibitedWorld</world>
-			<world>anotherProhibitedWorld</world>
-		</prohibitedWorlds>
-		<!-- Increase with caution. -->
+		<!-- Griefing alert. Increase with caution. Larger sizes are more demanding on servers -->
 		<maxImageWidth>400</maxImageWidth>
 		<maxImageHeight>100</maxImageHeight>
 
@@ -106,8 +102,7 @@
 	</globalSettings>
 
 	<preferences>
-		<playerPreferences playerEnabled="false" playerName="examplePlayer">
-
+		<playerPreferences playerName="examplePlayer" copyEnabled="true">
 			<blockProfile>default</blockProfile>
 			<buildWidth>64</buildWidth>
 			<buildHeight>64</buildHeight>

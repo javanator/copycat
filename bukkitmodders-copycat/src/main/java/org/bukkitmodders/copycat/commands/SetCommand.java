@@ -10,7 +10,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.slf4j.Logger;
@@ -32,12 +31,10 @@ public class SetCommand implements CommandExecutor {
 
 	public static Map<String, Object> getDescription() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("/" + getCommandString() + " [ ON | OFF | SELECT | TRIGGER | SCALE ]");
-		sb.append("\nON - Enables image copy when the trigger is in the player's hand");
-		sb.append("\nOFF - Disables image copy when the trigger is in the player's hand");
-		sb.append("\nTRIGGER - Sets the activation item. Defaults to fist");
-		sb.append("\nSELECT <imagename>- Pick an image from the list of URLs to copy");
-		sb.append("\nSCALE <WIDTH> <HEIGHT> - Scale copied images to this size");
+		sb.append("/" + getCommandString() + " [ SETIMAGE | DIM ]");
+		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
+		sb.append("\nSETIMAGE - Activates a named image to render when your magic item is used or you do not specify a name");
+		sb.append("\n<imagename> - Convenience method. Same as SETIMAGE except you only supply an image name.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Sets plugin properties");
@@ -62,6 +59,7 @@ public class SetCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 		try {
+			PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(sender.getName());
 			Queue<String> argsQueue = new LinkedList<String>();
 			argsQueue.addAll(Arrays.asList(args));
 
@@ -71,44 +69,31 @@ public class SetCommand implements CommandExecutor {
 				return false;
 			}
 
-			if (!(sender instanceof Player)) {
-				return true;
-			}
+			if (!sender.hasPermission(getPermissionNode())) {
+				sender.sendMessage("You do not have permission: " + getPermissionNode());
+			} else if ("SETIMAGE".equalsIgnoreCase(operation)) {
+				String imagename = argsQueue.poll();
+				playerSettings.setActiveShortcut(imagename);
+				sender.sendMessage("Set active image to: " + imagename);
+			} else if (playerSettings.getShortcut(operation) != null) {
+				playerSettings.setActiveShortcut(operation);
+				sender.sendMessage("Set active image to: " + playerSettings.getActiveShortcut().getName());
+			} else if ("DIM".equalsIgnoreCase(operation)) {
 
-			Player player = (Player) sender;
-			PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(player.getName());
-
-			if (!player.hasPermission(getPermissionNode())) {
-				player.sendMessage("You do not have permission: " + getPermissionNode());
-				return true;
-			}
-
-			if ("ON".equalsIgnoreCase(operation)) {
-				playerSettings.setCopyEnabled(true);
-				player.sendMessage("Copying has been enabled for " + player.getName());
-			} else if ("OFF".equalsIgnoreCase(operation)) {
-				playerSettings.setCopyEnabled(false);
-				player.sendMessage("Copying has been disabled for " + player.getName());
-			} else if ("SELECT".equalsIgnoreCase(operation)) {
-				playerSettings.setActiveShortcut(argsQueue.poll());
-			} else if ("TRIGGER".equalsIgnoreCase(operation)) {
-				ItemStack itemInHand = player.getItemInHand();
-				log.debug("Hand contents: " + itemInHand.getClass().getName() + " " + itemInHand.toString());
-				playerSettings.setTrigger(itemInHand.toString());
-			} else if ("SCALE".equalsIgnoreCase(operation)) {
 				String width = argsQueue.poll();
 				String height = argsQueue.poll();
 
 				if (width == null) {
-					player.sendMessage("Width not specified");
+					sender.sendMessage("Width not specified");
 				} else if (height == null) {
-					player.sendMessage("Height not specified");
+					sender.sendMessage("Height not specified");
 				}
 
 				int widthInt = Integer.parseInt(width);
 				int heightInt = Integer.parseInt(height);
 
 				playerSettings.setBuildDimensions(widthInt, heightInt);
+				sender.sendMessage("Set dimensions to " + widthInt + "x" + heightInt);
 			}
 
 			return true;

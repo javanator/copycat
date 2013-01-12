@@ -6,11 +6,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
+import org.bukkitmodders.copycat.WandListener;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.ImgCommand;
@@ -63,6 +63,7 @@ public class PluginDescriptorEmitter {
 		permissions.put(SetCommand.getPermissionNode(), SetCommand.getPermissions());
 		permissions.put(UndoCommand.getPermissionNode(), UndoCommand.getPermissions());
 		permissions.put(AdminCommand.getPermissionNode(), AdminCommand.getPermissions());
+		permissions.put(WandListener.getPermissionNode(), WandListener.getPermissions());
 
 		yamlData.put("permissions", permissions);
 
