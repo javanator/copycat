@@ -47,7 +47,8 @@ public class WandListener implements Listener {
 			return;
 		}
 
-		log.debug(player + " rendering your image");
+		player.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
+		player.sendMessage("*PLEASE* be patient. DO NOT click again until render is complete.");
 
 		Block targetBlock = player.getTargetBlock(null, 100);
 		Location location = new Location(player.getWorld(), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());

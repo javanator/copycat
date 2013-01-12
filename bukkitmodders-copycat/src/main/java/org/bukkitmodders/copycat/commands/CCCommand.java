@@ -163,12 +163,9 @@ public class CCCommand implements CommandExecutor {
 
 		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 		PlayerSettingsManager senderSettings = configurationManager.getPlayerSettings(sender.getName());
-		Shortcut shortcut = senderSettings.getActiveShortcut();
-
 		image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
 
-		sender.sendMessage("Copying your image: " + shortcut.getUrl());
-		sender.sendMessage("Native Width: " + image.getWidth() + "Native Height: " + image.getHeight());
+		
 
 		Matrix4d rotationMatrix = null;
 
@@ -182,5 +179,8 @@ public class CCCommand implements CommandExecutor {
 		ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
 
 		mcGraphics2d.draw(image, undoBuffer);
+		
+		sender.sendMessage("Scaled Width: " + image.getWidth() + " Scaled Height: " + image.getHeight());
+		sender.sendMessage("Copycat Render complete");
 	}
 }
