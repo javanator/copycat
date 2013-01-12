@@ -1,12 +1,25 @@
 package org.bukkitmodders.copycat.commands;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Stack;
+import java.util.concurrent.LinkedBlockingDeque;
 
+import javax.imageio.ImageIO;
+import javax.vecmath.Matrix4d;
+
+import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -14,6 +27,12 @@ import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
+import org.bukkitmodders.copycat.plugin.RevertableBlock;
+import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
+import org.bukkitmodders.copycat.services.ImageCopier;
+import org.bukkitmodders.copycat.util.ImageUtil;
+import org.bukkitmodders.copycat.util.MatrixUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,12 +57,12 @@ public class ImgCommand implements CommandExecutor {
 	public static Map<String, Object> getDescription() {
 
 		StringBuffer sb = new StringBuffer();
-		sb.append("/" + getCommandString() + " [ ADD | DEL | LIST | CLEAN ]");
+		sb.append("/" + getCommandString() + " [ ADD | DEL | LIST | CLEAN | COPY ]");
 		sb.append("\nADD <name>=<url> - Add an image URL");
 		sb.append("\nDEL <name>- Deletes an image URL by name");
 		sb.append("\nLIST - Displays a list of your images");
 		sb.append("\nCLEAN - Automatically cleans invalid images");
-		sb.append("\nCOPY - Alternate copy method. Specify a location in the form of X Y Z PITCH YAW");
+		sb.append("\nCOPY - Alternate copy method. Specify a location in the form of X Y Z PITCH YAW WORLDNAME");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Commands for various image operations");
@@ -72,10 +91,6 @@ public class ImgCommand implements CommandExecutor {
 			argsQueue.addAll(Arrays.asList(args));
 			String operation = argsQueue.poll();
 
-			if (!(sender instanceof Player || args.length == 0)) {
-				return false;
-			}
-
 			if (operation == null) {
 				return false;
 			}
@@ -84,10 +99,8 @@ public class ImgCommand implements CommandExecutor {
 				sender.sendMessage("You do not have permission");
 			}
 
-			Player player = (Player) sender;
-
 			ConfigurationManager configurationManager = plugin.getConfigurationManager();
-			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(player.getName());
+			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
 
 			if ("add".equalsIgnoreCase(operation)) {
 
@@ -95,31 +108,32 @@ public class ImgCommand implements CommandExecutor {
 				String imageUrl = argsQueue.poll();
 
 				if (imageName == null) {
-					player.sendMessage("No image name specified");
+					sender.sendMessage("No image name specified");
 				}
 
 				if (imageUrl == null) {
-					player.sendMessage("No image URL specified");
+					sender.sendMessage("No image URL specified");
 				}
 
 				playerSettings.addShortcut(imageName, imageUrl);
-				player.sendMessage(imageName + " added");
+				sender.sendMessage(imageName + " added");
 			} else if ("del".equalsIgnoreCase(operation)) {
 
 				String imageName = argsQueue.poll();
 				if (imageName == null) {
-					player.sendMessage("No image name specified");
+					sender.sendMessage("No image name specified");
 				}
 
 				playerSettings.deleteShortcut(imageName);
 			} else if ("clean".equalsIgnoreCase(operation)) {
-				player.sendMessage("Cleaning up your URLs. Removing bad URLs and non-images");
-				playerSettings.cleanShortcuts(player);
-				player.sendMessage("Done with URL cleanup");
+				sender.sendMessage("Cleaning up your URLs. Removing bad URLs and non-images");
+				playerSettings.cleanShortcuts();
+				sender.sendMessage("Done with URL cleanup");
 			} else if ("list".equalsIgnoreCase(operation)) {
-				playerSettings.tellShortcuts(player);
+				playerSettings.tellShortcuts(sender);
 			} else if ("copy".equalsIgnoreCase(operation)) {
-				Location location = parseSpecifiedLocation(player, argsQueue);
+				Location location = parseSpecifiedLocation(plugin.getServer().getWorld("default"), argsQueue);
+				performDraw(sender, location);
 			}
 
 			return true;
@@ -130,7 +144,7 @@ public class ImgCommand implements CommandExecutor {
 		return false;
 	}
 
-	private Location parseSpecifiedLocation(Player requestor, Queue<String> args) {
+	private Location parseSpecifiedLocation(World world, Queue<String> args) {
 
 		if (args.size() >= 5) {
 
@@ -142,7 +156,7 @@ public class ImgCommand implements CommandExecutor {
 			int yaw = Integer.parseInt(args.remove());
 			int pitch = Integer.parseInt(args.remove());
 
-			Location specifiedLocation = new Location(requestor.getWorld(), x, y, z);
+			Location specifiedLocation = new Location(world, x, y, z);
 			specifiedLocation.setYaw(yaw);
 			specifiedLocation.setPitch(pitch);
 
@@ -150,5 +164,53 @@ public class ImgCommand implements CommandExecutor {
 		}
 
 		return null;
+	}
+
+	public void performDraw(CommandSender sender, Location location) {
+
+		ConfigurationManager configurationManager = plugin.getConfigurationManager();
+		PlayerSettingsManager senderSettings = configurationManager.getPlayerSettings(sender.getName());
+		Shortcut shortcut = senderSettings.getActiveShortcut();
+
+		InputStream in = null;
+
+		try {
+			in = new URL(shortcut.getUrl()).openStream();
+
+			BufferedImage image = ImageIO.read(in);
+
+			image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
+
+			sender.sendMessage("Copying your image: " + shortcut.getUrl());
+			sender.sendMessage("Native Width: " + image.getWidth() + "Native Height: " + image.getHeight());
+
+			Matrix4d rotationMatrix = null;
+
+			if (location == null && sender instanceof Player) {
+				Player player = (Player) sender;
+				Block targetBlock = player.getTargetBlock(null, 100);
+				location = new Location(player.getWorld(), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
+				rotationMatrix = MatrixUtil.calculateRotation(player.getLocation());
+			} else {
+				rotationMatrix = MatrixUtil.calculateRotation(location);
+			}
+
+			BlockProfileType blockProfile = configurationManager.getBlockProfile(sender.getName());
+			Stack<RevertableBlock> undoBuffer = new Stack<RevertableBlock>();
+			LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
+			undoBuffers.add(undoBuffer);
+
+			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
+
+			mcGraphics2d.draw(image, undoBuffer);
+
+		} catch (MalformedURLException ioe) {
+			sender.sendMessage("Bad URL " + ioe.getMessage());
+		} catch (IOException ioe) {
+			sender.sendMessage("Error reading shortcut");
+			log.error("Error reading shortcut", ioe);
+		} finally {
+			IOUtils.closeQuietly(in);
+		}
 	}
 }

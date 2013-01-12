@@ -52,7 +52,7 @@ public class McGraphics2dTest {
 	public void TranslateTest01() {
 
 		Location location = new Location(null, 10, 10, 10);
-		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null, null);
+		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null);
 
 		Point3d point = new Point3d(1, 1, 0);
 
@@ -69,7 +69,7 @@ public class McGraphics2dTest {
 	public void TranslateTest02() {
 
 		Location location = new Location(null, 10, 10, 10);
-		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null, null);
+		ImageCopier mcGraphics2d = new ImageCopier(getBlockProfile("default"), location, null);
 
 		Point3d point = new Point3d(10, 10, 0);
 
@@ -118,7 +118,7 @@ public class McGraphics2dTest {
 			BufferedImage tileImage = tmp.getTile(block.getTextureIndex());
 
 			TextureMappedBlock textureMappedBlock = TextureToBlockMapper.SUPPORTED_BLOCKS.get(block.getTextureIndex());
-			String pathname = "target/" + block.getName() + "material-" + textureMappedBlock.getMaterialName()+".gif";
+			String pathname = "target/" + block.getName() + "material-" + textureMappedBlock.getMaterialName() + ".gif";
 			ImageIO.write((RenderedImage) tileImage, "gif", new File(pathname));
 		}
 

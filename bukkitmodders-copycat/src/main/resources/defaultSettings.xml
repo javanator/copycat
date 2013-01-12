@@ -113,6 +113,7 @@
 			<buildHeight>64</buildHeight>
 			<activeShortcut></activeShortcut>
 			<trigger></trigger>
+			<undoEnabled>true</undoEnabled>
 			<shortcuts>
 				<shortcut name="shortuctname" url="http://aurl" />
 				<shortcut name="anothershortuctname" url="file://aurl" />

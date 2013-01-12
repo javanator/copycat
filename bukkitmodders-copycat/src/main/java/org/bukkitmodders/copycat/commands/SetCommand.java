@@ -72,7 +72,7 @@ public class SetCommand implements CommandExecutor {
 			}
 
 			if (!(sender instanceof Player)) {
-				return false;
+				return true;
 			}
 
 			Player player = (Player) sender;

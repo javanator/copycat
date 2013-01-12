@@ -27,7 +27,7 @@ public class ImageCopier {
 	private Matrix4d mWorld;
 	private TextureMapProcessor textureMapProcessor;
 
-	public ImageCopier(BlockProfileType blockProfile, Location location, World world, Matrix4d rotation) {
+	public ImageCopier(BlockProfileType blockProfile, Location location, Matrix4d rotation) {
 
 		textureMapProcessor = new TextureMapProcessor(blockProfile);
 
@@ -38,7 +38,7 @@ public class ImageCopier {
 		transform.setIdentity();
 		transform.setTranslation(translation);
 
-		this.world = world;
+		this.world = location.getWorld();
 		this.mWorld = transform;
 		this.mRotation = rotation;
 

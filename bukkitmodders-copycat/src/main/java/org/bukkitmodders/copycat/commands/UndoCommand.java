@@ -9,9 +9,9 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.libs.jline.internal.Log;
 import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
+import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
 
 public class UndoCommand implements CommandExecutor {
@@ -54,33 +54,51 @@ public class UndoCommand implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 
 		if (!(sender instanceof Player)) {
-			return false;
+			return true;
+		}
+
+		if (!sender.hasPermission(getPermissionNode())) {
+			sender.sendMessage("You do not have permission: " + getPermissionNode());
+			return true;
 		}
 
 		Player player = (Player) sender;
 		String playerName = player.getName();
 
-		try {
-			HashMap<String, LinkedBlockingDeque<Stack<RevertableBlock>>> undoBuffers = plugin.getUndoBuffers();
+		if (performUndo(player, playerName)) {
+			sender.sendMessage("Performed Undo");
+		} else {
+			sender.sendMessage("Nothing to Undo");
+		}
 
-			if (undoBuffers.containsKey(playerName) && !undoBuffers.get(playerName).isEmpty()) {
+		return true;
+	}
 
-				Stack<RevertableBlock> revertableBlocks = undoBuffers.get(playerName).pop();
+	public boolean performUndo(CommandSender sender, String playerName) {
+		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(playerName);
 
-				while (!revertableBlocks.isEmpty()) {
-					revertableBlocks.pop().revert();
-				}
+		LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffer = playerSettings.getUndoBuffer();
 
-				player.sendMessage("Performed Undo");
-			} else {
-				player.sendMessage("Nothing to Undo");
+		if (!undoBuffer.isEmpty()) {
+			Stack<RevertableBlock> lastImageBlocks = undoBuffer.pop();
+
+			while (!lastImageBlocks.isEmpty()) {
+				lastImageBlocks.pop().revert();
 			}
+
 			return true;
-		} catch (Exception e) {
-			Log.error("Something unexpected happened", e);
 		}
 
 		return false;
 	}
 
+	/**
+	 * Purges the undo buffer of the target player.
+	 * 
+	 * @param targetPlayer
+	 */
+	public void purgeUndoBuffer(String targetPlayer) {
+		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(targetPlayer);
+		playerSettings.getUndoBuffer().clear();
+	}
 }

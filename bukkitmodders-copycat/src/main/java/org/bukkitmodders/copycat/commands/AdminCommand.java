@@ -1,12 +1,17 @@
 package org.bukkitmodders.copycat.commands;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
+import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +60,38 @@ public class AdminCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 
-		return false;
+		if (!(sender instanceof Player))
+			return true;
+
+		Queue<String> argsQueue = new LinkedList<String>();
+		argsQueue.addAll(Arrays.asList(args));
+		String operation = argsQueue.poll();
+		UndoCommand undoCommand = new UndoCommand(plugin);
+		String targetPlayer = argsQueue.poll();
+
+		if ("UNDO".equalsIgnoreCase(operation)) {
+			if (targetPlayer == null) {
+				undoCommand.performUndo(sender, targetPlayer);
+				sender.sendMessage("Undo complete on player: " + targetPlayer);
+			} else {
+				undoCommand.performUndo(sender, sender.getName());
+				sender.sendMessage("Undo complete");
+			}
+		} else if ("UNDOPURGE".equalsIgnoreCase(operation)) {
+			if (argsQueue.isEmpty()) {
+				PlayerSettingsManager.purgeAllUndoBuffers();
+				sender.sendMessage("Purged undo buffers for everyone");
+			} else {
+				undoCommand.purgeUndoBuffer(targetPlayer);
+			}
+		} else if ("UNDOOFF".equalsIgnoreCase(operation)) {
+			PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(targetPlayer);
+			playerSettings.setUndoEnabled(false);
+		} else if ("UNDOON".equalsIgnoreCase(operation)) {
+			PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(targetPlayer);
+			playerSettings.setUndoEnabled(true);
+		}
+
+		return true;
 	}
 }
