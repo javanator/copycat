@@ -11,7 +11,6 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import javax.imageio.ImageIO;
 
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;

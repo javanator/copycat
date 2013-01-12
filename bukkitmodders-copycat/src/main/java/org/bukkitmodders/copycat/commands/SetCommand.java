@@ -9,7 +9,6 @@ import java.util.Queue;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.slf4j.Logger;

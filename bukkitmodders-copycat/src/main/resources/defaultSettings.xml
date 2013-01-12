@@ -102,7 +102,7 @@
 	</globalSettings>
 
 	<preferences>
-		<playerPreferences playerName="examplePlayer" copyEnabled="true">
+		<playerPreferences playerName="examplePlayer" wandActivated="true">
 			<blockProfile>default</blockProfile>
 			<buildWidth>64</buildWidth>
 			<buildHeight>64</buildHeight>

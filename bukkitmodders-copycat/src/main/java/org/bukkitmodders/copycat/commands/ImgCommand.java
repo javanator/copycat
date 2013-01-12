@@ -1,34 +1,17 @@
 package org.bukkitmodders.copycat.commands;
 
-import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Stack;
-import java.util.concurrent.LinkedBlockingDeque;
 
-import javax.vecmath.Matrix4d;
-
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.plugin.RevertableBlock;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
-import org.bukkitmodders.copycat.services.ImageCopier;
-import org.bukkitmodders.copycat.util.ImageUtil;
-import org.bukkitmodders.copycat.util.MatrixUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,8 +37,8 @@ public class ImgCommand implements CommandExecutor {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("/" + getCommandString() + " [ ADD | DEL | LIST | CLEAN | COPY ]");
-		sb.append("\nADD <name>=<url> - Add an image URL");
-		sb.append("\nDEL <name>- Deletes an image URL by name");
+		sb.append("\nADD <name> <url> - Add an image URL");
+		sb.append("\nDEL <name> - Deletes an image URL by name");
 		sb.append("\nLIST - Displays a list of your images");
 		sb.append("\nCLEAN - Automatically cleans invalid images");
 		sb.append("\nCOPY - Alternate copy method. Specify a location in the form of <NAME> X Y Z PITCH YAW <WORLD>");

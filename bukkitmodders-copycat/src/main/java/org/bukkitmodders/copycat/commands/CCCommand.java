@@ -69,7 +69,7 @@ public class CCCommand implements CommandExecutor {
 	public static Map<String, Object> getPermissions() {
 
 		Map<String, Object> permissions = new LinkedHashMap<String, Object>();
-		permissions.put("description", "Renders images in-game via commands. permission.build");
+		permissions.put("description", "Renders images in-game via commands. Must already have permission.build");
 		permissions.put("default", "true");
 
 		return permissions;
