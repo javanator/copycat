@@ -54,6 +54,7 @@ public class WandListener implements Listener {
 		Location location = new Location(player.getWorld(), targetBlock.getX(), targetBlock.getY(), targetBlock.getZ());
 		location.setPitch(player.getLocation().getPitch());
 		location.setYaw(player.getLocation().getYaw());
-		new CCCommand(plugin).asyncDownloadAndCopy(player, location);
+
+		new CCCommand(plugin).asyncDownloadAndCopy(player, playerSettings.getActiveShortcut(), location);
 	}
 }

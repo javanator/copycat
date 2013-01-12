@@ -32,7 +32,10 @@
 				<block textureIndex="7" name="BRICK" />
 				<block textureIndex="66" name="SNOW_BLOCK" />
 				<block textureIndex="72" name="CLAY" />
-				<block textureIndex="4" name="WOOD_PLANK" />
+				<block textureIndex="4" name="WOOD_PLANK_OAK" />
+				<block textureIndex="198" name="WOOD_PLANK_SPRUCE" />
+				<block textureIndex="199" name="WOOD_PLANK_BIRCH" />
+				<block textureIndex="214" name="WOOD_PLANK_JUNGLE" />
 				<block textureIndex="22" name="IRON_BLOCK" />
 				<block textureIndex="23" name="GOLD_BLOCK" />
 				<block textureIndex="24" name="DIAMOND_BLOCK" />
@@ -60,7 +63,10 @@
 				<block textureIndex="7" name="BRICK" />
 				<block textureIndex="66" name="SNOW_BLOCK" />
 				<block textureIndex="72" name="CLAY" />
-				<block textureIndex="4" name="WOOD_PLANK" />
+				<block textureIndex="4" name="WOOD_PLANK_OAK" />
+				<block textureIndex="198" name="WOOD_PLANK_SPRUCE" />
+				<block textureIndex="199" name="WOOD_PLANK_BIRCH" />
+				<block textureIndex="214" name="WOOD_PLANK_JUNGLE" />
 				<block textureIndex="22" name="IRON_BLOCK" />
 				<block textureIndex="23" name="GOLD_BLOCK" />
 				<block textureIndex="24" name="DIAMOND_BLOCK" />

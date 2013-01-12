@@ -6,12 +6,10 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
@@ -102,13 +100,5 @@ public class WandCommand implements CommandExecutor {
 		}
 
 		return false;
-	}
-
-	public void asyncDownloadAndCopy(final CommandSender sender, final Location location) {
-		ConfigurationManager configurationManager = plugin.getConfigurationManager();
-		final PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
-
-		BukkitScheduler scheduler = plugin.getServer().getScheduler();
-		scheduler.runTaskAsynchronously(plugin, new AsyncImageDownloadRunnable(playerSettings, sender, location, plugin));
 	}
 }

@@ -92,25 +92,30 @@ public class CCCommand implements CommandExecutor {
 
 			boolean isBuildSet = sender.isPermissionSet("permissions.build");
 			boolean isBuilder = sender.hasPermission("permissions.build");
-			
-			if (!(isBuildSet && isBuilder) || !sender.hasPermission(getPermissionNode())) {
-				sender.sendMessage("You do not have permission. ");
+
+			if (isBuildSet && !isBuilder) {
+				sender.sendMessage("You do not have permissions.build ");
+			} else if (!sender.hasPermission(getPermissionNode())) {
+				sender.sendMessage("You do not have " + getPermissionNode());
 			}
 
 			ConfigurationManager configurationManager = plugin.getConfigurationManager();
 			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
 
 			if ("copy".equalsIgnoreCase(operation)) {
+				// FIXME
 				Location location = parseSpecifiedLocation(sender, argsQueue);
-				asyncDownloadAndCopy(sender, location);
+				Shortcut shortcut = playerSettings.getShortcut(operation);
+				sender.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
+				asyncDownloadAndCopy(sender, shortcut, location);
 			} else if (playerSettings.getShortcut(operation) != null && sender instanceof Player) {
 				Player player = (Player) sender;
 				Block b = player.getTargetBlock(null, 100);
 				Location location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
 				location.setYaw(player.getLocation().getYaw());
 				location.setPitch(player.getLocation().getPitch());
-
-				asyncDownloadAndCopy(player, location);
+				player.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
+				asyncDownloadAndCopy(player, playerSettings.getShortcut(operation), location);
 			}
 
 			return true;
@@ -121,12 +126,10 @@ public class CCCommand implements CommandExecutor {
 		return false;
 	}
 
-	public void asyncDownloadAndCopy(final CommandSender sender, final Location location) {
+	public void asyncDownloadAndCopy(final CommandSender sender, Shortcut shortcut, final Location location) {
 		ConfigurationManager configurationManager = plugin.getConfigurationManager();
-		final PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
-
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
-		scheduler.runTaskAsynchronously(plugin, new AsyncImageDownloadRunnable(playerSettings, sender, location, plugin));
+		scheduler.runTaskAsynchronously(plugin, new AsyncImageDownloadRunnable(sender, location, shortcut, plugin));
 	}
 
 	private Location parseSpecifiedLocation(CommandSender sender, Queue<String> args) {
@@ -165,8 +168,6 @@ public class CCCommand implements CommandExecutor {
 		PlayerSettingsManager senderSettings = configurationManager.getPlayerSettings(sender.getName());
 		image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
 
-		
-
 		Matrix4d rotationMatrix = null;
 
 		rotationMatrix = MatrixUtil.calculateRotation(location);
@@ -179,7 +180,7 @@ public class CCCommand implements CommandExecutor {
 		ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
 
 		mcGraphics2d.draw(image, undoBuffer);
-		
+
 		sender.sendMessage("Scaled Width: " + image.getWidth() + " Scaled Height: " + image.getHeight());
 		sender.sendMessage("Copycat Render complete");
 	}

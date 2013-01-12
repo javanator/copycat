@@ -19,15 +19,15 @@ final class AsyncImageDownloadRunnable implements Runnable {
 	/**
 	 * 
 	 */
-	private final PlayerSettingsManager playerSettings;
 	private final CommandSender sender;
 	private final Location location;
 	private final Nouveau plugin;
+	private final Shortcut shortcut;
 
-	AsyncImageDownloadRunnable(PlayerSettingsManager playerSettings, CommandSender sender, Location location, Nouveau plugin) {
-		this.playerSettings = playerSettings;
+	AsyncImageDownloadRunnable(CommandSender sender, Location location, Shortcut shortcut, Nouveau plugin) {
 		this.sender = sender;
 		this.location = location;
+		this.shortcut = shortcut;
 		this.plugin = plugin;
 	}
 
@@ -36,7 +36,6 @@ final class AsyncImageDownloadRunnable implements Runnable {
 		InputStream in = null;
 
 		try {
-			Shortcut shortcut = playerSettings.getActiveShortcut();
 			in = new URL(shortcut.getUrl()).openStream();
 			final BufferedImage image = ImageIO.read(in);
 
