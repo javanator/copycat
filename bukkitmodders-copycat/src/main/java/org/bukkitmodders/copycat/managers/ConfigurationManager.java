@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -15,9 +17,11 @@ import javax.xml.bind.JAXB;
 import org.apache.commons.io.IOUtils;
 import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.schema.BlockProfileType.Block;
 import org.bukkitmodders.copycat.schema.ObjectFactory;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType;
 import org.bukkitmodders.copycat.schema.PluginConfig;
+import org.bukkitmodders.copycat.services.TextureMappedBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,5 +178,38 @@ public class ConfigurationManager {
 		PluginConfig pluginConfig = JAXB.unmarshal(getDataFile(), PluginConfig.class);
 
 		return pluginConfig;
+	}
+
+	public static BlockProfileType generateDefaultBlockProfile() {
+
+		BlockProfileType newBlockProfile = new BlockProfileType();
+		newBlockProfile.setName("default");
+
+		for (TextureMappedBlock block : TextureMappedBlock.values()) {
+			Block b = new Block();
+			b.setName(block.getName());
+			b.setTextureIndex(block.getTile());
+			newBlockProfile.getBlock().add(b);
+		}
+
+		return newBlockProfile;
+	}
+
+	public void updateDefaultBlockProfile(BlockProfileType blockProfile) {
+		PluginConfig pluginConfig = getPluginConfig();
+		List<BlockProfileType> blockProfiles = pluginConfig.getGlobalSettings().getBlockProfiles().getBlockProfile();
+
+		Iterator<BlockProfileType> itr = blockProfiles.iterator();
+		while (itr.hasNext()) {
+			BlockProfileType bpt = itr.next();
+			if ("default".equalsIgnoreCase(bpt.getName())) {
+				itr.remove();
+			}
+		}
+
+		blockProfile.setName("default");
+		blockProfiles.add(blockProfile);
+		persist(pluginConfig);
+
 	}
 }

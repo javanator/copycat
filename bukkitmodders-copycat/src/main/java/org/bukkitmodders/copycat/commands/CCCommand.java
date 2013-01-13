@@ -102,21 +102,23 @@ public class CCCommand implements CommandExecutor {
 			ConfigurationManager configurationManager = plugin.getConfigurationManager();
 			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
 
+			Shortcut shortcut = playerSettings.getShortcut(operation);
+			Location location = null;
 			if ("copy".equalsIgnoreCase(operation)) {
 				// FIXME
-				Location location = parseSpecifiedLocation(sender, argsQueue);
-				Shortcut shortcut = playerSettings.getShortcut(operation);
-				sender.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
-				asyncDownloadAndCopy(sender, shortcut, location);
-			} else if (playerSettings.getShortcut(operation) != null && sender instanceof Player) {
+				location = parseSpecifiedLocation(sender, argsQueue);
+				shortcut = playerSettings.getActiveShortcut();
+			} else if (shortcut != null && sender instanceof Player) {
 				Player player = (Player) sender;
 				Block b = player.getTargetBlock(null, 100);
-				Location location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
+				location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
 				location.setYaw(player.getLocation().getYaw());
 				location.setPitch(player.getLocation().getPitch());
-				player.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
-				asyncDownloadAndCopy(player, playerSettings.getShortcut(operation), location);
+
 			}
+
+			sender.sendMessage("Rendering your image from: " + shortcut.getUrl());
+			asyncDownloadAndCopy(sender, shortcut, location);
 
 			return true;
 		} catch (Exception e) {

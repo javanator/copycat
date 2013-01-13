@@ -42,6 +42,9 @@ public class Nouveau extends JavaPlugin {
 		getCommand(CCCommand.getCommandString()).setExecutor(new CCCommand(this));
 
 		getServer().getPluginManager().registerEvents(new WandListener(this), this);
+		
+		ConfigurationManager cm = getConfigurationManager();
+		cm.updateDefaultBlockProfile(ConfigurationManager.generateDefaultBlockProfile());
 
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " Enabled");
 	}
