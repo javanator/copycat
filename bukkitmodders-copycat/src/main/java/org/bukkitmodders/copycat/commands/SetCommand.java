@@ -32,7 +32,7 @@ public class SetCommand implements CommandExecutor {
 		StringBuffer sb = new StringBuffer();
 		sb.append("/" + getCommandString() + " [ SETIMAGE | DIM ]");
 		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
-		sb.append("\nSETIMAGE - Activates a named image to render when your wand is used or you do not specify a name");
+		sb.append("\nSETIMAGE - Sets a default image to render when your wand is activated");
 		sb.append("\n<imagename> - Convenience method. Same as SETIMAGE except you only supply an image name.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
@@ -73,7 +73,7 @@ public class SetCommand implements CommandExecutor {
 			} else if ("SETIMAGE".equalsIgnoreCase(operation)) {
 				String imagename = argsQueue.poll();
 				playerSettings.setActiveShortcut(imagename);
-				sender.sendMessage("Set active image to: " + imagename);
+				sender.sendMessage("Set default image to: " + imagename);
 			} else if (playerSettings.getShortcut(operation) != null) {
 				playerSettings.setActiveShortcut(operation);
 				sender.sendMessage("Set active image to: " + playerSettings.getActiveShortcut().getName());

@@ -11,12 +11,10 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.bukkitmodders.copycat.Nouveau;
-import org.bukkitmodders.copycat.WandListener;
 import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.CCCommand;
 import org.bukkitmodders.copycat.commands.ImgCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
-import org.bukkitmodders.copycat.commands.UndoCommand;
 import org.bukkitmodders.copycat.commands.WandCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,7 +53,6 @@ public class PluginDescriptorEmitter {
 		Map<String, Object> commands = new LinkedHashMap<String, Object>();
 		commands.put(ImgCommand.getCommandString(), ImgCommand.getDescription());
 		commands.put(SetCommand.getCommandString(), SetCommand.getDescription());
-		commands.put(UndoCommand.getCommandString(), UndoCommand.getDescription());
 		commands.put(AdminCommand.getCommandString(), AdminCommand.getDescription());
 		commands.put(CCCommand.getCommandString(), CCCommand.getDescription());
 		commands.put(WandCommand.getCommandString(), WandCommand.getDescription());
@@ -65,7 +62,6 @@ public class PluginDescriptorEmitter {
 		Map<String, Object> permissions = new LinkedHashMap<String, Object>();
 		permissions.put(ImgCommand.getPermissionNode(), ImgCommand.getPermissions());
 		permissions.put(SetCommand.getPermissionNode(), SetCommand.getPermissions());
-		permissions.put(UndoCommand.getPermissionNode(), UndoCommand.getPermissions());
 		permissions.put(AdminCommand.getPermissionNode(), AdminCommand.getPermissions());
 		permissions.put(CCCommand.getPermissionNode(), CCCommand.getPermissions());
 		permissions.put(WandCommand.getPermissionNode(), WandCommand.getPermissions());

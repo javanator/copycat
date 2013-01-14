@@ -15,6 +15,7 @@ import java.util.Map;
 import javax.xml.bind.JAXB;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.BlockProfileType.Block;
@@ -51,7 +52,7 @@ public class ConfigurationManager {
 			}
 		}
 
-		if (toReturn == null) {
+		if (toReturn == null && !StringUtils.isBlank(targetPlayerName)) {
 			// Player has no settings. Make a new one.
 			toReturn = createDefaultPlayerSettings(targetPlayerName);
 		}
@@ -68,8 +69,8 @@ public class ConfigurationManager {
 		playerSettings.setBlockProfile("default");
 		playerSettings.setActiveShortcut("");
 		playerSettings.setTrigger("");
-		playerSettings.setBuildWidth(getPluginConfig().getGlobalSettings().getMaxImageWidth());
-		playerSettings.setBuildHeight(getPluginConfig().getGlobalSettings().getMaxImageHeight());
+		playerSettings.setBuildWidth(200);
+		playerSettings.setBuildHeight(200);
 
 		return playerSettings;
 	}

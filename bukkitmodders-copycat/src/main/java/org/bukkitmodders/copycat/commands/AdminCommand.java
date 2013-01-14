@@ -10,7 +10,6 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
@@ -67,29 +66,26 @@ public class AdminCommand implements CommandExecutor {
 		Queue<String> argsQueue = new LinkedList<String>();
 		argsQueue.addAll(Arrays.asList(args));
 		String operation = argsQueue.poll();
-		UndoCommand undoCommand = new UndoCommand(plugin);
+		CCCommand undoCommand = new CCCommand(plugin);
 		String targetPlayer = argsQueue.poll();
 
 		if ("UNDO".equalsIgnoreCase(operation)) {
-			if (StringUtils.isBlank(targetPlayer)) {
-				undoCommand.performUndo(sender, sender.getName());
-				sender.sendMessage("Undo complete");
-			} else {
+			if (!StringUtils.isBlank(targetPlayer)) {
 				undoCommand.performUndo(sender, targetPlayer);
 				sender.sendMessage("Undo complete on player: " + targetPlayer);
+			} else {
+				undoCommand.performUndo(sender, sender.getName());
+				sender.sendMessage("Undo complete on player: " + sender.getName());
 			}
 		} else if ("UNDOPURGE".equalsIgnoreCase(operation)) {
-			if (targetPlayer == null) {
-				PlayerSettingsManager.purgeAllUndoBuffers();
-				sender.sendMessage("Purged undo buffers for everyone");
-			} else {
-				undoCommand.purgeUndoBuffer(targetPlayer);
-				sender.sendMessage("Purged undo buffer for " + targetPlayer);
-			}
+			PlayerSettingsManager.purgeAllUndoBuffers();
+			sender.sendMessage("Purged undo buffers for everyone");
 		} else if ("UNDOOFF".equalsIgnoreCase(operation)) {
-			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
-			playerSettings.setUndoEnabled(false);
-			sender.sendMessage("Turned off undo buffer");
+			if (!StringUtils.isBlank(targetPlayer)) {
+				PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
+				playerSettings.setUndoEnabled(false);
+				sender.sendMessage("Turned off undo buffer");
+			}
 		} else if ("UNDOON".equalsIgnoreCase(operation)) {
 			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
 			playerSettings.setUndoEnabled(true);

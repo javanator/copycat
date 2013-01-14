@@ -147,7 +147,7 @@ public class PlayerSettingsManager {
 		cm.savePlayerSettings(playerSettings);
 	}
 
-	public boolean getUndoEnabled() {
+	public boolean isUndoEnabled() {
 		return playerSettings.isUndoEnabled();
 	}
 

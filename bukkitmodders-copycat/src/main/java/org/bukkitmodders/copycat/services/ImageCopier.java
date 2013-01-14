@@ -73,8 +73,10 @@ public class ImageCopier {
 
 				if (blockAt != null) {
 
-					undoBuffer.push(new RevertableBlock(blockAt));
-
+					if (undoBuffer != null) {
+						undoBuffer.push(new RevertableBlock(blockAt));
+					}
+					
 					int rgba = image.getRGB(i, j);
 					int alpha = (rgba >> 24) & 0xff;
 

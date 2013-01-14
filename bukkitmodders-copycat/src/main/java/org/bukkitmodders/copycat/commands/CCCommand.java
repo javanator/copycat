@@ -55,6 +55,7 @@ public class CCCommand implements CommandExecutor {
 
 		StringBuffer sb = new StringBuffer();
 		sb.append("/" + getCommandString() + " <IMAGE NAME>");
+		sb.append("\nUNDO - Undoes a prior copy");
 		sb.append("\n<IMAGE NAME> - Copies the image to the targeted block");
 		sb.append("\nCOPY - Alternate copy method. ");
 		sb.append("Specify a location in the form of <IMAGE NAME> <X> <Y> <Z> <PITCH> <YAW> <WORLD> .");
@@ -110,6 +111,14 @@ public class CCCommand implements CommandExecutor {
 				location = parseSpecifiedLocation(sender, argsQueue);
 
 				new CCCommand(plugin).asyncDownloadAndCopy(sender, playerSettings.getShortcut(imageName), location);
+			} else if ("undo".equalsIgnoreCase(operation)) {
+				boolean performUndo = performUndo(sender, sender.getName());
+
+				if (performUndo) {
+					sender.sendMessage("Performed Undo");
+				} else {
+					sender.sendMessage("Nothing to Undo");
+				}
 			} else if (shortcut != null && sender instanceof Player) {
 				Player player = (Player) sender;
 				Block b = player.getTargetBlock(null, 100);
@@ -164,7 +173,10 @@ public class CCCommand implements CommandExecutor {
 	void performDraw(CommandSender sender, Location location, BufferedImage image) {
 		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 		PlayerSettingsManager senderSettings = configurationManager.getPlayerSettings(sender.getName());
-		Stack<RevertableBlock> undoBuffer = new Stack<RevertableBlock>();
+		Stack<RevertableBlock> undoBuffer = null;
+		if (senderSettings.isUndoEnabled()) {
+			undoBuffer = new Stack<RevertableBlock>();
+		}
 
 		try {
 			image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
@@ -184,8 +196,38 @@ public class CCCommand implements CommandExecutor {
 					+ location.getYaw() + " " + location.getWorld().getName());
 			sender.sendMessage("Copycat Render complete");
 		} finally {
-			LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
-			undoBuffers.add(undoBuffer);
+			if (undoBuffer != null) {
+				LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
+				undoBuffers.add(undoBuffer);
+			}
 		}
+	}
+
+	public boolean performUndo(CommandSender sender, String playerName) {
+		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(playerName);
+
+		LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffer = playerSettings.getUndoBuffer();
+
+		if (!undoBuffer.isEmpty()) {
+			Stack<RevertableBlock> lastImageBlocks = undoBuffer.pop();
+
+			while (!lastImageBlocks.isEmpty()) {
+				lastImageBlocks.pop().revert();
+			}
+
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+	 * Purges the undo buffer of the target player.
+	 * 
+	 * @param targetPlayer
+	 */
+	public void purgeUndoBuffer(String targetPlayer) {
+		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(targetPlayer);
+		playerSettings.getUndoBuffer().clear();
 	}
 }
