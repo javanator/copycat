@@ -1,6 +1,7 @@
 package org.bukkitmodders.copycat.commands;
 
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -129,7 +130,6 @@ public class CCCommand implements CommandExecutor {
 	}
 
 	public void asyncDownloadAndCopy(final CommandSender sender, Shortcut shortcut, final Location location) {
-		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 		BukkitScheduler scheduler = plugin.getServer().getScheduler();
 		scheduler.runTaskAsynchronously(plugin, new AsyncImageDownloadRunnable(sender, location, shortcut, plugin));
 	}
@@ -165,25 +165,28 @@ public class CCCommand implements CommandExecutor {
 	}
 
 	void performDraw(CommandSender sender, Location location, BufferedImage image) {
-
 		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 		PlayerSettingsManager senderSettings = configurationManager.getPlayerSettings(sender.getName());
-		image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
-
-		Matrix4d rotationMatrix = null;
-
-		rotationMatrix = MatrixUtil.calculateRotation(location);
-
-		BlockProfileType blockProfile = configurationManager.getBlockProfile(sender.getName());
 		Stack<RevertableBlock> undoBuffer = new Stack<RevertableBlock>();
-		LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
-		undoBuffers.add(undoBuffer);
 
-		ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
+		try {
+			image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
 
-		mcGraphics2d.draw(image, undoBuffer);
+			Matrix4d rotationMatrix = null;
 
-		sender.sendMessage("Scaled Width: " + image.getWidth() + " Scaled Height: " + image.getHeight());
-		sender.sendMessage("Copycat Render complete");
+			rotationMatrix = MatrixUtil.calculateRotation(location);
+
+			BlockProfileType blockProfile = configurationManager.getBlockProfile(sender.getName());
+
+			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
+
+			mcGraphics2d.draw(image, undoBuffer);
+
+			sender.sendMessage("Scaled Width: " + image.getWidth() + " Scaled Height: " + image.getHeight());
+			sender.sendMessage("Copycat Render complete");
+		} finally {
+			LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
+			undoBuffers.add(undoBuffer);
+		}
 	}
 }

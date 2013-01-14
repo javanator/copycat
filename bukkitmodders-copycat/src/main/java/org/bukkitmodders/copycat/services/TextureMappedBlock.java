@@ -44,10 +44,8 @@ public enum TextureMappedBlock {
 	NETHER_BRICK("NETHER_BRICK",224, Material.NETHER_BRICK, (byte) 0),
 	//ICE("ICE",67,Material.ICE,(byte) 0),
 	REDSTONE_LAMP_OFF("REDSTONE_LAMP_OFF",211,Material.REDSTONE_LAMP_OFF,(byte) 0),
-	//Cant get the damn cactus to work. Ends up as a tiny pickupable block
-	//CACTUS("CACTUS",70,Material.CACTUS,(byte) 0),
-	//JACKOLANTERN("JACKOLANTERN",120,Material.JACK_O_LANTERN,(byte)0x4),
-	//PUMPKIN("PUMPKIN",118,Material.JACK_O_LANTERN,(byte)0x4),
+	PUMPKIN("PUMPKIN",118,Material.JACK_O_LANTERN,(byte)0x4),
+	MELON("MELON",136,Material.MELON_BLOCK,(byte)0x4),
 	WOOL_WHITE("WOOL_WHITE",64, Material.WOOL, DyeColor.WHITE.getData()),
 	WOOL_BLACK("WOOL_BLACK",113, Material.WOOL, DyeColor.BLACK.getData()),
 	WOOL_GRAY("WOOL_GRAY",114, Material.WOOL, DyeColor.GRAY.getData()),

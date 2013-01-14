@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkitmodders.copycat.commands.CCCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
 import org.bukkitmodders.copycat.commands.WandCommand;
@@ -30,7 +31,7 @@ public class WandListener implements Listener {
 		PlayerSettingsManager playerSettings = plugin.getConfigurationManager().getPlayerSettings(player.getName());
 		boolean isBuildSet = player.isPermissionSet("permissions.build");
 		boolean isBuilder = player.hasPermission("permissions.build");
-
+		ItemStack itemInHand = player.getItemInHand();
 		if (isBuildSet && !isBuilder) {
 			return;
 		} else if (!player.hasPermission(WandCommand.getPermissionNode())) {
@@ -39,7 +40,7 @@ public class WandListener implements Listener {
 		} else if (!playerSettings.isWandActivated()) {
 			// Wand mode is not activated
 			return;
-		} else if (!playerSettings.getTrigger().equals(player.getItemInHand().getType().name())) {
+		} else if (!playerSettings.getTrigger().equals(itemInHand.getType().name())) {
 			// Wand item not equipped.
 			return;
 		} else if (playerSettings.getActiveShortcut() == null) {

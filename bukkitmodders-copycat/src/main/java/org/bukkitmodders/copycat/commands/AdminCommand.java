@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -61,8 +62,7 @@ public class AdminCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
 
-		if (!(sender instanceof Player))
-			return true;
+		ConfigurationManager configurationManager = plugin.getConfigurationManager();
 
 		Queue<String> argsQueue = new LinkedList<String>();
 		argsQueue.addAll(Arrays.asList(args));
@@ -71,31 +71,31 @@ public class AdminCommand implements CommandExecutor {
 		String targetPlayer = argsQueue.poll();
 
 		if ("UNDO".equalsIgnoreCase(operation)) {
-			if (targetPlayer == null) {
-				undoCommand.performUndo(sender, targetPlayer);
-				sender.sendMessage("Undo complete on player: " + targetPlayer);
-			} else {
+			if (StringUtils.isBlank(targetPlayer)) {
 				undoCommand.performUndo(sender, sender.getName());
 				sender.sendMessage("Undo complete");
+			} else {
+				undoCommand.performUndo(sender, targetPlayer);
+				sender.sendMessage("Undo complete on player: " + targetPlayer);
 			}
 		} else if ("UNDOPURGE".equalsIgnoreCase(operation)) {
-			if (argsQueue.isEmpty()) {
+			if (targetPlayer == null) {
 				PlayerSettingsManager.purgeAllUndoBuffers();
 				sender.sendMessage("Purged undo buffers for everyone");
 			} else {
 				undoCommand.purgeUndoBuffer(targetPlayer);
+				sender.sendMessage("Purged undo buffer for " + targetPlayer);
 			}
+		} else if ("UNDOOFF".equalsIgnoreCase(operation)) {
+			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
+			playerSettings.setUndoEnabled(false);
+			sender.sendMessage("Turned off undo buffer");
+		} else if ("UNDOON".equalsIgnoreCase(operation)) {
+			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
+			playerSettings.setUndoEnabled(true);
+			sender.sendMessage("Turned on undo buffer");
 		} else {
-			ConfigurationManager configurationManager = plugin.getConfigurationManager();
-			if ("UNDOOFF".equalsIgnoreCase(operation)) {
-				PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
-				playerSettings.setUndoEnabled(false);
-				sender.sendMessage("Turned off undo buffer");
-			} else if ("UNDOON".equalsIgnoreCase(operation)) {
-				PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(targetPlayer);
-				playerSettings.setUndoEnabled(true);
-				sender.sendMessage("Turned on undo buffer");
-			}
+			return (false);
 		}
 
 		return true;

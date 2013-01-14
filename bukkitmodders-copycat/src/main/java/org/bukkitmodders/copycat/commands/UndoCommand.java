@@ -55,16 +55,13 @@ public class UndoCommand implements CommandExecutor {
 		if (!(sender instanceof Player)) {
 			return true;
 		}
+		Player player = (Player) sender;
+		String playerName = player.getName();
 
 		if (!sender.hasPermission(getPermissionNode())) {
 			sender.sendMessage("You do not have permission: " + getPermissionNode());
 			return true;
-		}
-
-		Player player = (Player) sender;
-		String playerName = player.getName();
-
-		if (performUndo(player, playerName)) {
+		} else if (performUndo(player, playerName)) {
 			sender.sendMessage("Performed Undo");
 		} else {
 			sender.sendMessage("Nothing to Undo");

@@ -17,7 +17,7 @@ public class Nouveau extends JavaPlugin {
 
 	private static Logger log = LoggerFactory.getLogger(Nouveau.class);
 	private static final String DATAFILE = "pluginSettings.xml";
-	private ConfigurationManager configurationManager;
+	private static ConfigurationManager configurationManager;
 
 	public void onDisable() {
 

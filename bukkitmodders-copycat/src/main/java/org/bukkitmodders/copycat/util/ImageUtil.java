@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import com.thebuzzmedia.imgscalr.Scalr;
 import com.thebuzzmedia.imgscalr.Scalr.Method;
+import com.twelvemonkeys.image.GraphicsUtil;
 
 public class ImageUtil {
 

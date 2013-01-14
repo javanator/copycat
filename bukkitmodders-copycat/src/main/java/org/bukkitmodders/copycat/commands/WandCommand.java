@@ -92,6 +92,8 @@ public class WandCommand implements CommandExecutor {
 				playerSettings.setTrigger(itemTrigger);
 
 				sender.sendMessage("Using: " + itemTrigger + " will trigger rendering when ON");
+			} else {
+				return false;
 			}
 
 			return true;

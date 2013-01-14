@@ -130,7 +130,7 @@ public class PlayerSettingsManager {
 
 	public void cleanShortcuts() {
 		List<Shortcut> shortcuts = playerSettings.getShortcuts().getShortcut();
-		Iterator<Shortcut> shortcutsIterator = shortcuts.iterator();
+		final Iterator<Shortcut> shortcutsIterator = shortcuts.iterator();
 
 		while (shortcutsIterator.hasNext()) {
 			Shortcut shortcut = shortcutsIterator.next();

@@ -3,6 +3,7 @@ package org.bukkitmodders.copycat.services;
 import java.awt.Color;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4d;
@@ -29,6 +30,9 @@ public class ImageCopier {
 	private TextureMapProcessor textureMapProcessor;
 
 	public ImageCopier(BlockProfileType blockProfile, Location location, Matrix4d rotation) {
+		// com.twelvemonkeys.image.ImageUtil.createIndexed(pImage, pColors,
+		// pMatte, pHints)
+		// new IndexColorModel(bits, size, r, g, b, a);
 
 		textureMapProcessor = new TextureMapProcessor(blockProfile);
 

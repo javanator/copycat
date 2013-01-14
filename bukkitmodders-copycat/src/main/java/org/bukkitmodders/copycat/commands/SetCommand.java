@@ -32,7 +32,7 @@ public class SetCommand implements CommandExecutor {
 		StringBuffer sb = new StringBuffer();
 		sb.append("/" + getCommandString() + " [ SETIMAGE | DIM ]");
 		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
-		sb.append("\nSETIMAGE - Activates a named image to render when your magic item is used or you do not specify a name");
+		sb.append("\nSETIMAGE - Activates a named image to render when your wand is used or you do not specify a name");
 		sb.append("\n<imagename> - Convenience method. Same as SETIMAGE except you only supply an image name.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
@@ -93,6 +93,8 @@ public class SetCommand implements CommandExecutor {
 
 				playerSettings.setBuildDimensions(widthInt, heightInt);
 				sender.sendMessage("Set dimensions to " + widthInt + "x" + heightInt);
+			} else {
+				return false;
 			}
 
 			return true;

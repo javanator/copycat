@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -70,36 +71,31 @@ public class ImgCommand implements CommandExecutor {
 			argsQueue.addAll(Arrays.asList(args));
 			String operation = argsQueue.poll();
 
+			ConfigurationManager configurationManager = plugin.getConfigurationManager();
+			final PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
+
 			if (operation == null) {
 				return false;
 			}
 
 			if (!sender.hasPermission(getPermissionNode())) {
 				sender.sendMessage("You do not have permission");
-			}
-
-			ConfigurationManager configurationManager = plugin.getConfigurationManager();
-			PlayerSettingsManager playerSettings = configurationManager.getPlayerSettings(sender.getName());
-
-			if ("add".equalsIgnoreCase(operation)) {
+			} else if ("add".equalsIgnoreCase(operation)) {
 
 				String imageName = argsQueue.poll();
 				String imageUrl = argsQueue.poll();
 
-				if (imageName == null) {
-					sender.sendMessage("No image name specified");
+				if (StringUtils.isBlank(imageName) || StringUtils.isBlank(imageUrl)) {
+					sender.sendMessage("No image name or URL specified");
+				} else {
+					playerSettings.addShortcut(imageName, imageUrl);
+					sender.sendMessage(imageName + " added");
 				}
-
-				if (imageUrl == null) {
-					sender.sendMessage("No image URL specified");
-				}
-
-				playerSettings.addShortcut(imageName, imageUrl);
-				sender.sendMessage(imageName + " added");
 			} else if ("del".equalsIgnoreCase(operation)) {
 
 				String imageName = argsQueue.poll();
-				if (imageName == null) {
+
+				if (StringUtils.isBlank(imageName)) {
 					sender.sendMessage("No image name specified");
 				}
 
@@ -107,15 +103,24 @@ public class ImgCommand implements CommandExecutor {
 			} else if ("clean".equalsIgnoreCase(operation)) {
 
 				sender.sendMessage("Cleaning up your URLs. Removing bad URLs and non-images");
-				playerSettings.cleanShortcuts();
-				sender.sendMessage("Done with URL cleanup");
+				plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+
+					@Override
+					public void run() {
+						playerSettings.cleanShortcuts();
+						sender.sendMessage("Done with URL cleanup");
+					}
+				});
 			} else if ("list".equalsIgnoreCase(operation)) {
 
 				playerSettings.tellShortcuts(sender);
+			} else {
+				return false;
 			}
 
 			return true;
 		} catch (Exception e) {
+			sender.sendMessage("Something unexpected happened. Check your syntax.");
 			log.error("Something Unexpected Happened", e);
 		}
 
