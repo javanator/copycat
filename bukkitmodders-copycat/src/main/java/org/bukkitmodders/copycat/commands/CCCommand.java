@@ -59,7 +59,7 @@ public class CCCommand implements CommandExecutor {
 		sb.append("\n<IMAGE NAME> - Copies the image to the targeted block");
 		sb.append("\nCOPY - Alternate copy method. ");
 		sb.append("Specify a location in the form of <IMAGE NAME> <X> <Y> <Z> <PITCH> <YAW> <WORLD> .");
-		sb.append(" Provided for integration potential. Most users should not use this.");
+		sb.append(" Provided for integration potential with other addins. Most users should not use this.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Image rendering commands");
@@ -107,10 +107,9 @@ public class CCCommand implements CommandExecutor {
 			Shortcut shortcut = playerSettings.getShortcut(operation);
 			Location location = null;
 			if ("copy".equalsIgnoreCase(operation)) {
-				String imageName = argsQueue.poll();
 				location = parseSpecifiedLocation(sender, argsQueue);
-
-				new CCCommand(plugin).asyncDownloadAndCopy(sender, playerSettings.getShortcut(imageName), location);
+				new CCCommand(plugin).asyncDownloadAndCopy(sender, shortcut, location);
+				sender.sendMessage("Rendering your image from: " + shortcut.getUrl());
 			} else if ("undo".equalsIgnoreCase(operation)) {
 				boolean performUndo = performUndo(sender, sender.getName());
 
@@ -125,11 +124,9 @@ public class CCCommand implements CommandExecutor {
 				location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
 				location.setYaw(player.getLocation().getYaw());
 				location.setPitch(player.getLocation().getPitch());
-
+				sender.sendMessage("Rendering your image from: " + shortcut.getUrl());
+				asyncDownloadAndCopy(sender, shortcut, location);
 			}
-
-			sender.sendMessage("Rendering your image from: " + shortcut.getUrl());
-			asyncDownloadAndCopy(sender, shortcut, location);
 
 			return true;
 		} catch (Exception e) {

@@ -9,17 +9,17 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkitmodders.copycat.commands.CCCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
-import org.bukkitmodders.copycat.commands.WandCommand;
+import org.bukkitmodders.copycat.commands.StampCommand;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class WandListener implements Listener {
+public class StampListener implements Listener {
 
 	private final Nouveau plugin;
-	private static final Logger log = LoggerFactory.getLogger(WandListener.class);
+	private static final Logger log = LoggerFactory.getLogger(StampListener.class);
 
-	public WandListener(Nouveau plugin) {
+	public StampListener(Nouveau plugin) {
 		this.plugin = plugin;
 	}
 
@@ -34,13 +34,13 @@ public class WandListener implements Listener {
 		ItemStack itemInHand = player.getItemInHand();
 		if (isBuildSet && !isBuilder) {
 			return;
-		} else if (!player.hasPermission(WandCommand.getPermissionNode())) {
-			player.sendMessage("You do not have permission: " + WandCommand.getPermissionNode());
+		} else if (!player.hasPermission(StampCommand.getPermissionNode())) {
+			player.sendMessage("You do not have permission: " + StampCommand.getPermissionNode());
 			return;
 		} else if (!playerSettings.isWandActivated()) {
 			// Wand mode is not activated
 			return;
-		} else if (!playerSettings.getTrigger().equals(itemInHand.getType().name())) {
+		} else if (!playerSettings.getStampItem().equals(itemInHand.getType().name())) {
 			// Wand item not equipped.
 			return;
 		} else if (playerSettings.getActiveShortcut() == null) {

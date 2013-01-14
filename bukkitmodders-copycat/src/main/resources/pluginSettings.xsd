@@ -23,7 +23,7 @@
 			<element name="buildWidth" type="int" minOccurs="1" maxOccurs="1" default="64" />
 			<element name="buildHeight" type="int" minOccurs="1" maxOccurs="1" default="64" />
 			<element name="activeShortcut" type="string" />
-			<element name="trigger" type="string" />
+			<element name="stampItem" type="string" />
 			<element name="undoEnabled" type="boolean" />
 			<element name="shortcuts" minOccurs="1" maxOccurs="1">
 				<complexType>
@@ -39,7 +39,7 @@
 			</element>
 		</sequence>
 		<attribute name="playerName" type="string" use="required" />
-		<attribute name="wandActivated" type="boolean" use="required" />
+		<attribute name="stampActivated" type="boolean" use="required" />
 	</complexType>
 
 	<complexType name="blockProfileType">

@@ -64,11 +64,11 @@ public class ConfigurationManager {
 
 		PlayerSettingsType playerSettings = of.createPlayerSettingsType();
 		playerSettings.setPlayerName(playerName);
-		playerSettings.setWandActivated(false);
+		playerSettings.setStampActivated(false);
 		playerSettings.setShortcuts(of.createPlayerSettingsTypeShortcuts());
 		playerSettings.setBlockProfile("default");
 		playerSettings.setActiveShortcut("");
-		playerSettings.setTrigger("");
+		playerSettings.setStampItem("");
 		playerSettings.setBuildWidth(200);
 		playerSettings.setBuildHeight(200);
 

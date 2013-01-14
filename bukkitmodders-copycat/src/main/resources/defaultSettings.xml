@@ -108,12 +108,12 @@
 	</globalSettings>
 
 	<preferences>
-		<playerPreferences playerName="examplePlayer" wandActivated="true">
+		<playerPreferences playerName="examplePlayer" stampActivated="true">
 			<blockProfile>default</blockProfile>
 			<buildWidth>64</buildWidth>
 			<buildHeight>64</buildHeight>
 			<activeShortcut></activeShortcut>
-			<trigger></trigger>
+			<stampItem></stampItem>
 			<undoEnabled>true</undoEnabled>
 			<shortcuts>
 				<shortcut name="shortuctname" url="http://aurl" />

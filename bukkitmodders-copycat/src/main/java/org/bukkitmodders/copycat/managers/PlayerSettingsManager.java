@@ -93,7 +93,7 @@ public class PlayerSettingsManager {
 	}
 
 	public boolean isWandActivated() {
-		return playerSettings.isWandActivated();
+		return playerSettings.isStampActivated();
 	}
 
 	public String getBlockProfile() {
@@ -157,12 +157,12 @@ public class PlayerSettingsManager {
 	}
 
 	public void setTrigger(String heldItemName) {
-		playerSettings.setTrigger(heldItemName);
+		playerSettings.setStampItem(heldItemName);
 		cm.savePlayerSettings(playerSettings);
 	}
 
 	public void setCopyEnabled(boolean isWandActivated) {
-		playerSettings.setWandActivated(isWandActivated);
+		playerSettings.setStampActivated(isWandActivated);
 		cm.savePlayerSettings(playerSettings);
 	}
 
@@ -171,8 +171,8 @@ public class PlayerSettingsManager {
 		cm.savePlayerSettings(playerSettings);
 	}
 
-	public String getTrigger() {
-		return playerSettings.getTrigger();
+	public String getStampItem() {
+		return playerSettings.getStampItem();
 	}
 
 }

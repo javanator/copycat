@@ -7,7 +7,7 @@ import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.CCCommand;
 import org.bukkitmodders.copycat.commands.ImgCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
-import org.bukkitmodders.copycat.commands.WandCommand;
+import org.bukkitmodders.copycat.commands.StampCommand;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,7 @@ public class Nouveau extends JavaPlugin {
 		getCommand(ImgCommand.getCommandString()).setExecutor(null);
 		getCommand(SetCommand.getCommandString()).setExecutor(null);
 		getCommand(AdminCommand.getCommandString()).setExecutor(null);
-		getCommand(WandCommand.getCommandString()).setExecutor(null);
+		getCommand(StampCommand.getCommandString()).setExecutor(null);
 		getCommand(CCCommand.getCommandString()).setExecutor(null);
 
 		log.info(getDescription().getName() + " " + getDescription().getVersion() + " Disabled");
@@ -35,10 +35,10 @@ public class Nouveau extends JavaPlugin {
 		getCommand(ImgCommand.getCommandString()).setExecutor(new ImgCommand(this));
 		getCommand(SetCommand.getCommandString()).setExecutor(new SetCommand(this));
 		getCommand(AdminCommand.getCommandString()).setExecutor(new AdminCommand(this));
-		getCommand(WandCommand.getCommandString()).setExecutor(new WandCommand(this));
+		getCommand(StampCommand.getCommandString()).setExecutor(new StampCommand(this));
 		getCommand(CCCommand.getCommandString()).setExecutor(new CCCommand(this));
 
-		getServer().getPluginManager().registerEvents(new WandListener(this), this);
+		getServer().getPluginManager().registerEvents(new StampListener(this), this);
 		
 		ConfigurationManager cm = getConfigurationManager();
 		cm.updateDefaultBlockProfile(ConfigurationManager.generateDefaultBlockProfile());

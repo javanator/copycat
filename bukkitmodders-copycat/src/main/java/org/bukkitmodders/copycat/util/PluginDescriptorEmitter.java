@@ -15,7 +15,7 @@ import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.CCCommand;
 import org.bukkitmodders.copycat.commands.ImgCommand;
 import org.bukkitmodders.copycat.commands.SetCommand;
-import org.bukkitmodders.copycat.commands.WandCommand;
+import org.bukkitmodders.copycat.commands.StampCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yaml.snakeyaml.Yaml;
@@ -55,7 +55,7 @@ public class PluginDescriptorEmitter {
 		commands.put(SetCommand.getCommandString(), SetCommand.getDescription());
 		commands.put(AdminCommand.getCommandString(), AdminCommand.getDescription());
 		commands.put(CCCommand.getCommandString(), CCCommand.getDescription());
-		commands.put(WandCommand.getCommandString(), WandCommand.getDescription());
+		commands.put(StampCommand.getCommandString(), StampCommand.getDescription());
 
 		yamlData.put("commands", commands);
 
@@ -64,7 +64,7 @@ public class PluginDescriptorEmitter {
 		permissions.put(SetCommand.getPermissionNode(), SetCommand.getPermissions());
 		permissions.put(AdminCommand.getPermissionNode(), AdminCommand.getPermissions());
 		permissions.put(CCCommand.getPermissionNode(), CCCommand.getPermissions());
-		permissions.put(WandCommand.getPermissionNode(), WandCommand.getPermissions());
+		permissions.put(StampCommand.getPermissionNode(), StampCommand.getPermissions());
 
 		yamlData.put("permissions", permissions);
 
