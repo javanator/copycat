@@ -57,7 +57,7 @@ public class CCCommand implements CommandExecutor {
 		sb.append("/" + getCommandString() + " <IMAGE NAME>");
 		sb.append("\n<IMAGE NAME> - Copies the image to the targeted block");
 		sb.append("\nCOPY - Alternate copy method. ");
-		sb.append("Specify a location in the form of <IMAGE NAME> [ <X> <Y> <Z> <PITCH> <YAW> <WORLD> ].");
+		sb.append("Specify a location in the form of <IMAGE NAME> <X> <Y> <Z> <PITCH> <YAW> <WORLD> .");
 		sb.append(" Provided for integration potential. Most users should not use this.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
@@ -106,9 +106,10 @@ public class CCCommand implements CommandExecutor {
 			Shortcut shortcut = playerSettings.getShortcut(operation);
 			Location location = null;
 			if ("copy".equalsIgnoreCase(operation)) {
-				// FIXME
+				String imageName = argsQueue.poll();
 				location = parseSpecifiedLocation(sender, argsQueue);
-				shortcut = playerSettings.getActiveShortcut();
+
+				new CCCommand(plugin).asyncDownloadAndCopy(sender, playerSettings.getShortcut(imageName), location);
 			} else if (shortcut != null && sender instanceof Player) {
 				Player player = (Player) sender;
 				Block b = player.getTargetBlock(null, 100);
@@ -136,32 +137,28 @@ public class CCCommand implements CommandExecutor {
 
 	private Location parseSpecifiedLocation(CommandSender sender, Queue<String> args) {
 
-		if (args.size() >= 5) {
+		// The user has specified position manually
 
-			// The user has specified position manually
+		float x = Float.parseFloat(args.poll());
+		float y = Float.parseFloat(args.poll());
+		float z = Float.parseFloat(args.poll());
+		float pitch = Float.parseFloat(args.poll());
+		float yaw = Float.parseFloat(args.poll());
 
-			int x = Integer.parseInt(args.poll());
-			int y = Integer.parseInt(args.poll());
-			int z = Integer.parseInt(args.poll());
-			int yaw = Integer.parseInt(args.poll());
-			int pitch = Integer.parseInt(args.poll());
-			String worldStr = args.poll();
+		String worldStr = args.poll();
 
-			World world = null;
-			if (!StringUtils.isBlank(worldStr)) {
-				world = plugin.getServer().getWorld(worldStr);
-			} else if (sender instanceof Player) {
-				world = ((Player) sender).getWorld();
-			}
-
-			Location specifiedLocation = new Location(world, x, y, z);
-			specifiedLocation.setYaw(yaw);
-			specifiedLocation.setPitch(pitch);
-
-			return specifiedLocation;
+		World world = null;
+		if (!StringUtils.isBlank(worldStr)) {
+			world = plugin.getServer().getWorld(worldStr);
+		} else if (sender instanceof Player) {
+			world = ((Player) sender).getWorld();
 		}
 
-		return null;
+		Location specifiedLocation = new Location(world, x, y, z);
+		specifiedLocation.setYaw(yaw);
+		specifiedLocation.setPitch(pitch);
+
+		return specifiedLocation;
 	}
 
 	void performDraw(CommandSender sender, Location location, BufferedImage image) {
@@ -183,6 +180,8 @@ public class CCCommand implements CommandExecutor {
 			mcGraphics2d.draw(image, undoBuffer);
 
 			sender.sendMessage("Scaled Width: " + image.getWidth() + " Scaled Height: " + image.getHeight());
+			sender.sendMessage("Rendered to (X,Y,Z) PITCH YAW WORLD): (" + location.getX() + "," + location.getY() + "," + location.getZ() + ") " + location.getPitch() + " "
+					+ location.getYaw() + " " + location.getWorld().getName());
 			sender.sendMessage("Copycat Render complete");
 		} finally {
 			LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
