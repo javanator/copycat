@@ -6,11 +6,13 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
+import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,9 +32,10 @@ public class SetCommand implements CommandExecutor {
 
 	public static Map<String, Object> getDescription() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("/" + getCommandString() + " [ SETIMAGE | DIM ]");
+		sb.append("/" + getCommandString() + " [ DIM  | <PROFILE>]");
 		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
-		sb.append("\n<imagename> - Convenience method. Same as SETIMAGE except you only supply an image name.");
+		sb.append("\nPROFILE <BLOCK PROFILE> - Changes the active block profile");
+		sb.append("\n(no args) - View current settings");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Sets plugin properties");
@@ -63,13 +66,9 @@ public class SetCommand implements CommandExecutor {
 
 			String operation = argsQueue.poll();
 
-			if (operation == null) {
-				return false;
-			}
-
 			if (!sender.hasPermission(getPermissionNode())) {
 				sender.sendMessage("You do not have permission: " + getPermissionNode());
-			}  else if ("DIM".equalsIgnoreCase(operation)) {
+			} else if ("DIM".equalsIgnoreCase(operation)) {
 
 				String width = argsQueue.poll();
 				String height = argsQueue.poll();
@@ -85,6 +84,21 @@ public class SetCommand implements CommandExecutor {
 
 				playerSettings.setBuildDimensions(widthInt, heightInt);
 				sender.sendMessage("Set dimensions to " + widthInt + "x" + heightInt);
+			} else if ("PROFILE".equalsIgnoreCase(operation)) {
+				String profile = argsQueue.poll();
+				BlockProfileType blockProfile = plugin.getConfigurationManager().getBlockProfile(profile);
+				if (blockProfile != null) {
+					playerSettings.setBlockProfile(blockProfile.getName());
+				}
+				sender.sendMessage("Block profile changed to: " + blockProfile.getName());
+			} else if (StringUtils.isBlank(operation)) {
+				Map<String, BlockProfileType> blockProfiles = plugin.getConfigurationManager().getBlockProfiles();
+				sender.sendMessage("Current Build Dimensions: " + playerSettings.getBuildWidth() + "x" + playerSettings.getBuildHeight());
+				sender.sendMessage("Block Profiles: " + Arrays.toString(blockProfiles.keySet().toArray()));
+				sender.sendMessage("Active: " + playerSettings.getBlockProfile());
+				sender.sendMessage("Rubber Stamp Mode: " + playerSettings.isStampModeActivated());
+				sender.sendMessage("Rubber Stamp Item: " + playerSettings.getStampItem());
+				sender.sendMessage("Rubber Stamp Image: " + playerSettings.getStampShortcut().getName());
 			} else {
 				return false;
 			}

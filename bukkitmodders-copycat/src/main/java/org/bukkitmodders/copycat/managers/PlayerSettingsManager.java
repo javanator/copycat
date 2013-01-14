@@ -85,14 +85,13 @@ public class PlayerSettingsManager {
 	public void tellShortcuts(CommandSender player) {
 
 		Shortcuts shortcuts = playerSettings.getShortcuts();
-		player.sendMessage("Your Shortcuts: ");
 
 		for (Shortcut shortcut : shortcuts.getShortcut()) {
 			player.sendMessage(shortcut.getName() + "=" + shortcut.getUrl());
 		}
 	}
 
-	public boolean isWandActivated() {
+	public boolean isStampModeActivated() {
 		return playerSettings.isStampActivated();
 	}
 
@@ -121,7 +120,7 @@ public class PlayerSettingsManager {
 		return Math.min(cm.getMaxImageWidth(), playerSettings.getBuildWidth());
 	}
 
-	public Shortcut getActiveShortcut() {
+	public Shortcut getStampShortcut() {
 
 		Shortcut shortcut = getShortcut(playerSettings.getActiveShortcut());
 
@@ -166,7 +165,7 @@ public class PlayerSettingsManager {
 		cm.savePlayerSettings(playerSettings);
 	}
 
-	public void setActiveShortcut(String poll) {
+	public void setStampShortcut(String poll) {
 		playerSettings.setActiveShortcut(poll);
 		cm.savePlayerSettings(playerSettings);
 	}

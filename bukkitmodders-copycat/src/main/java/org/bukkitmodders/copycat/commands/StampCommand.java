@@ -39,11 +39,10 @@ public class StampCommand implements CommandExecutor {
 		StringBuffer sb = new StringBuffer();
 		sb.append("/" + getCommandString() + " [ ON | OFF | SET ]");
 		sb.append("\nON - Enables image copy when the trigger is in the player's hand");
-		sb.append("\nOFF - Disables image copy when the trigger is in the player's hand ");
-		sb.append("\nSET - Sets the activation item. Defaults to empty fist. ");
-		sb.append("\nSETIMAGE - Sets a default image to render when your stamp is activated");
-		sb.append("will render an image selected by the " + SetCommand.getCommandString() + " command on item use (LEFT CLICK)");
-		sb.append("\n<IMAGE NAME> - " + " will use the equipped item as a rubber stamp and trigger rendering of images when activated.");
+		sb.append("\nOFF - Disables image copy when the trigger is in the player's hand");
+		sb.append("\nSET - Sets the stamp activation item to whatever is equipped");
+		sb.append("\nSETIMAGE <IMAGE NAME> - Sets an image to render on stamp activation");
+		sb.append("\n<IMAGE NAME> - For convenience. Same as above");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Rubber stamp mode commands");
@@ -97,12 +96,12 @@ public class StampCommand implements CommandExecutor {
 				sender.sendMessage("Using: " + itemTrigger + " will trigger rendering when ON");
 			} else if ("SETIMAGE".equalsIgnoreCase(operation)) {
 				String imagename = argsQueue.poll();
-				playerSettings.setActiveShortcut(imagename);
+				playerSettings.setStampShortcut(imagename);
 				sender.sendMessage("Set default image to: " + imagename);
 			} else if (playerSettings.getShortcut(operation) != null) {
 				//Convenience method
-				playerSettings.setActiveShortcut(operation);
-				sender.sendMessage("Set active image to: " + playerSettings.getActiveShortcut().getName());
+				playerSettings.setStampShortcut(operation);
+				sender.sendMessage("Set active image to: " + playerSettings.getStampShortcut().getName());
 			} else {
 				return false;
 			}

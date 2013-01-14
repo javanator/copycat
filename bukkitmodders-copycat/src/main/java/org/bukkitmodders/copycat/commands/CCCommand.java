@@ -57,9 +57,8 @@ public class CCCommand implements CommandExecutor {
 		sb.append("/" + getCommandString() + " <IMAGE NAME>");
 		sb.append("\nUNDO - Undoes a prior copy");
 		sb.append("\n<IMAGE NAME> - Copies the image to the targeted block");
-		sb.append("\nCOPY - Alternate copy method. ");
-		sb.append("Specify a location in the form of <IMAGE NAME> <X> <Y> <Z> <PITCH> <YAW> <WORLD> .");
-		sb.append(" Provided for integration potential with other addins. Most users should not use this.");
+		sb.append("\nCOPY <IMAGE NAME> <X> <Y> <Z> <PITCH> <YAW> <WORLD> - Alternate copy method.");
+		sb.append(" Provided for integration potential. Most users should not use this.");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Image rendering commands");

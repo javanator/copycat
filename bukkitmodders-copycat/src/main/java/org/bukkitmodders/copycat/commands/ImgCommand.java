@@ -42,7 +42,6 @@ public class ImgCommand implements CommandExecutor {
 		sb.append("\nDEL <name> - Deletes an image URL by name");
 		sb.append("\nLIST - Displays a list of your images");
 		sb.append("\nCLEAN - Automatically cleans invalid images");
-		sb.append("\nCOPY - Alternate copy method. Specify a location in the form of <NAME> X Y Z PITCH YAW <WORLD>");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
 		desc.put("description", "Commands for various image operations");
@@ -112,7 +111,7 @@ public class ImgCommand implements CommandExecutor {
 					}
 				});
 			} else if ("list".equalsIgnoreCase(operation)) {
-
+				sender.sendMessage("Your Images:");
 				playerSettings.tellShortcuts(sender);
 			} else {
 				return false;

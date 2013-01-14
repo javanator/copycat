@@ -37,18 +37,18 @@ public class StampListener implements Listener {
 		} else if (!player.hasPermission(StampCommand.getPermissionNode())) {
 			player.sendMessage("You do not have permission: " + StampCommand.getPermissionNode());
 			return;
-		} else if (!playerSettings.isWandActivated()) {
+		} else if (!playerSettings.isStampModeActivated()) {
 			// Wand mode is not activated
 			return;
 		} else if (!playerSettings.getStampItem().equals(itemInHand.getType().name())) {
 			// Wand item not equipped.
 			return;
-		} else if (playerSettings.getActiveShortcut() == null) {
-			player.sendMessage("Copycat is on, but you have no active image set. Use /" + SetCommand.getCommandString());
+		} else if (playerSettings.getStampShortcut() == null) {
+			player.sendMessage("Copycat is on, but you have no active image set. Use /" + StampCommand.getCommandString());
 			return;
 		}
 
-		player.sendMessage("Rendering your image from: " + playerSettings.getActiveShortcut().getUrl());
+		player.sendMessage("Rendering your image from: " + playerSettings.getStampShortcut().getUrl());
 		player.sendMessage("*PLEASE* be patient. DO NOT click again until render is complete.");
 
 		Block targetBlock = player.getTargetBlock(null, 100);
@@ -56,6 +56,6 @@ public class StampListener implements Listener {
 		location.setPitch(player.getLocation().getPitch());
 		location.setYaw(player.getLocation().getYaw());
 
-		new CCCommand(plugin).asyncDownloadAndCopy(player, playerSettings.getActiveShortcut(), location);
+		new CCCommand(plugin).asyncDownloadAndCopy(player, playerSettings.getStampShortcut(), location);
 	}
 }
