@@ -96,24 +96,11 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.twelvemonkeys.imageio</groupId>
-			<artifactId>twelvemonkeys-imageio-core</artifactId>
-			<version>2.3</version>
-		</dependency>
-		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<version>1.8</version>
 			<scope>provided</scope>
 		</dependency>
-		<!-- 
-		<dependency>
-			<groupId>com.thebuzzmedia</groupId>
-			<artifactId>imgscalr-lib</artifactId>
-			<version>3.1</version>
-			<type>jar</type>
-		</dependency>
-		 -->
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -138,9 +125,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>java3d</groupId>
-			<artifactId>vecmath</artifactId>
-			<version>1.3.1</version>
+			<groupId>com.jhlabs</groupId>
+			<artifactId>filters</artifactId>
+			<version>2.0.235-1</version>
+			<!-- Apache License -->
+			<!-- http://www.jhlabs.com/ip/filters/download.html -->
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

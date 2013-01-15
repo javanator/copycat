@@ -65,7 +65,7 @@ public class TextureMapProcessor {
 				log.debug("Tile: " + i + " Average Color: " + color.toString() + " Alpha: " + color.getAlpha());
 			}
 		}
-
+		
 		return properties;
 	}
 

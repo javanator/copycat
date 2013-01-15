@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public enum TextureMappedBlock {
-	AIR("AIR",207,Material.AIR,(byte)0),
+	//AIR("AIR",207,Material.AIR,(byte)0),
 	NETHERACK("NETHERACK",103, Material.NETHERRACK, (byte) 0),
 	DIRT("DIRT",2, Material.DIRT, (byte) 0),
 	STONE("STONE",1, Material.STONE, (byte) 0),

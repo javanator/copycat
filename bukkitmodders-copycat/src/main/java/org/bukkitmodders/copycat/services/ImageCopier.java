@@ -2,7 +2,6 @@ package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
 import java.awt.Transparency;
-import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
@@ -15,8 +14,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
-import org.bukkitmodders.copycat.util.ColorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -86,7 +83,7 @@ public class ImageCopier {
 						// Maybe use glass or air??
 						blockAt.setType(Material.AIR);
 					} else {
-						int closestTile = findNearestTileForColor(rgba, blockAt);
+						int closestTile = findNearestTileForColorRGB(rgba, blockAt);
 						TextureToBlockMapper.setBlockMaterialToTile(closestTile, blockAt);
 					}
 				}
@@ -102,14 +99,14 @@ public class ImageCopier {
 	 * @param block
 	 * @return
 	 */
-	private int findNearestTileForColor(int rgba, Block block) {
+	private int findNearestTileForColorRGB(int rgba, Block block) {
 
 		double colorspaceDistance = Float.MAX_VALUE;
 		int closestTile = -1;
 
 		for (Color materialColor : textureMapProcessor.getColorTable().keySet()) {
 
-			double currentDistance = ColorUtil.colorDistance(new Color(rgba), materialColor);
+			double currentDistance = getEuclidianDistance(new Color(rgba).getComponents(null), materialColor.getColorComponents(null));
 
 			if (currentDistance < colorspaceDistance) {
 				colorspaceDistance = currentDistance;
@@ -120,25 +117,12 @@ public class ImageCopier {
 		return closestTile;
 	}
 
-	private int findNearestTileForColorHSV(int rgba, Block block) {
-		ColorSpace hsv = ColorSpace.getInstance(ColorSpace.TYPE_HSV);
-		double colorspaceDistance = Float.MAX_VALUE;
-		int closestTile = -1;
+	double getEuclidianDistance(float[] componentsA, float[] componentsB) {
+		float a = componentsA[0] - componentsB[0];
+		float c = componentsA[1] - componentsB[1];
+		float b = componentsA[2] - componentsB[2];
 
-		for (Color materialColor : textureMapProcessor.getColorTable().keySet()) {
-			Color color = new Color(rgba);
-			float[] fromHSV = hsv.fromRGB(color.getColorComponents(null));
-			float[] materialHSV = hsv.fromRGB(materialColor.getColorComponents(null));
-
-			double currentDistance = ColorUtil.colorDistance(new Color(fromHSV[0], fromHSV[1], fromHSV[2]), new Color(materialHSV[0], materialHSV[1], materialHSV[2]));
-
-			if (currentDistance < colorspaceDistance) {
-				colorspaceDistance = currentDistance;
-				closestTile = textureMapProcessor.getColorTable().get(materialColor);
-			}
-		}
-		
-		return closestTile;
+		return (float) Math.sqrt(a * a + b * b + c * c);
 	}
 
 	public void transformToWorld(Point3d point) {

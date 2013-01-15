@@ -37,8 +37,10 @@ public class McGraphics2dTest {
 	@Test
 	public void scaleImageTest() throws Exception {
 
-		scaleAndDither("/PikachuTransparent.gif");
+		scaleAndDither("/transparent.png");
 		scaleAndDither("/halle.jpg");
+		scaleAndDither("/PikachuTransparent.gif");
+		scaleAndDither("/hulk.jpg");
 	}
 
 	private void scaleAndDither(String imageRelativePath) throws IOException {
@@ -50,7 +52,7 @@ public class McGraphics2dTest {
 
 		BufferedImage scaledImage = ImageUtil.scaleImage(image, 200, 200);
 
-		ImageIO.write((RenderedImage) scaledImage, "gif", new File("target/" + baseName + "-scaled." + extension));
+		ImageIO.write((RenderedImage) scaledImage, "png", new File("target/" + baseName + "-scaled." + extension));
 
 		TextureMapProcessor textureMapProcessor = new TextureMapProcessor(ConfigurationManager.generateDefaultBlockProfile());
 		Set<Color> palette = textureMapProcessor.getColorTable().keySet();
@@ -58,7 +60,9 @@ public class McGraphics2dTest {
 		IndexColorModel icm = ImageUtil.generateIndexColorModel(palette);
 		Image ditheredImage = ImageUtil.ditherImage(scaledImage, icm);
 
-		ImageIO.write((RenderedImage) ditheredImage, "gif", new File("target/" + baseName + "-dithered." + extension));
+		ImageIO.write((RenderedImage) ditheredImage, "png", new File("target/" + baseName + "-dithered." + extension));
+		
+		ImageIO.write((RenderedImage) image, "png", new File("target/" + baseName + "-original." + extension));
 	}
 
 	@Test

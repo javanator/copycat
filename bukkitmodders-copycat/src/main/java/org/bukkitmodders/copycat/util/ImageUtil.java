@@ -1,16 +1,21 @@
 package org.bukkitmodders.copycat.util;
 
 import java.awt.Color;
-import java.awt.Image;
-import java.awt.Transparency;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.awt.image.ColorConvertOp;
 import java.awt.image.IndexColorModel;
+import java.util.HashSet;
 import java.util.Set;
 
-import com.twelvemonkeys.image.DiffusionDither;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jhlabs.image.DiffusionFilter;
+import com.jhlabs.image.DitherFilter;
 
 public class ImageUtil {
+	private static Logger log = LoggerFactory.getLogger(ImageUtil.class);
 
 	/**
 	 * 
@@ -29,8 +34,8 @@ public class ImageUtil {
 		// Make sure the aspect ratio is maintained, so the image is not
 		// distorted
 		double thumbRatio = (double) newWidth / (double) newHeight;
-		int imageWidth = src.getWidth(null);
-		int imageHeight = src.getHeight(null);
+		int imageWidth = src.getWidth();
+		int imageHeight = src.getHeight();
 		double aspectRatio = (double) imageWidth / (double) imageHeight;
 
 		if (thumbRatio < aspectRatio) {
@@ -39,18 +44,25 @@ public class ImageUtil {
 			newWidth = (int) (newHeight * aspectRatio);
 		}
 
-		int imageType = (src.getTransparency() == Transparency.OPAQUE ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB);
-		Image scaledInstance = src.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+		AffineTransform af = new AffineTransform();
+		float xscale = (float) newWidth / imageWidth;
+		float yscale = (float) newHeight / imageHeight;
 
-		BufferedImage bufferedThumbnail = new BufferedImage(newWidth, newHeight, imageType);
-		bufferedThumbnail.getGraphics().drawImage(scaledInstance, 0, 0, null);
+		af.scale(xscale, yscale);
 
+		AffineTransformOp operation = new AffineTransformOp(af, AffineTransformOp.TYPE_BICUBIC);
+		BufferedImage bufferedThumbnail = operation.filter(src, null);
+		
 		return bufferedThumbnail;
 	}
 
 	public static IndexColorModel generateIndexColorModel(Set<Color> palette) {
 
-		int size = palette.size();
+		Set<Color> colors = new HashSet<Color>();
+		// colors.add(new Color(0, 0, 0, 255));
+		colors.addAll(palette);
+
+		int size = colors.size();
 
 		byte[] r = new byte[size];
 		byte[] g = new byte[size];
@@ -58,7 +70,7 @@ public class ImageUtil {
 		byte[] a = new byte[size];
 
 		int i = 0;
-		for (Color color : palette) {
+		for (Color color : colors) {
 			r[i] = (byte) color.getRed();
 			g[i] = (byte) color.getGreen();
 			b[i] = (byte) color.getBlue();
@@ -67,17 +79,17 @@ public class ImageUtil {
 			i++;
 		}
 
-		IndexColorModel cm = new IndexColorModel(8, palette.size(), r, g, b);
+		IndexColorModel cm = new IndexColorModel(8, colors.size(), r, g, b);
 
 		return cm;
 	}
 
 	public static BufferedImage ditherImage(BufferedImage image, IndexColorModel icm) {
-		
-		DiffusionDither diffusionDither = new com.twelvemonkeys.image.DiffusionDither(icm);
-		BufferedImage dest = diffusionDither.createCompatibleDestImage(image, icm);
-		BufferedImage filter = diffusionDither.filter(image, dest);
 
+		DiffusionFilter df = new DiffusionFilter();
+		df.setMatrix(DitherFilter.dither90Halftone6x6Matrix);
+		BufferedImage filter = df.filter(image, null);
+		
 		return filter;
 	}
 }
