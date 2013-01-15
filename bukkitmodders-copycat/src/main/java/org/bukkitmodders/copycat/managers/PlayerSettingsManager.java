@@ -174,4 +174,13 @@ public class PlayerSettingsManager {
 		return playerSettings.getStampItem();
 	}
 
+	public boolean isDithering() {
+
+		return playerSettings.isDithering();
+	}
+
+	public void setDithering(boolean value) {
+		playerSettings.setDithering(value);
+		cm.savePlayerSettings(playerSettings);
+	}
 }

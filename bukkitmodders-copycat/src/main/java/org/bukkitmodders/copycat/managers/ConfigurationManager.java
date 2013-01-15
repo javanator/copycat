@@ -71,6 +71,7 @@ public class ConfigurationManager {
 		playerSettings.setStampItem("");
 		playerSettings.setBuildWidth(200);
 		playerSettings.setBuildHeight(200);
+		playerSettings.setDithering(true);
 
 		return playerSettings;
 	}

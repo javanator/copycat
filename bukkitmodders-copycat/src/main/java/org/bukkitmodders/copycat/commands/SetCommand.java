@@ -32,9 +32,10 @@ public class SetCommand implements CommandExecutor {
 
 	public static Map<String, Object> getDescription() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("/" + getCommandString() + " [ DIM  | <PROFILE>]");
+		sb.append("/" + getCommandString() + " [ DIM  | PROFILE <BLOCKPROFILE> | DITHERING ]");
 		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
 		sb.append("\nPROFILE <BLOCK PROFILE> - Changes the active block profile");
+		sb.append("\nDITHERING - toggles dithering on or off");
 		sb.append("\n(no args) - View current settings");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
@@ -91,9 +92,13 @@ public class SetCommand implements CommandExecutor {
 					playerSettings.setBlockProfile(blockProfile.getName());
 				}
 				sender.sendMessage("Block profile changed to: " + blockProfile.getName());
+			} else if ("DITHERING".equalsIgnoreCase(operation)) {
+				playerSettings.setDithering(!playerSettings.isDithering());
+				sender.sendMessage("Dithering set to " + playerSettings.isDithering());
 			} else if (StringUtils.isBlank(operation)) {
 				Map<String, BlockProfileType> blockProfiles = plugin.getConfigurationManager().getBlockProfiles();
 				sender.sendMessage("Current Build Dimensions: " + playerSettings.getBuildWidth() + "x" + playerSettings.getBuildHeight());
+				sender.sendMessage("Dithering: " + playerSettings.isDithering());
 				sender.sendMessage("Block Profiles: " + Arrays.toString(blockProfiles.keySet().toArray()));
 				sender.sendMessage("Active: " + playerSettings.getBlockProfile());
 				sender.sendMessage("Rubber Stamp Mode: " + playerSettings.isStampModeActivated());

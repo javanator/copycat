@@ -28,6 +28,7 @@ import org.bukkitmodders.copycat.plugin.RevertableBlock;
 import org.bukkitmodders.copycat.schema.BlockProfileType;
 import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
 import org.bukkitmodders.copycat.services.ImageCopier;
+import org.bukkitmodders.copycat.services.TextureMapProcessor;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.bukkitmodders.copycat.util.MatrixUtil;
 import org.slf4j.Logger;
@@ -175,15 +176,20 @@ public class CCCommand implements CommandExecutor {
 		}
 
 		try {
+			BlockProfileType blockProfile = configurationManager.getBlockProfile(sender.getName());
+			TextureMapProcessor textureMapProcessor = new TextureMapProcessor(blockProfile);
+
+			IndexColorModel icm = ImageUtil.generateIndexColorModel(textureMapProcessor.getColorTable().keySet());
+
 			image = ImageUtil.scaleImage(image, senderSettings.getBuildWidth(), senderSettings.getBuildHeight());
 
+			if (senderSettings.isDithering()) {
+				image = ImageUtil.ditherImage(image, icm);
+			}
 			Matrix4d rotationMatrix = null;
 
 			rotationMatrix = MatrixUtil.calculateRotation(location);
-
-			BlockProfileType blockProfile = configurationManager.getBlockProfile(sender.getName());
-
-			ImageCopier mcGraphics2d = new ImageCopier(blockProfile, location, rotationMatrix);
+			ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, rotationMatrix);
 
 			mcGraphics2d.draw(image, undoBuffer);
 
@@ -194,7 +200,7 @@ public class CCCommand implements CommandExecutor {
 		} finally {
 			if (undoBuffer != null) {
 				LinkedBlockingDeque<Stack<RevertableBlock>> undoBuffers = senderSettings.getUndoBuffer();
-				undoBuffers.add(undoBuffer);
+				undoBuffers.push(undoBuffer);
 			}
 		}
 	}

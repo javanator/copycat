@@ -25,6 +25,7 @@
 			<element name="activeShortcut" type="string" />
 			<element name="stampItem" type="string" />
 			<element name="undoEnabled" type="boolean" />
+			<element name="dithering" type="boolean" default="true"/>
 			<element name="shortcuts" minOccurs="1" maxOccurs="1">
 				<complexType>
 					<sequence>

@@ -87,6 +87,7 @@
             <activeShortcut></activeShortcut>
             <stampItem></stampItem>
             <undoEnabled>true</undoEnabled>
+            <dithering>true</dithering>
             <shortcuts>
                 <shortcut url="http://aurl" name="shortuctname"/>
                 <shortcut url="file://aurl" name="anothershortuctname"/>

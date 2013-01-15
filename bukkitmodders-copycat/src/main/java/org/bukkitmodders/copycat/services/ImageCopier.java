@@ -2,8 +2,8 @@ package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
 import java.awt.Transparency;
+import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
-import java.awt.image.IndexColorModel;
 import java.util.Stack;
 
 import javax.vecmath.Matrix4d;
@@ -29,12 +29,12 @@ public class ImageCopier {
 	private Matrix4d mWorld;
 	private TextureMapProcessor textureMapProcessor;
 
-	public ImageCopier(BlockProfileType blockProfile, Location location, Matrix4d rotation) {
+	public ImageCopier(TextureMapProcessor tmp, Location location, Matrix4d rotation) {
 		// com.twelvemonkeys.image.ImageUtil.createIndexed(pImage, pColors,
 		// pMatte, pHints)
 		// new IndexColorModel(bits, size, r, g, b, a);
 
-		textureMapProcessor = new TextureMapProcessor(blockProfile);
+		textureMapProcessor = tmp;
 
 		Vector3d translation = new Vector3d();
 		translation.set(location.getX(), location.getY(), location.getZ());
@@ -76,8 +76,9 @@ public class ImageCopier {
 					if (undoBuffer != null) {
 						undoBuffer.push(new RevertableBlock(blockAt));
 					}
-					
+
 					int rgba = image.getRGB(i, j);
+
 					int alpha = (rgba >> 24) & 0xff;
 
 					if (alpha == 0 || image.getTransparency() == Transparency.BITMASK) {
@@ -116,6 +117,27 @@ public class ImageCopier {
 			}
 		}
 
+		return closestTile;
+	}
+
+	private int findNearestTileForColorHSV(int rgba, Block block) {
+		ColorSpace hsv = ColorSpace.getInstance(ColorSpace.TYPE_HSV);
+		double colorspaceDistance = Float.MAX_VALUE;
+		int closestTile = -1;
+
+		for (Color materialColor : textureMapProcessor.getColorTable().keySet()) {
+			Color color = new Color(rgba);
+			float[] fromHSV = hsv.fromRGB(color.getColorComponents(null));
+			float[] materialHSV = hsv.fromRGB(materialColor.getColorComponents(null));
+
+			double currentDistance = ColorUtil.colorDistance(new Color(fromHSV[0], fromHSV[1], fromHSV[2]), new Color(materialHSV[0], materialHSV[1], materialHSV[2]));
+
+			if (currentDistance < colorspaceDistance) {
+				colorspaceDistance = currentDistance;
+				closestTile = textureMapProcessor.getColorTable().get(materialColor);
+			}
+		}
+		
 		return closestTile;
 	}
 

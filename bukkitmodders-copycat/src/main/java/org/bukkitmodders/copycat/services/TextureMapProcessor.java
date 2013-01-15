@@ -1,7 +1,9 @@
 package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Hashtable;
 
@@ -60,7 +62,7 @@ public class TextureMapProcessor {
 
 			if (materialTiles.getSupportedTiles().contains(i)) {
 				properties.put(color, i);
-				log.debug("Tile: " + i + " Average Color: " + color.toString());
+				log.debug("Tile: " + i + " Average Color: " + color.toString() + " Alpha: " + color.getAlpha());
 			}
 		}
 
@@ -74,6 +76,7 @@ public class TextureMapProcessor {
 		int r = 0;
 		int g = 0;
 		int b = 0;
+		int a = 0;
 
 		for (int x = 0; x < tile.getWidth(); x++) {
 			for (int y = 0; y < tile.getHeight(); y++) {
@@ -85,14 +88,16 @@ public class TextureMapProcessor {
 				r += color.getRed();
 				g += color.getGreen();
 				b += color.getBlue();
+				a += color.getAlpha();
 			}
 		}
 
 		r /= pixels;
 		g /= pixels;
 		b /= pixels;
+		a /= pixels;
 
-		return new Color(r, g, b);
+		return new Color(r, g, b, a);
 	}
 
 	public BufferedImage getTile(int tileNumber) {
@@ -107,8 +112,8 @@ public class TextureMapProcessor {
 
 		int x = textureWidth * col;
 		int y = textureHeight * row;
-
-		BufferedImage tile = image.getSubimage(x, y, textureWidth, textureHeight);
+		BufferedImage tile = new BufferedImage(textureWidth, textureHeight, BufferedImage.TYPE_INT_ARGB);
+		tile.getGraphics().drawImage(image.getSubimage(x, y, textureWidth, textureHeight), 0, 0, new Color(0, 0, 0, 255), null);
 
 		return tile;
 	}

@@ -1,9 +1,12 @@
+import java.awt.Color;
 import java.awt.Image;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
+import java.awt.image.IndexColorModel;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.vecmath.Point3d;
@@ -11,6 +14,7 @@ import javax.xml.bind.JAXB;
 
 import junit.framework.Assert;
 
+import org.apache.commons.io.FilenameUtils;
 import org.bukkit.Location;
 import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
@@ -32,16 +36,38 @@ public class McGraphics2dTest {
 
 	@Test
 	public void scaleImageTest() throws Exception {
-		BufferedImage image = ImageIO.read(getClass().getResourceAsStream("/PikachuTransparent.gif"));
-		Image scaledImage = ImageUtil.scaleImage(image, image.getWidth(), image.getHeight());
-		ImageIO.write((RenderedImage) scaledImage, "gif", new File("target/scaledTransparent.gif"));
+
+		scaleAndDither("/PikachuTransparent.gif");
+		scaleAndDither("/halle.jpg");
+	}
+
+	private void scaleAndDither(String imageRelativePath) throws IOException {
+
+		String baseName = FilenameUtils.getBaseName(imageRelativePath);
+		String extension = FilenameUtils.getExtension(imageRelativePath);
+
+		BufferedImage image = ImageIO.read(getClass().getResourceAsStream(imageRelativePath));
+
+		BufferedImage scaledImage = ImageUtil.scaleImage(image, 200, 200);
+
+		ImageIO.write((RenderedImage) scaledImage, "gif", new File("target/" + baseName + "-scaled." + extension));
+
+		TextureMapProcessor textureMapProcessor = new TextureMapProcessor(ConfigurationManager.generateDefaultBlockProfile());
+		Set<Color> palette = textureMapProcessor.getColorTable().keySet();
+
+		IndexColorModel icm = ImageUtil.generateIndexColorModel(palette);
+		Image ditheredImage = ImageUtil.ditherImage(scaledImage, icm);
+
+		ImageIO.write((RenderedImage) ditheredImage, "gif", new File("target/" + baseName + "-dithered." + extension));
 	}
 
 	@Test
 	public void TranslateTest01() {
 
 		Location location = new Location(null, 10, 10, 10);
-		ImageCopier mcGraphics2d = new ImageCopier(ConfigurationManager.generateDefaultBlockProfile(), location, null);
+		BlockProfileType generateDefaultBlockProfile = ConfigurationManager.generateDefaultBlockProfile();
+		TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
+		ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
 		Point3d point = new Point3d(1, 1, 0);
 
@@ -58,8 +84,9 @@ public class McGraphics2dTest {
 	public void TranslateTest02() {
 
 		Location location = new Location(null, 10, 10, 10);
-		
-		ImageCopier mcGraphics2d = new ImageCopier(ConfigurationManager.generateDefaultBlockProfile(), location, null);
+		BlockProfileType generateDefaultBlockProfile = ConfigurationManager.generateDefaultBlockProfile();
+		TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
+		ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
 		Point3d point = new Point3d(10, 10, 0);
 
