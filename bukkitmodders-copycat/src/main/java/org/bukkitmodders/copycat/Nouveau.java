@@ -1,7 +1,9 @@
 package org.bukkitmodders.copycat;
 
 import java.io.File;
+import java.io.IOException;
 
+import org.apache.commons.io.IOUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkitmodders.copycat.commands.AdminCommand;
 import org.bukkitmodders.copycat.commands.CCCommand;
@@ -17,6 +19,14 @@ public class Nouveau extends JavaPlugin {
 	private static Logger log = LoggerFactory.getLogger(Nouveau.class);
 	private static final String DATAFILE = "pluginSettings.xml";
 	private ConfigurationManager configurationManager;
+
+	static {
+		try {
+			log.info(IOUtils.toString(Nouveau.class.getResourceAsStream("/LICENSE.txt")));
+		} catch (IOException e) {
+
+		}
+	}
 
 	public void onDisable() {
 
@@ -39,7 +49,7 @@ public class Nouveau extends JavaPlugin {
 		getCommand(CCCommand.getCommandString()).setExecutor(new CCCommand(this));
 
 		getServer().getPluginManager().registerEvents(new StampListener(this), this);
-		
+
 		ConfigurationManager cm = getConfigurationManager();
 		cm.updateDefaultBlockProfile(ConfigurationManager.generateDefaultBlockProfile());
 
