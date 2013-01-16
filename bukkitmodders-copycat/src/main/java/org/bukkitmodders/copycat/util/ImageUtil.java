@@ -11,8 +11,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jhlabs.image.DiffusionFilter;
-import com.jhlabs.image.DitherFilter;
+import com.twelvemonkeys.image.DiffusionDither;
 
 public class ImageUtil {
 	private static Logger log = LoggerFactory.getLogger(ImageUtil.class);
@@ -52,14 +51,15 @@ public class ImageUtil {
 
 		AffineTransformOp operation = new AffineTransformOp(af, AffineTransformOp.TYPE_BICUBIC);
 		BufferedImage bufferedThumbnail = operation.filter(src, null);
-		
+
 		return bufferedThumbnail;
 	}
 
 	public static IndexColorModel generateIndexColorModel(Set<Color> palette) {
 
 		Set<Color> colors = new HashSet<Color>();
-		// colors.add(new Color(0, 0, 0, 255));
+		colors.add(new Color(0, 0, 0, 255));
+		colors.add(new Color(255, 255, 255, 255));
 		colors.addAll(palette);
 
 		int size = colors.size();
@@ -79,17 +79,17 @@ public class ImageUtil {
 			i++;
 		}
 
-		IndexColorModel cm = new IndexColorModel(8, colors.size(), r, g, b);
+		IndexColorModel cm = new IndexColorModel(8, colors.size(), r, g, b, a);
 
 		return cm;
 	}
 
 	public static BufferedImage ditherImage(BufferedImage image, IndexColorModel icm) {
+		BufferedImage bi = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_BYTE_INDEXED);
 
-		DiffusionFilter df = new DiffusionFilter();
-		df.setMatrix(DitherFilter.dither90Halftone6x6Matrix);
-		BufferedImage filter = df.filter(image, null);
-		
-		return filter;
+		DiffusionDither dd = new DiffusionDither(icm);
+		dd.filter(image, bi);
+
+		return bi;
 	}
 }
