@@ -32,10 +32,10 @@ public class SetCommand implements CommandExecutor {
 
 	public static Map<String, Object> getDescription() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("/" + getCommandString() + " [ DIM  | PROFILE <BLOCKPROFILE> | DITHERING ]");
+		sb.append("/" + getCommandString() + " [ DIM  | PROFILE <BLOCKPROFILE> | DITHER ]");
 		sb.append("\nDIM <WIDTH> <HEIGHT> - Scale copied images to this size");
 		sb.append("\nPROFILE <BLOCK PROFILE> - Changes the active block profile");
-		sb.append("\nDITHERING - toggles dithering on or off");
+		sb.append("\nDITHER - toggles dithering on or off");
 		sb.append("\n(no args) - View current settings");
 
 		Map<String, Object> desc = new LinkedHashMap<String, Object>();
@@ -92,7 +92,7 @@ public class SetCommand implements CommandExecutor {
 					playerSettings.setBlockProfile(blockProfile.getName());
 				}
 				sender.sendMessage("Block profile changed to: " + blockProfile.getName());
-			} else if ("DITHERING".equalsIgnoreCase(operation)) {
+			} else if ("DITHER".equalsIgnoreCase(operation)) {
 				playerSettings.setDithering(!playerSettings.isDithering());
 				sender.sendMessage("Dithering set to " + playerSettings.isDithering());
 			} else if (StringUtils.isBlank(operation)) {
