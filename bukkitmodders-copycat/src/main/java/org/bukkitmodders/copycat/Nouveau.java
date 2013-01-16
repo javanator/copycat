@@ -20,14 +20,6 @@ public class Nouveau extends JavaPlugin {
 	private static final String DATAFILE = "pluginSettings.xml";
 	private ConfigurationManager configurationManager;
 
-	static {
-		try {
-			log.info(IOUtils.toString(Nouveau.class.getResourceAsStream("/LICENSE.txt")));
-		} catch (IOException e) {
-
-		}
-	}
-
 	public void onDisable() {
 
 		getCommand(ImgCommand.getCommandString()).setExecutor(null);
