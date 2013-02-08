@@ -119,8 +119,8 @@
 		</dependency>
 		<dependency>
 			<groupId>org.bukkit</groupId>
-			<artifactId>craftbukkit</artifactId>
-			<version>1.4.6-R0.3</version>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.7-R1.0</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>	
@@ -164,7 +164,7 @@
 		</repository>
 		<repository>
 			<id>bukkit-repo</id>
-			<url>http://repo.bukkit.org/service/local/repositories/releases/content</url>
+			<url>http://repo.bukkit.org/content/groups/public</url>
 		</repository>
 	</repositories>
 </project>
