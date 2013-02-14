@@ -72,6 +72,7 @@ public class ConfigurationManager {
 		playerSettings.setBuildWidth(200);
 		playerSettings.setBuildHeight(200);
 		playerSettings.setDithering(true);
+		playerSettings.setUndoEnabled(true);
 
 		return playerSettings;
 	}
