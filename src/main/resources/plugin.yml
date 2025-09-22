@@ -1,0 +1,20 @@
+name: Copycat
+version: 1.0
+main: org.bukkitmodders.copycat.Nouveau
+api-version: '1.21'
+commands:
+  ccimg:
+    description: Image command
+    usage: /img <args>
+  ccset:
+    description: Set command
+    usage: /set <args>
+  ccadmin:
+    description: Admin command
+    usage: /admin <args>
+  ccstamp:
+    description: Stamp command
+    usage: /stamp <args>
+  cc:
+    description: CC command
+    usage: /cc <args>
