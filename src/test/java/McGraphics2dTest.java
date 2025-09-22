@@ -9,12 +9,12 @@ import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.services.TextureMapProcessor;
 import org.bukkitmodders.copycat.services.TextureMappedBlock;
 import org.bukkitmodders.copycat.util.ImageUtil;
+import org.joml.Vector3f;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
-import javax.vecmath.Point3d;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
@@ -66,7 +66,7 @@ public class McGraphics2dTest {
         TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
         ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
-        Point3d point = new Point3d(1, 1, 0);
+        Vector3f point = new Vector3f(1, 1, 0);
 
         log.debug("Original Point: " + point.toString());
         mcGraphics2d.transformToWorld(point);
@@ -85,7 +85,7 @@ public class McGraphics2dTest {
         TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
         ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
-        Point3d point = new Point3d(10, 10, 0);
+        Vector3f point = new Vector3f(10, 10, 0);
 
         log.debug("Original Point: " + point.toString());
         mcGraphics2d.transformToWorld(point);

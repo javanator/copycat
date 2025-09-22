@@ -5,15 +5,13 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.util.Stack;
 
-import javax.vecmath.Matrix4d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkitmodders.copycat.plugin.RevertableBlock;
+import org.joml.Matrix3f;
+import org.joml.Vector3f;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,23 +20,22 @@ public class ImageCopier {
 	private static final Logger log = LoggerFactory.getLogger(ImageCopier.class);
 
 	private final World world;
-	private final Matrix4d mRotation;
-	private Matrix4d mWorld;
+	private final Matrix3f mRotation;
+	private Matrix3f mWorld;
 	private TextureMapProcessor textureMapProcessor;
 
-	public ImageCopier(TextureMapProcessor tmp, Location location, Matrix4d rotation) {
+	public ImageCopier(TextureMapProcessor tmp, Location location, Matrix3f rotation) {
 		// com.twelvemonkeys.image.ImageUtil.createIndexed(pImage, pColors,
 		// pMatte, pHints)
 		// new IndexColorModel(bits, size, r, g, b, a);
 
 		textureMapProcessor = tmp;
 
-		Vector3d translation = new Vector3d();
+		Vector3f translation = new Vector3f();
 		translation.set(location.getX(), location.getY(), location.getZ());
 
-		Matrix4d transform = new Matrix4d();
-		transform.setIdentity();
-		transform.setTranslation(translation);
+		Matrix3f transform = new Matrix3f().identity();
+		transform.transform(translation);
 
 		this.world = location.getWorld();
 		this.mWorld = transform;
@@ -55,7 +52,7 @@ public class ImageCopier {
 	 */
 	public void draw(BufferedImage image, Stack<RevertableBlock> undoBuffer) {
 
-		Point3d point = new Point3d();
+		Vector3f point = new Vector3f();
 
 		for (int i = 0; i < image.getWidth(); i++) {
 
@@ -125,7 +122,7 @@ public class ImageCopier {
 		return (float) Math.sqrt(a * a + b * b + c * c);
 	}
 
-	public void transformToWorld(Point3d point) {
+	public void transformToWorld(Vector3f point) {
 		mWorld.transform(point);
 	}
 }

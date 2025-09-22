@@ -10,12 +10,14 @@ buildscript {
 
 plugins {
     id 'com.gradleup.shadow' version '9.0.0'
+    id 'io.freefair.lombok' version '9.0.0-rc2'
     id 'java'
     id 'xyz.jpenilla.run-paper' version '2.3.1'
 }
 
 apply plugin: 'java'
 apply plugin: 'com.gradleup.shadow'
+apply plugin: 'io.freefair.lombok'
 
 group = 'org.bukkitmodders'
 version = '1.4'
@@ -66,5 +68,6 @@ dependencies {
     implementation 'commons-lang:commons-lang:2.3'
     implementation 'com.twelvemonkeys.imageio:twelvemonkeys-imageio-core:2.3'
     implementation 'org.slf4j:slf4j-api:2.0.17'
+    implementation 'org.projectlombok:lombok:1.18.24'
 }
 

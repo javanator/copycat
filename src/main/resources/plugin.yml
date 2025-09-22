@@ -5,16 +5,16 @@ api-version: '1.21'
 commands:
   ccimg:
     description: Image command
-    usage: /img <args>
+    usage: /ccimg <args>
   ccset:
     description: Set command
-    usage: /set <args>
+    usage: /ccset <args>
   ccadmin:
     description: Admin command
-    usage: /admin <args>
+    usage: /ccadmin <args>
   ccstamp:
     description: Stamp command
-    usage: /stamp <args>
+    usage: /ccstamp <args>
   cc:
     description: CC command
     usage: /cc <args>
