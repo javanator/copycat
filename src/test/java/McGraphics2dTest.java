@@ -127,14 +127,33 @@ public class McGraphics2dTest {
         BlockProfileType blockProfile = ConfigurationManager.generateDefaultBlockProfile();
         TextureMapProcessor tmp = new TextureMapProcessor(blockProfile);
 
+        // Ensure target directory exists
+        File targetDir = new File("build/blocks/");
+        if (!targetDir.exists()) {
+            targetDir.mkdirs();
+        }
+
         for (Block block : blockProfile.getBlock()) {
             BufferedImage tileImage = tmp.getTile(block.getTextureIndex());
 
             TextureMappedBlock textureMappedBlock = TextureMappedBlock.getBlockBySpriteIndex(block.getTextureIndex());
-            String pathname = "target/" + block.getName() + "material-" + textureMappedBlock.getMaterialName() + ".gif";
+            
+            // Clean the filename to avoid invalid characters
+            String cleanBlockName = block.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
+            String cleanMaterialName = textureMappedBlock.getMaterialName().replaceAll("[^a-zA-Z0-9._-]", "_");
+            
+            String pathname = targetDir.getPath()+File.separatorChar + cleanBlockName + "material-" + cleanMaterialName + ".png";
             log.debug("Writing: " + pathname);
-            ImageIO.write((RenderedImage) tileImage, "gif", new File(pathname));
+            
+            // Convert to RGB format for better compatibility and use PNG instead of GIF
+            BufferedImage rgbImage = new BufferedImage(tileImage.getWidth(), tileImage.getHeight(), BufferedImage.TYPE_INT_RGB);
+            Graphics2D g = rgbImage.createGraphics();
+            g.setColor(Color.WHITE); // Set background color for transparency
+            g.fillRect(0, 0, tileImage.getWidth(), tileImage.getHeight());
+            g.drawImage(tileImage, 0, 0, null);
+            g.dispose();
+            
+            ImageIO.write(rgbImage, "png", new File(pathname));
         }
-
     }
 }

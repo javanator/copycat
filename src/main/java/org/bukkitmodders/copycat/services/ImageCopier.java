@@ -32,7 +32,11 @@ public class ImageCopier {
         this.mWorld.translate(location.getX(), location.getY(), location.getZ());
 
         this.world = location.getWorld();
-        this.mRotation = rotation;
+        if  (rotation != null) {
+            this.mRotation = rotation;
+        } else {
+            this.mRotation = new Matrix4d().identity();
+        }
 
         log.debug("Draw location set to: " + location.toString());
         log.debug("Transformation Matrix: " + mWorld.toString());
