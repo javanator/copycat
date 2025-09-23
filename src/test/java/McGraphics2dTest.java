@@ -9,7 +9,9 @@ import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.services.TextureMapProcessor;
 import org.bukkitmodders.copycat.services.TextureMappedBlock;
 import org.bukkitmodders.copycat.util.ImageUtil;
+import org.joml.Vector3d;
 import org.joml.Vector3f;
+import org.joml.Vector4d;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +29,7 @@ public class McGraphics2dTest {
 
     private Logger log = LoggerFactory.getLogger(McGraphics2dTest.class);
 
-    //@Test
+//    @Test
     public void scaleImageTest() throws Exception {
 
         scaleAndDither("/transparent.png");
@@ -60,13 +62,13 @@ public class McGraphics2dTest {
 
     @Test
     public void TranslateTest01() {
-
         Location location = new Location(null, 10, 10, 10);
         BlockProfileType generateDefaultBlockProfile = ConfigurationManager.generateDefaultBlockProfile();
         TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
         ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
-        Vector3f point = new Vector3f(1, 1, 0);
+        // Fix: Set w = 1 for a position point (not w = 0)
+        Vector4d point = new Vector4d(1, 1, 0, 1);
 
         log.debug("Original Point: " + point.toString());
         mcGraphics2d.transformToWorld(point);
@@ -79,13 +81,13 @@ public class McGraphics2dTest {
 
     @Test
     public void TranslateTest02() {
-
         Location location = new Location(null, 10, 10, 10);
         BlockProfileType generateDefaultBlockProfile = ConfigurationManager.generateDefaultBlockProfile();
         TextureMapProcessor textureMapProcessor = new TextureMapProcessor(generateDefaultBlockProfile);
         ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, null);
 
-        Vector3f point = new Vector3f(10, 10, 0);
+        // Fix: Set w = 1 for a position point
+        Vector4d point = new Vector4d(10, 10, 0, 1);
 
         log.debug("Original Point: " + point.toString());
         mcGraphics2d.transformToWorld(point);
@@ -120,7 +122,7 @@ public class McGraphics2dTest {
         tmp01.getColorTable();
     }
 
-    //@Test
+    @Test
     public void textureMapTest() throws Exception {
         BlockProfileType blockProfile = ConfigurationManager.generateDefaultBlockProfile();
         TextureMapProcessor tmp = new TextureMapProcessor(blockProfile);

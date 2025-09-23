@@ -11,7 +11,7 @@ import java.io.File;
 public class Nouveau extends JavaPlugin {
 
     private static Logger log = LoggerFactory.getLogger(Nouveau.class);
-    private static final String DATAFILE = "pluginSettings.xml";
+    private static final String DATAFILE = "pluginSettings.json";
     private ConfigurationManager configurationManager;
 
     public void onDisable() {

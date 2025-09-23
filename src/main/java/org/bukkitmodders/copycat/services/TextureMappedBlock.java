@@ -1,8 +1,8 @@
 package org.bukkitmodders.copycat.services;
 
 import java.util.Hashtable;
+import java.util.logging.Logger;
 
-import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
@@ -12,7 +12,7 @@ public enum TextureMappedBlock {
 	DIRT("DIRT",2, Material.DIRT),
 	STONE("STONE",1, Material.STONE),
 	SANDSTONE("SANDSTONE",192, Material.SANDSTONE),
-	BRICK("BRICK",7, Material.BRICK),
+	BRICK("BRICK",7, Material.BRICKS), // Changed from BRICK to BRICKS
 	SNOW_BLOCK("SNOW_BLOCK",66, Material.SNOW_BLOCK),
 	CLAY("CLAY",72, Material.CLAY),
 	LOG_OAK("LOG_OAK",20,Material.OAK_LOG),
@@ -39,12 +39,12 @@ public enum TextureMappedBlock {
 	GOLD_ORE("GOLD_ORE",32, Material.GOLD_ORE),
 	REDSTONE_ORE("REDSTONE_ORE",51, Material.REDSTONE_ORE),
 	COBBLESTONE("COBBLESTONE",16, Material.COBBLESTONE),
-	ENDER_STONE("ENDER_STONE",175, Material.END_STONE_BRICKS),
+	ENDER_STONE("ENDER_STONE",175, Material.END_STONE),
 	SPONGE("SPONGE",48, Material.SPONGE),
-	NETHER_BRICK("NETHER_BRICK",224, Material.NETHER_BRICK),
+	NETHER_BRICK("NETHER_BRICK",224, Material.NETHER_BRICKS), // Changed from NETHER_BRICK to NETHER_BRICKS
 	//ICE("ICE",67,Material.ICE,(byte) 0),
 	REDSTONE_LAMP_OFF("REDSTONE_LAMP_OFF",211,Material.REDSTONE_LAMP),
-	PUMPKIN("PUMPKIN",118,Material.JACK_O_LANTERN),
+	PUMPKIN("PUMPKIN",118,Material.CARVED_PUMPKIN), // Changed from JACK_O_LANTERN to CARVED_PUMPKIN
 	MELON("MELON",136,Material.MELON),
 	WOOL_WHITE("WOOL_WHITE",64, Material.WHITE_WOOL),
 	WOOL_BLACK("WOOL_BLACK",113, Material.BLACK_WOOL),
@@ -63,21 +63,30 @@ public enum TextureMappedBlock {
 	WOOL_ORANGE("WOOL_ORANGE",210, Material.ORANGE_WOOL),
 	WOOL_LIGHT_GRAY("WOOL_LIGHT_GRAY",225, Material.LIGHT_GRAY_WOOL);
 
+	private static final Logger LOGGER = Logger.getLogger(TextureMappedBlock.class.getName());
+	
 	private final Material material;
 	private final int tile;
 	private final String name;
+	private final boolean isValidBlock;
 	private static Hashtable<Integer, TextureMappedBlock> SUPPORTED_BLOCKS = new Hashtable<Integer, TextureMappedBlock>();
 	
 	static {
 		for (TextureMappedBlock block : values()) {
-			SUPPORTED_BLOCKS.put(block.getTile(), block);
+			if (block.isValidBlock) {
+				SUPPORTED_BLOCKS.put(block.getTile(), block);
+			} else {
+				LOGGER.warning("Skipping invalid block material: " + block.material + " for " + block.name);
+			}
 		}
+		LOGGER.info("Loaded " + SUPPORTED_BLOCKS.size() + " valid block materials out of " + values().length + " total entries");
 	}
 	
-	private TextureMappedBlock(String name, int tile, Material material) {
+	TextureMappedBlock(String name, int tile, Material material) {
 		this.tile = tile;
 		this.material = material;
 		this.name = name;
+		this.isValidBlock = material != null && material.isBlock();
 	}
 	
 	public TextureMappedBlock getBlock(int spriteIndex) {
@@ -88,8 +97,23 @@ public enum TextureMappedBlock {
 		return null;
 	}
 
-	public void setBlock(Block block) {
-		block.setType(material);
+	public boolean setBlock(Block block) {
+		if (!isValidBlock) {
+			LOGGER.warning("Attempted to set invalid block material: " + material + " for " + name);
+			// Fallback to stone as a safe default
+			block.setType(Material.STONE);
+			return false;
+		}
+		
+		try {
+			block.setType(material);
+			return true;
+		} catch (IllegalArgumentException e) {
+			LOGGER.warning("Failed to set block type to " + material + " for " + name + ": " + e.getMessage());
+			// Fallback to stone as a safe default
+			block.setType(Material.STONE);
+			return false;
+		}
 	}
 	
 	public int getTile() {
@@ -102,6 +126,10 @@ public enum TextureMappedBlock {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public boolean isValidBlock() {
+		return isValidBlock;
 	}
 
 	public static TextureMappedBlock getBlockBySpriteIndex(int spriteIndex) {

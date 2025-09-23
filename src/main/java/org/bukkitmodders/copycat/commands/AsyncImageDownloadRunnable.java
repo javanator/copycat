@@ -8,6 +8,9 @@ import java.net.URL;
 
 import javax.imageio.ImageIO;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -23,21 +26,30 @@ final class AsyncImageDownloadRunnable implements Runnable {
 	private final Location location;
 	private final Nouveau plugin;
 	private final Shortcut shortcut;
+    private final OkHttpClient client;
 
-	AsyncImageDownloadRunnable(CommandSender sender, Location location, Shortcut shortcut, Nouveau plugin) {
+    AsyncImageDownloadRunnable(CommandSender sender, Location location, Shortcut shortcut, Nouveau plugin) {
 		this.sender = sender;
 		this.location = location;
 		this.shortcut = shortcut;
 		this.plugin = plugin;
-	}
+        this.client = new OkHttpClient.Builder()
+                .followRedirects(true)
+                .build();
+    }
 
 	@Override
 	public void run() {
 		InputStream in = null;
 
 		try {
-			in = new URL(shortcut.getUrl()).openStream();
-			final BufferedImage image = ImageIO.read(in);
+
+            Request request = new Request.Builder()
+                    .url(shortcut.getUrl())
+                    .build();
+            Response response = client.newCall(request).execute();
+            in = response.body().byteStream();
+            final BufferedImage image = ImageIO.read(in);
 
 			plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 

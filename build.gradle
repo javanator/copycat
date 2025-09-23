@@ -60,6 +60,7 @@ dependencies {
     compileOnly 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
     testImplementation 'junit:junit:4.4'
     testImplementation 'io.papermc.paper:paper-api:1.21.8-R0.1-SNAPSHOT'
+    testImplementation 'org.slf4j:slf4j-simple:2.0.17'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.20.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.20'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.20'
@@ -69,5 +70,6 @@ dependencies {
     implementation 'com.twelvemonkeys.imageio:twelvemonkeys-imageio-core:2.3'
     implementation 'org.slf4j:slf4j-api:2.0.17'
     implementation 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }
 

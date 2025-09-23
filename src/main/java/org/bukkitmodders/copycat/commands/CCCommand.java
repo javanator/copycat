@@ -19,7 +19,9 @@ import org.bukkitmodders.copycat.services.ImageCopier;
 import org.bukkitmodders.copycat.services.TextureMapProcessor;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.bukkitmodders.copycat.util.MatrixUtil;
+import org.joml.Matrix3d;
 import org.joml.Matrix3f;
+import org.joml.Matrix4d;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,7 +182,7 @@ public class CCCommand implements CommandExecutor {
             if (senderSettings.isDithering()) {
                 image = ImageUtil.ditherImage(image, icm);
             }
-            Matrix3f rotationMatrix = null;
+            Matrix4d rotationMatrix = null;
 
             rotationMatrix = MatrixUtil.calculateRotation(location);
             ImageCopier mcGraphics2d = new ImageCopier(textureMapProcessor, location, rotationMatrix);
