@@ -1,14 +1,12 @@
 package org.bukkitmodders.copycat.managers;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,11 +14,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkitmodders.copycat.Settings;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
-import org.bukkitmodders.copycat.schema.BlockProfileType.Block;
-import org.bukkitmodders.copycat.schema.ObjectFactory;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType;
-import org.bukkitmodders.copycat.schema.PluginConfig;
+import org.bukkitmodders.copycat.model.BlockProfileType;
+import org.bukkitmodders.copycat.model.BlockProfileType.Block;
+import org.bukkitmodders.copycat.model.ObjectFactory;
+import org.bukkitmodders.copycat.model.PlayerSettingsType;
+import org.bukkitmodders.copycat.model.PluginConfig;
 import org.bukkitmodders.copycat.services.TextureMappedBlock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

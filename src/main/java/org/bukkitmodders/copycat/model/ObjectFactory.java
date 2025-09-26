@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.schema;
+package org.bukkitmodders.copycat.model;
 
 public class ObjectFactory {
 

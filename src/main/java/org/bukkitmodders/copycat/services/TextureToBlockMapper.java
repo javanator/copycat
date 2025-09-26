@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.block.Block;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.model.BlockProfileType;
 
 public class TextureToBlockMapper {
 
 	private Map<Integer, TextureMappedBlock> supportedBlocks = new HashMap<Integer, TextureMappedBlock>();
 
 	public TextureToBlockMapper(BlockProfileType blockProfile) {
-		for (org.bukkitmodders.copycat.schema.BlockProfileType.Block block : blockProfile.getBlock()) {
+		for (BlockProfileType.Block block : blockProfile.getBlock()) {
 
 			int tileNumber = block.getTextureIndex();
 			TextureMappedBlock sprite = TextureMappedBlock.getBlockBySpriteIndex(tileNumber);

@@ -1,16 +1,14 @@
 package org.bukkitmodders.copycat.services;
 
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
 import java.io.IOException;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
 import org.bukkitmodders.copycat.Settings;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.model.BlockProfileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +16,9 @@ public class TextureMapProcessor {
 
 	private static final Logger log = LoggerFactory.getLogger(TextureMapProcessor.class);
 
-	private String textureResource = Settings.TERRAIN;
-	private int textureWidth = 16;
-	private int textureHeight = 16;
+	private final String textureResource = Settings.TERRAIN;
+	private final int textureWidth = 16;
+	private final int textureHeight = 16;
 	private BufferedImage image;
 	private int rows;
 	private int cols;

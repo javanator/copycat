@@ -4,7 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URL;
 
 import javax.imageio.ImageIO;
 
@@ -15,8 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkitmodders.copycat.Nouveau;
-import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
+import org.bukkitmodders.copycat.model.PlayerSettingsType.Shortcuts.Shortcut;
 
 final class AsyncImageDownloadRunnable implements Runnable {
 	/**

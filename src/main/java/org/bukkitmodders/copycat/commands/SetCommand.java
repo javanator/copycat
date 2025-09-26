@@ -12,7 +12,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkitmodders.copycat.Nouveau;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.schema.BlockProfileType;
+import org.bukkitmodders.copycat.model.BlockProfileType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

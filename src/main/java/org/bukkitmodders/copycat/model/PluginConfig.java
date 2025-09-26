@@ -1,4 +1,4 @@
-package org.bukkitmodders.copycat.schema;
+package org.bukkitmodders.copycat.model;
 
 import java.util.ArrayList;
 import java.util.List;

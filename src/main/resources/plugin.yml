@@ -24,28 +24,3 @@ commands:
     usage: /cc <args>
     permission: copycat.use
 
-permissions:
-  copycat.img:
-    description: Allows use of image commands
-    default: true
-  copycat.set:
-    description: Allows use of set commands
-    default: true
-  copycat.admin:
-    description: Allows use of admin commands
-    default: op
-  copycat.stamp:
-    description: Allows use of stamp commands
-    default: true
-  copycat.use:
-    description: Allows use of basic CC commands
-    default: true
-  copycat.*:
-    description: Grants access to all Copycat commands
-    default: op
-    children:
-      copycat.img: true
-      copycat.set: true
-      copycat.admin: true
-      copycat.stamp: true
-      copycat.use: true

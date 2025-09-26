@@ -3,11 +3,12 @@ package org.bukkitmodders.copycat.services;
 import java.util.Hashtable;
 import java.util.logging.Logger;
 
+import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 public enum TextureMappedBlock {
-	//AIR("AIR",207,Material.AIR,(byte)0),
+	//AIR("AIR",207,Material.AIR),
 	NETHERACK("NETHERACK",103, Material.NETHERRACK),
 	DIRT("DIRT",2, Material.DIRT),
 	STONE("STONE",1, Material.STONE),
@@ -64,27 +65,29 @@ public enum TextureMappedBlock {
 	WOOL_LIGHT_GRAY("WOOL_LIGHT_GRAY",225, Material.LIGHT_GRAY_WOOL);
 
 	private static final Logger LOGGER = Logger.getLogger(TextureMappedBlock.class.getName());
-	
+
 	private final Material material;
-	private final int tile;
-	private final String name;
+	@Getter
+    private final int tile;
+	@Getter
+    private final String name;
 	private Boolean isValidBlock; // Changed to Boolean for lazy initialization
 	private static Hashtable<Integer, TextureMappedBlock> SUPPORTED_BLOCKS;
 	private static boolean bukkitAvailable = true; // Track if Bukkit is available
-	
+
 	TextureMappedBlock(String name, int tile, Material material) {
 		this.tile = tile;
 		this.material = material;
 		this.name = name;
 		this.isValidBlock = null; // Lazy initialization
 	}
-	
+
 	// Check if we're in a test environment where Bukkit might not be available
 	private static boolean isBukkitAvailable() {
 		if (!bukkitAvailable) {
 			return false;
 		}
-		
+
 		try {
 			// Try to access a basic Bukkit functionality that would fail in test env
 			Material.STONE.name();
@@ -95,21 +98,21 @@ public enum TextureMappedBlock {
 			return false;
 		}
 	}
-	
+
 	// Lazy initialization of supported blocks
 	private static synchronized void initializeSupportedBlocks() {
 		if (SUPPORTED_BLOCKS != null) {
 			return;
 		}
-		
+
 		SUPPORTED_BLOCKS = new Hashtable<>();
 		int validCount = 0;
 		boolean testMode = !isBukkitAvailable();
-		
+
 		if (testMode) {
 			LOGGER.info("Running in test mode - assuming all blocks are valid");
 		}
-		
+
 		for (TextureMappedBlock block : values()) {
 			boolean isValid = testMode || block.isValidBlock();
 			if (isValid) {
@@ -121,7 +124,7 @@ public enum TextureMappedBlock {
 		}
 		LOGGER.info("Loaded " + validCount + " valid block materials out of " + values().length + " total entries");
 	}
-	
+
 	public TextureMappedBlock getBlock(int spriteIndex) {
 		initializeSupportedBlocks();
 		return SUPPORTED_BLOCKS.get(spriteIndex);
@@ -132,7 +135,7 @@ public enum TextureMappedBlock {
 			LOGGER.info("Bukkit not available - skipping block placement for " + name);
 			return true; // Return true in test mode to allow processing to continue
 		}
-		
+
 		if (!isValidBlock()) {
 			LOGGER.warning("Attempted to set invalid block material: " + material + " for " + name);
 			// Fallback to stone as a safe default
@@ -145,11 +148,11 @@ public enum TextureMappedBlock {
 			}
 			return false;
 		}
-		
+
 		if (block == null) {
 			return false;
 		}
-		
+
 		try {
 			block.setType(material);
 			return true;
@@ -164,20 +167,12 @@ public enum TextureMappedBlock {
 			return false;
 		}
 	}
-	
-	public int getTile() {
-		return tile;
-	}
 
-	public String getMaterialName() {
+    public String getMaterialName() {
 		return material != null ? material.name() : "UNKNOWN";
 	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public boolean isValidBlock() {
+
+    public boolean isValidBlock() {
 		if (isValidBlock == null) {
 			// Check if we're in test environment first
 			if (!isBukkitAvailable()) {
@@ -185,7 +180,7 @@ public enum TextureMappedBlock {
 				isValidBlock = material != null;
 				return isValidBlock;
 			}
-			
+
 			// Lazy validation with proper error handling
 			try {
 				isValidBlock = material != null && material.isBlock();

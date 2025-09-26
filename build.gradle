@@ -16,8 +16,8 @@ plugins {
 }
 
 apply plugin: 'java'
-apply plugin: 'com.gradleup.shadow'
 apply plugin: 'io.freefair.lombok'
+apply plugin: 'com.gradleup.shadow'
 
 group = 'org.bukkitmodders'
 version = '1.4'

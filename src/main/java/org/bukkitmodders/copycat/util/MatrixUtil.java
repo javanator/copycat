@@ -5,118 +5,99 @@ import org.joml.Matrix4d;
 
 public class MatrixUtil {
 
-    private static Matrix4d PLAYER_DEG0 = new Matrix4d();
-    private static Matrix4d PLAYER_DEG90 = new Matrix4d();
-    private static Matrix4d PLAYER_DEG180 = new Matrix4d();
-    private static Matrix4d PLAYER_DEG270 = new Matrix4d();
+    // Angle constants
+    private static final double SNAP_THRESHOLD = 45.0;
+    private static final double FULL_ROTATION = 360.0;
+    private static final double PITCH_DOWN_THRESHOLD = 45.0;
 
-    private static Matrix4d XROTNEG90 = new Matrix4d();
-    private static Matrix4d XROTPOS90 = new Matrix4d();
+    // Pre-calculated rotation matrices for player orientations
+    private static final Matrix4d PLAYER_ROTATION_0 = new Matrix4d().rotateY(Math.toRadians(180));
+    private static final Matrix4d PLAYER_ROTATION_90 = new Matrix4d().rotateY(Math.toRadians(90));
+    private static final Matrix4d PLAYER_ROTATION_180 = new Matrix4d().rotateY(Math.toRadians(180));
+    private static final Matrix4d PLAYER_ROTATION_270 = new Matrix4d().rotateY(-Math.toRadians(270));
 
-    private static Matrix4d ZROTNEG90 = new Matrix4d();
-    private static Matrix4d ZROTPOS90 = new Matrix4d();
-
-    static {
-
-        Matrix4d rot = new Matrix4d();
-
-        //rot.rotY(Math.toRadians(180));
-        rot = new Matrix4d().rotateXYZ(0, Math.toRadians(180), 0);
-        PLAYER_DEG0.set(rot);
-
-        //rot.rotY(Math.toRadians(90));
-        rot = new Matrix4d().rotateXYZ(0, Math.toRadians(90), 0);
-        PLAYER_DEG90.set(rot);
-
-        //rot.rotY(Math.toRadians(0));
-        rot = new Matrix4d().rotateXYZ(0, Math.toRadians(90), 0);
-        PLAYER_DEG180.set(rot);
-
-        //rot.rotY(Math.toRadians(-90));
-        rot = new Matrix4d().rotateXYZ(0, Math.toRadians(-90), 0);
-        PLAYER_DEG270.set(rot);
-
-        //rot.rotX(Math.toRadians(-90));
-        rot = new Matrix4d().rotateXYZ(Math.toRadians(-90), 0, 0);
-        XROTNEG90.set(rot);
-
-        //rot.rotX(Math.toRadians(90));
-        rot = new Matrix4d().rotateXYZ(Math.toRadians(90), 0, 0);
-        XROTPOS90.set(rot);
-
-        //rot.rotZ(Math.toRadians(-90));
-        rot = new Matrix4d().rotateXYZ(0, 0, Math.toRadians(-90));
-        ZROTNEG90.set(rot);
-
-        //rot.rotZ(Math.toRadians(90));
-        rot = new Matrix4d().rotateXYZ(0, 0, Math.toRadians(90));
-        ZROTPOS90.set(rot);
-
-    }
+    // Pre-calculated rotation matrices for pitch adjustments
+    private static final Matrix4d X_ROTATION_NEG_90 = new Matrix4d().rotateX(Math.toRadians(-90));
+    private static final Matrix4d X_ROTATION_POS_90 = new Matrix4d().rotateX(Math.toRadians(90));
+    private static final Matrix4d Z_ROTATION_NEG_90 = new Matrix4d().rotateZ(Math.toRadians(-90));
+    private static final Matrix4d Z_ROTATION_POS_90 = new Matrix4d().rotateZ(Math.toRadians(90));
 
     public static Matrix4d calculateRotation(Location location) {
-
-        double yaw = Math.abs(location.getYaw());
-
-        yaw %= 360;
-
-        double baseAngle = 0;
-        int sign = (location.getYaw() < 0) ? -1 : 1;
-
-        // Snap to a basis vector
-        if (yaw > (90 - 45) & yaw <= (90 + 45)) {
-            baseAngle = 90;
-        } else if (yaw > (180 - 45) & yaw <= (180 + 45)) {
-            baseAngle = 180;
-        } else if (yaw > (270 - 45) && yaw <= (270 + 45)) {
-            baseAngle = 270;
+        if (location == null) {
+            return new Matrix4d().identity();
         }
 
-        if (sign < 0) {
-            baseAngle = 360 - baseAngle;
+        double normalizedYaw = normalizeYaw(location.getYaw());
+        boolean isPitchingDown = location.getPitch() > PITCH_DOWN_THRESHOLD;
+
+        return buildRotationMatrix(normalizedYaw, isPitchingDown);
+    }
+
+    private static double normalizeYaw(float rawYaw) {
+        double yaw = Math.abs(rawYaw);
+        yaw %= FULL_ROTATION;
+
+        double baseAngle = snapToCardinalDirection(yaw);
+
+        if (rawYaw < 0) {
+            baseAngle = FULL_ROTATION - baseAngle;
         }
 
-        double pitch = location.getPitch();
+        return baseAngle;
+    }
 
-        boolean down = false;
-
-        if (pitch > 45) {
-            down = true;
+    private static double snapToCardinalDirection(double yaw) {
+        if (yaw > (90 - SNAP_THRESHOLD) && yaw <= (90 + SNAP_THRESHOLD)) {
+            return 90;
+        } else if (yaw > (180 - SNAP_THRESHOLD) && yaw <= (180 + SNAP_THRESHOLD)) {
+            return 180;
+        } else if (yaw > (270 - SNAP_THRESHOLD) && yaw <= (270 + SNAP_THRESHOLD)) {
+            return 270;
         }
+        return 0;
+    }
 
+    private static Matrix4d buildRotationMatrix(double baseAngle, boolean isPitchingDown) {
         Matrix4d orientation = new Matrix4d().identity();
 
-        if (baseAngle == 0 || baseAngle == 360) {
-
-            if (down) {
-                orientation.mul(XROTPOS90);
-            }
-
-            orientation.mul(PLAYER_DEG0);
+        if (baseAngle == 0 || baseAngle == FULL_ROTATION) {
+            applyRotationForAngle0(orientation, isPitchingDown);
         } else if (baseAngle == 90) {
-
-            if (down) {
-                orientation.mul(ZROTPOS90);
-            }
-
-            orientation.mul(PLAYER_DEG90);
-
+            applyRotationForAngle90(orientation, isPitchingDown);
         } else if (baseAngle == 180) {
-
-            if (down) {
-                orientation.mul(XROTNEG90);
-            }
-
-            orientation.mul(PLAYER_DEG180);
+            applyRotationForAngle180(orientation, isPitchingDown);
         } else if (baseAngle == 270) {
-
-            if (down) {
-                orientation.mul(ZROTNEG90);
-            }
-
-            orientation.mul(PLAYER_DEG270);
+            applyRotationForAngle270(orientation, isPitchingDown);
         }
 
         return orientation;
+    }
+
+    private static void applyRotationForAngle0(Matrix4d orientation, boolean isPitchingDown) {
+        if (isPitchingDown) {
+            orientation.mul(X_ROTATION_POS_90);
+        }
+        orientation.mul(PLAYER_ROTATION_0);
+    }
+
+    private static void applyRotationForAngle90(Matrix4d orientation, boolean isPitchingDown) {
+        if (isPitchingDown) {
+            orientation.mul(Z_ROTATION_POS_90);
+        }
+        orientation.mul(PLAYER_ROTATION_90);
+    }
+
+    private static void applyRotationForAngle180(Matrix4d orientation, boolean isPitchingDown) {
+        if (isPitchingDown) {
+            orientation.mul(X_ROTATION_NEG_90);
+        }
+        orientation.mul(PLAYER_ROTATION_180);
+    }
+
+    private static void applyRotationForAngle270(Matrix4d orientation, boolean isPitchingDown) {
+        if (isPitchingDown) {
+            orientation.mul(Z_ROTATION_NEG_90);
+        }
+        orientation.mul(PLAYER_ROTATION_270);
     }
 }

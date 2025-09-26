@@ -26,41 +26,20 @@ public class Nouveau extends JavaPlugin {
     }
 
     public void onEnable() {
-        // Check if commands exist before setting executors
         var imgCommand = getCommand(ImgCommand.getCommandString());
-        if (imgCommand != null) {
-            imgCommand.setExecutor(new ImgCommand(this));
-        } else {
-            log.warn("Command '" + ImgCommand.getCommandString() + "' not found in plugin.yml");
-        }
+        imgCommand.setExecutor(new ImgCommand(this));
 
         var setCommand = getCommand(SetCommand.getCommandString());
-        if (setCommand != null) {
-            setCommand.setExecutor(new SetCommand(this));
-        } else {
-            log.warn("Command '" + SetCommand.getCommandString() + "' not found in plugin.yml");
-        }
+        setCommand.setExecutor(new SetCommand(this));
 
         var adminCommand = getCommand(AdminCommand.getCommandString());
-        if (adminCommand != null) {
-            adminCommand.setExecutor(new AdminCommand(this));
-        } else {
-            log.warn("Command '" + AdminCommand.getCommandString() + "' not found in plugin.yml");
-        }
+        adminCommand.setExecutor(new AdminCommand(this));
 
         var stampCommand = getCommand(StampCommand.getCommandString());
-        if (stampCommand != null) {
-            stampCommand.setExecutor(new StampCommand(this));
-        } else {
-            log.warn("Command '" + StampCommand.getCommandString() + "' not found in plugin.yml");
-        }
+        stampCommand.setExecutor(new StampCommand(this));
 
         var ccCommand = getCommand(CCCommand.getCommandString());
-        if (ccCommand != null) {
-            ccCommand.setExecutor(new CCCommand(this));
-        } else {
-            log.warn("Command '" + CCCommand.getCommandString() + "' not found in plugin.yml");
-        }
+        ccCommand.setExecutor(new CCCommand(this));
 
         getServer().getPluginManager().registerEvents(new StampListener(this), this);
 

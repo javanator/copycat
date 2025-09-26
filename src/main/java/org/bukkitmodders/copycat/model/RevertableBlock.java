@@ -1,9 +1,8 @@
-package org.bukkitmodders.copycat.plugin;
+package org.bukkitmodders.copycat.model;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * A revertable block is a composite object that saves the state of a block on

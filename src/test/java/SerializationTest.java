@@ -1,10 +1,7 @@
-import com.fasterxml.jackson.core.StreamReadFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.bukkitmodders.copycat.schema.GlobalSettingsType;
-import org.bukkitmodders.copycat.schema.PluginConfig;
+import org.bukkitmodders.copycat.model.PluginConfig;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;

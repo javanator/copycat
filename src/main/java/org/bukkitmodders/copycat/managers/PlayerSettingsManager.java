@@ -12,10 +12,10 @@ import java.util.concurrent.LinkedBlockingDeque;
 import javax.imageio.ImageIO;
 
 import org.bukkit.command.CommandSender;
-import org.bukkitmodders.copycat.plugin.RevertableBlock;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts;
-import org.bukkitmodders.copycat.schema.PlayerSettingsType.Shortcuts.Shortcut;
+import org.bukkitmodders.copycat.model.RevertableBlock;
+import org.bukkitmodders.copycat.model.PlayerSettingsType;
+import org.bukkitmodders.copycat.model.PlayerSettingsType.Shortcuts;
+import org.bukkitmodders.copycat.model.PlayerSettingsType.Shortcuts.Shortcut;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
