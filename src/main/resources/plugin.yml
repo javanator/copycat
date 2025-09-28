@@ -1,26 +1,5 @@
 name: Copycat
 version: 1.0
-main: org.bukkitmodders.copycat.Nouveau
+main: org.bukkitmodders.copycat.Application
 api-version: '1.21'
-commands:
-  ccimg:
-    description: Image command
-    usage: /ccimg <args>
-    permission: copycat.img
-  ccset:
-    description: Set command
-    usage: /ccset <args>
-    permission: copycat.set
-  ccadmin:
-    description: Admin command
-    usage: /ccadmin <args>
-    permission: copycat.admin
-  ccstamp:
-    description: Stamp command
-    usage: /ccstamp <args>
-    permission: copycat.stamp
-  cc:
-    description: CC command
-    usage: /cc <args>
-    permission: copycat.use
 

@@ -10,7 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkitmodders.copycat.Nouveau;
+import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.slf4j.Logger;
@@ -18,10 +18,10 @@ import org.slf4j.LoggerFactory;
 
 public class StampCommand implements CommandExecutor {
 	static final Logger log = LoggerFactory.getLogger(StampCommand.class);
-	final Nouveau plugin;
+	final Application plugin;
 
-	public StampCommand(Nouveau nouveau) {
-		this.plugin = nouveau;
+	public StampCommand(Application application) {
+		this.plugin = application;
 	}
 
 	public static String getCommandString() {
@@ -81,11 +81,11 @@ public class StampCommand implements CommandExecutor {
 
 			if ("ON".equalsIgnoreCase(operation)) {
 
-				playerSettings.setCopyEnabled(true);
+				playerSettings.setStampActivated(true);
 				sender.sendMessage("Copying has been enabled for " + sender.getName());
 			} else if ("OFF".equalsIgnoreCase(operation)) {
 
-				playerSettings.setCopyEnabled(false);
+				playerSettings.setStampActivated(false);
 				sender.sendMessage("Copying has been disabled for " + sender.getName());
 			} else if ("SET".equalsIgnoreCase(operation)) {
 

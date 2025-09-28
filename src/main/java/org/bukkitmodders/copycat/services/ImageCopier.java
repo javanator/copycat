@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkitmodders.copycat.model.RevertableBlock;
+import org.bukkitmodders.copycat.model.RevertibleBlock;
 import org.joml.Matrix4d;
 import org.joml.Vector4d;
 import org.slf4j.Logger;
@@ -41,7 +41,7 @@ public class ImageCopier {
      * @param image      the image to draw
      * @param undoBuffer buffer to store revertable blocks for undo functionality
      */
-    public void draw(BufferedImage image, Stack<RevertableBlock> undoBuffer) {
+    public void draw(BufferedImage image, Stack<RevertibleBlock> undoBuffer) {
         Vector4d point = new Vector4d();
 
         for (int x = 0; x < image.getWidth(); x++) {
@@ -51,7 +51,7 @@ public class ImageCopier {
         }
     }
 
-    private void processPixel(BufferedImage image, Stack<RevertableBlock> undoBuffer, Vector4d point, int x, int y) {
+    private void processPixel(BufferedImage image, Stack<RevertibleBlock> undoBuffer, Vector4d point, int x, int y) {
         Vector4d worldPosition = calculateWorldPosition(point, x, y, image.getHeight());
         Block block = getBlockAtPosition(worldPosition);
 
@@ -76,9 +76,9 @@ public class ImageCopier {
         return world.getBlockAt(blockX, blockY, blockZ);
     }
 
-    private void saveBlockForUndo(Stack<RevertableBlock> undoBuffer, Block block) {
+    private void saveBlockForUndo(Stack<RevertibleBlock> undoBuffer, Block block) {
         if (undoBuffer != null) {
-            undoBuffer.push(new RevertableBlock(block));
+            undoBuffer.push(new RevertibleBlock(block));
         }
     }
 

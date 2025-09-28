@@ -2,107 +2,105 @@
   "globalSettings": {
     "maxImageWidth": 400,
     "maxImageHeight": 100,
-    "blockProfiles": {
-      "blockProfile": [
-        {
-          "name": "wool",
-          "block": [
-            { "textureIndex": 64, "name": "WOOL_WHITE" },
-            { "textureIndex": 113, "name": "WOOL_BLACK" },
-            { "textureIndex": 114, "name": "WOOL_GRAY" },
-            { "textureIndex": 129, "name": "WOOL_RED" },
-            { "textureIndex": 130, "name": "WOOL_PINK" },
-            { "textureIndex": 145, "name": "WOOL_GREEN" },
-            { "textureIndex": 146, "name": "WOOL_LIGHT_GREEN" },
-            { "textureIndex": 161, "name": "WOOL_BROWN" },
-            { "textureIndex": 162, "name": "WOOL_YELLOW" },
-            { "textureIndex": 177, "name": "WOOL_BLUE" },
-            { "textureIndex": 178, "name": "WOOL_LIGHT_BLUE" },
-            { "textureIndex": 193, "name": "WOOL_PURPLE" },
-            { "textureIndex": 194, "name": "WOOL_LIGHT_PURPLE" },
-            { "textureIndex": 209, "name": "WOOL_CYAN" },
-            { "textureIndex": 210, "name": "WOOL_ORANGE" },
-            { "textureIndex": 225, "name": "WOOL_LIGHT_GRAY" }
-          ]
-        },
-        {
-          "name": "default",
-          "block": [
-            { "textureIndex": 103, "name": "NETHERACK" },
-            { "textureIndex": 2, "name": "DIRT" },
-            { "textureIndex": 1, "name": "STONE" },
-            { "textureIndex": 192, "name": "SANDSTONE" },
-            { "textureIndex": 7, "name": "BRICK" },
-            { "textureIndex": 66, "name": "SNOW_BLOCK" },
-            { "textureIndex": 72, "name": "CLAY" },
-            { "textureIndex": 20, "name": "LOG_OAK" },
-            { "textureIndex": 116, "name": "LOG_SPRUCE" },
-            { "textureIndex": 117, "name": "LOG_BIRCH" },
-            { "textureIndex": 153, "name": "LOG_JUNGLE" },
-            { "textureIndex": 4, "name": "WOOD_PLANK_OAK" },
-            { "textureIndex": 198, "name": "WOOD_PLANK_SPRUCE" },
-            { "textureIndex": 199, "name": "WOOD_PLANK_BIRCH" },
-            { "textureIndex": 214, "name": "WOOD_PLANK_JUNGLE" },
-            { "textureIndex": 22, "name": "IRON_BLOCK" },
-            { "textureIndex": 23, "name": "GOLD_BLOCK" },
-            { "textureIndex": 24, "name": "DIAMOND_BLOCK" },
-            { "textureIndex": 25, "name": "EMERALD_BLOCK" },
-            { "textureIndex": 105, "name": "GLOWSTONE" },
-            { "textureIndex": 144, "name": "LAPIS_LAZULI_BLOCK" },
-            { "textureIndex": 160, "name": "LAPIS_LAZULI_ORE" },
-            { "textureIndex": 37, "name": "OBSIDIAN" },
-            { "textureIndex": 74, "name": "NOTE_BLOCK" },
-            { "textureIndex": 36, "name": "MOSSY_COBBLESTONE" },
-            { "textureIndex": 33, "name": "IRON_ORE" },
-            { "textureIndex": 34, "name": "COAL_ORE" },
-            { "textureIndex": 50, "name": "DIAMOND_ORE" },
-            { "textureIndex": 32, "name": "GOLD_ORE" },
-            { "textureIndex": 51, "name": "REDSTONE_ORE" },
-            { "textureIndex": 16, "name": "COBBLESTONE" },
-            { "textureIndex": 175, "name": "ENDER_STONE" },
-            { "textureIndex": 48, "name": "SPONGE" },
-            { "textureIndex": 224, "name": "NETHER_BRICK" },
-            { "textureIndex": 211, "name": "REDSTONE_LAMP_OFF" },
-            { "textureIndex": 118, "name": "PUMPKIN" },
-            { "textureIndex": 136, "name": "MELON" },
-            { "textureIndex": 64, "name": "WOOL_WHITE" },
-            { "textureIndex": 113, "name": "WOOL_BLACK" },
-            { "textureIndex": 114, "name": "WOOL_GRAY" },
-            { "textureIndex": 129, "name": "WOOL_RED" },
-            { "textureIndex": 130, "name": "WOOL_PINK" },
-            { "textureIndex": 145, "name": "WOOL_GREEN" },
-            { "textureIndex": 146, "name": "WOOL_LIGHT_GREEN" },
-            { "textureIndex": 161, "name": "WOOL_BROWN" },
-            { "textureIndex": 162, "name": "WOOL_YELLOW" },
-            { "textureIndex": 177, "name": "WOOL_BLUE" },
-            { "textureIndex": 178, "name": "WOOL_LIGHT_BLUE" },
-            { "textureIndex": 193, "name": "WOOL_PURPLE" },
-            { "textureIndex": 194, "name": "WOOL_LIGHT_PURPLE" },
-            { "textureIndex": 209, "name": "WOOL_CYAN" },
-            { "textureIndex": 210, "name": "WOOL_ORANGE" },
-            { "textureIndex": 225, "name": "WOOL_LIGHT_GRAY" }
-          ]
-        }
-      ]
-    }
+    "blockProfiles": [
+      {
+        "name": "wool",
+        "block": [
+          { "textureIndex": 64, "name": "WOOL_WHITE" },
+          { "textureIndex": 113, "name": "WOOL_BLACK" },
+          { "textureIndex": 114, "name": "WOOL_GRAY" },
+          { "textureIndex": 129, "name": "WOOL_RED" },
+          { "textureIndex": 130, "name": "WOOL_PINK" },
+          { "textureIndex": 145, "name": "WOOL_GREEN" },
+          { "textureIndex": 146, "name": "WOOL_LIGHT_GREEN" },
+          { "textureIndex": 161, "name": "WOOL_BROWN" },
+          { "textureIndex": 162, "name": "WOOL_YELLOW" },
+          { "textureIndex": 177, "name": "WOOL_BLUE" },
+          { "textureIndex": 178, "name": "WOOL_LIGHT_BLUE" },
+          { "textureIndex": 193, "name": "WOOL_PURPLE" },
+          { "textureIndex": 194, "name": "WOOL_LIGHT_PURPLE" },
+          { "textureIndex": 209, "name": "WOOL_CYAN" },
+          { "textureIndex": 210, "name": "WOOL_ORANGE" },
+          { "textureIndex": 225, "name": "WOOL_LIGHT_GRAY" }
+        ]
+      },
+      {
+        "name": "default",
+        "block": [
+          { "textureIndex": 103, "name": "NETHERACK" },
+          { "textureIndex": 2, "name": "DIRT" },
+          { "textureIndex": 1, "name": "STONE" },
+          { "textureIndex": 192, "name": "SANDSTONE" },
+          { "textureIndex": 7, "name": "BRICK" },
+          { "textureIndex": 66, "name": "SNOW_BLOCK" },
+          { "textureIndex": 72, "name": "CLAY" },
+          { "textureIndex": 20, "name": "LOG_OAK" },
+          { "textureIndex": 116, "name": "LOG_SPRUCE" },
+          { "textureIndex": 117, "name": "LOG_BIRCH" },
+          { "textureIndex": 153, "name": "LOG_JUNGLE" },
+          { "textureIndex": 4, "name": "WOOD_PLANK_OAK" },
+          { "textureIndex": 198, "name": "WOOD_PLANK_SPRUCE" },
+          { "textureIndex": 199, "name": "WOOD_PLANK_BIRCH" },
+          { "textureIndex": 214, "name": "WOOD_PLANK_JUNGLE" },
+          { "textureIndex": 22, "name": "IRON_BLOCK" },
+          { "textureIndex": 23, "name": "GOLD_BLOCK" },
+          { "textureIndex": 24, "name": "DIAMOND_BLOCK" },
+          { "textureIndex": 25, "name": "EMERALD_BLOCK" },
+          { "textureIndex": 105, "name": "GLOWSTONE" },
+          { "textureIndex": 144, "name": "LAPIS_LAZULI_BLOCK" },
+          { "textureIndex": 160, "name": "LAPIS_LAZULI_ORE" },
+          { "textureIndex": 37, "name": "OBSIDIAN" },
+          { "textureIndex": 74, "name": "NOTE_BLOCK" },
+          { "textureIndex": 36, "name": "MOSSY_COBBLESTONE" },
+          { "textureIndex": 33, "name": "IRON_ORE" },
+          { "textureIndex": 34, "name": "COAL_ORE" },
+          { "textureIndex": 50, "name": "DIAMOND_ORE" },
+          { "textureIndex": 32, "name": "GOLD_ORE" },
+          { "textureIndex": 51, "name": "REDSTONE_ORE" },
+          { "textureIndex": 16, "name": "COBBLESTONE" },
+          { "textureIndex": 175, "name": "ENDER_STONE" },
+          { "textureIndex": 48, "name": "SPONGE" },
+          { "textureIndex": 224, "name": "NETHER_BRICK" },
+          { "textureIndex": 211, "name": "REDSTONE_LAMP_OFF" },
+          { "textureIndex": 118, "name": "PUMPKIN" },
+          { "textureIndex": 136, "name": "MELON" },
+          { "textureIndex": 64, "name": "WOOL_WHITE" },
+          { "textureIndex": 113, "name": "WOOL_BLACK" },
+          { "textureIndex": 114, "name": "WOOL_GRAY" },
+          { "textureIndex": 129, "name": "WOOL_RED" },
+          { "textureIndex": 130, "name": "WOOL_PINK" },
+          { "textureIndex": 145, "name": "WOOL_GREEN" },
+          { "textureIndex": 146, "name": "WOOL_LIGHT_GREEN" },
+          { "textureIndex": 161, "name": "WOOL_BROWN" },
+          { "textureIndex": 162, "name": "WOOL_YELLOW" },
+          { "textureIndex": 177, "name": "WOOL_BLUE" },
+          { "textureIndex": 178, "name": "WOOL_LIGHT_BLUE" },
+          { "textureIndex": 193, "name": "WOOL_PURPLE" },
+          { "textureIndex": 194, "name": "WOOL_LIGHT_PURPLE" },
+          { "textureIndex": 209, "name": "WOOL_CYAN" },
+          { "textureIndex": 210, "name": "WOOL_ORANGE" },
+          { "textureIndex": 225, "name": "WOOL_LIGHT_GRAY" }
+        ]
+      }
+    ]
   },
   "preferences": {
-    "playerPreferences": [{
-      "stampActivated": true,
-      "playerName": "examplePlayer",
-      "blockProfile": "default",
-      "buildWidth": 64,
-      "buildHeight": 64,
-      "activeShortcut": "",
-      "stampItem": "",
-      "undoEnabled": true,
-      "dithering": true,
-      "shortcuts": {
-        "shortcut": [
+    "playerPreferences": [
+      {
+        "stampActivated": true,
+        "playerName": "examplePlayer",
+        "blockProfile": "default",
+        "buildWidth": 64,
+        "buildHeight": 64,
+        "activeShortcut": "",
+        "stampItem": "",
+        "undoEnabled": true,
+        "dithering": true,
+        "shortcuts": [
           { "url": "http://aurl", "name": "shortuctname" },
           { "url": "file://aurl", "name": "anothershortuctname" }
         ]
       }
-    }]
+    ]
   }
 }

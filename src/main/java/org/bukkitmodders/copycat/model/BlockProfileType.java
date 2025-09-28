@@ -1,50 +1,23 @@
 package org.bukkitmodders.copycat.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Getter
+@Setter
 public class BlockProfileType {
 
-    protected List<Block> block;
+    protected List<Block> block=new ArrayList<>();
     protected String name;
 
-    public List<Block> getBlock() {
-        if (block == null) {
-            block = new ArrayList<Block>();
-        }
-        return this.block;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String value) {
-        this.name = value;
-    }
-
-
+    @Setter
+    @Getter
     public static class Block {
-
         protected String name;
         protected int textureIndex;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String value) {
-            this.name = value;
-        }
-
-        public int getTextureIndex() {
-            return textureIndex;
-        }
-
-        public void setTextureIndex(int value) {
-            this.textureIndex = value;
-        }
-
     }
 }

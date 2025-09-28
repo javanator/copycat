@@ -11,13 +11,13 @@ import org.bukkit.block.data.BlockData;
  * @author nroy
  * 
  */
-public class RevertableBlock {
+public class RevertibleBlock {
 
 	private final BlockData oldData;
 	private final Material oldType;
 	private final Block block;
 
-	public RevertableBlock(Block block) {
+	public RevertibleBlock(Block block) {
 		this.block = block;
 
 		oldData = block.getBlockData();

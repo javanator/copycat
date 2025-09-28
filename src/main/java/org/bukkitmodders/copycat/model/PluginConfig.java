@@ -1,10 +1,15 @@
 package org.bukkitmodders.copycat.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 
+@Setter
+@Getter
 public class PluginConfig {
 
     @JsonProperty("globalSettings")
@@ -13,33 +18,9 @@ public class PluginConfig {
     @JsonProperty("preferences")
     private Preferences preferences;
 
-    public Preferences getPreferences() {
-        return preferences;
-    }
-
-    public void setPreferences(Preferences preferences) {
-        this.preferences = preferences;
-    }
-
-    public GlobalSettingsType getGlobalSettings() {
-        return globalSettings;
-    }
-
-    public void setGlobalSettings(GlobalSettingsType globalSettings) {
-        this.globalSettings = globalSettings;
-    }
-
+    @Setter
+    @Getter
     public static class Preferences {
-
         protected List<PlayerSettingsType> playerPreferences;
-
-        public List<PlayerSettingsType> getPlayerPreferences() {
-            if (playerPreferences == null) {
-                playerPreferences = new ArrayList<PlayerSettingsType>();
-            }
-            return this.playerPreferences;
-        }
-
     }
-
 }
