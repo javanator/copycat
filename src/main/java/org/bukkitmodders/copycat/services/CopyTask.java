@@ -16,12 +16,12 @@ import java.awt.image.IndexColorModel;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class Canvas {
+public class CopyTask {
     private final BufferedImage image;
     private final CommandSender sender;
     private final Location location;
 
-    public Canvas(BufferedImage image, CommandSender sender, Location location) {
+    public CopyTask(BufferedImage image, CommandSender sender, Location location) {
         this.image = image;
         this.location = location;
         this.sender = sender;
