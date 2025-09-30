@@ -23,7 +23,7 @@ import org.bukkitmodders.copycat.model.BlockProfileType;
 import org.bukkitmodders.copycat.model.BuildContext;
 import org.bukkitmodders.copycat.model.PlayerSettingsType;
 import org.bukkitmodders.copycat.model.RevertibleBlock;
-import org.bukkitmodders.copycat.services.CopyTask;
+import org.bukkitmodders.copycat.services.PrepareImageTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,7 +139,7 @@ public class CommandBuilder {
             // Add the image to build context. Find a better way to stop mutating state later.
             BufferedImage image = ImageIO.read(new java.io.ByteArrayInputStream(response.body()));
             buildContext.setImage(image);
-            CopyTask canvas = new CopyTask(application, buildContext);
+            PrepareImageTask canvas = new PrepareImageTask(application, buildContext);
 
             //Get back on the main thread for render
             BukkitScheduler scheduler = application.getServer().getScheduler();

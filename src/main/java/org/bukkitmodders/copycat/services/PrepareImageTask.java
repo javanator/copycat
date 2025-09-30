@@ -14,7 +14,7 @@ import java.awt.image.IndexColorModel;
 import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
-public class CopyTask {
+public class PrepareImageTask {
 
     private final Application application;
     private final BuildContext buildContext;
@@ -22,7 +22,7 @@ public class CopyTask {
     private final BufferedImage preparedImage;
     private final ImageCopier imageCopier;
 
-    public CopyTask(Application application, BuildContext buildContext) {
+    public PrepareImageTask(Application application, BuildContext buildContext) {
         TextureMapProcessor textureMapProcessor = new TextureMapProcessor(buildContext.getBlockProfile());
         Matrix4d rotationMatrix = MatrixUtil.calculateRotation(buildContext.getLocation());
 
