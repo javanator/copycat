@@ -7,15 +7,14 @@ import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkitmodders.copycat.commands.CommandBuilder;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
+import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 public class Application extends JavaPlugin {
 
     private static final String DATAFILE = "pluginSettings.json";
     private static Application INSTANCE;
-    private static Logger LOG;
     private final CommandBuilder commandBuilder = new CommandBuilder(this);
     private ConfigurationManager configurationManager;
 
@@ -50,6 +49,16 @@ public class Application extends JavaPlugin {
         }
 
         return this.configurationManager;
+    }
+
+    /**
+     * Convenience method
+     *
+     * @param playerName
+     * @return
+     */
+    public PlayerSettingsManager getPlayerSettings(String playerName) {
+        return getConfigurationManager().getPlayerSettings(playerName);
     }
 
     public static Application getInstance() {

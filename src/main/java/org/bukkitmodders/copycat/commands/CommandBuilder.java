@@ -12,23 +12,23 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
-import lombok.SneakyThrows;
+import io.papermc.paper.util.Tick;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
+import org.bukkitmodders.copycat.model.BlockProfileType;
+import org.bukkitmodders.copycat.model.BuildContext;
 import org.bukkitmodders.copycat.model.PlayerSettingsType;
 import org.bukkitmodders.copycat.model.RevertibleBlock;
 import org.bukkitmodders.copycat.services.CopyTask;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -49,13 +49,9 @@ public class CommandBuilder {
         this.application = application;
     }
 
-    private PlayerSettingsManager getPlayerSettings(String playerName) {
-        return application.getConfigurationManager().getPlayerSettings(playerName);
-    }
-
     private CompletableFuture<Suggestions> buildShortcutSuggestions(CommandContext<CommandSourceStack> commandContext, SuggestionsBuilder suggestionsBuilder) {
         String player = commandContext.getSource().getSender().getName();
-        PlayerSettingsManager playerSettings = getPlayerSettings(player);
+        PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
 
         // Get the partial input to filter suggestions
         String input = suggestionsBuilder.getInput();
@@ -92,57 +88,65 @@ public class CommandBuilder {
             HttpClient httpClient = HttpClient.newBuilder()
                     .followRedirects(HttpClient.Redirect.NORMAL)
                     .connectTimeout(Duration.ofSeconds(30))
-                    .authenticator(PlayerAuthenticator.builder().application(application).player(player).request(request).shortcut(shortcut).build())
+                    .authenticator(PlayerAuthenticator.builder()
+                            .application(application)
+                            .player(player)
+                            .build())
                     .build();
-            CompletableFuture<HttpResponse<byte[]>> responseFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray());
 
-            if (isPolling) {
-                scheduler.runTaskAsynchronously(application, () -> handleHttpResponse(responseFuture, player, shortcut, scheduler));
-            } else {
-                handleHttpResponse(responseFuture, player, shortcut, scheduler);
-            }
+            //Begin create build contesxt
+            Block b = player.getTargetBlock(null, 100);
+            Location location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
+            location.setYaw(player.getLocation().getYaw());
+            location.setPitch(player.getLocation().getPitch());
+
+            String blockProfileName = application.getPlayerSettings(player.getName()).getBlockProfile();
+            BlockProfileType blockProfile = application.getConfigurationManager().getBlockProfile(blockProfileName);
+
+            BuildContext buildContext = BuildContext.builder()
+                    .withPlayer(player)
+                    .withLocation(location)
+                    .withBlockProfile(blockProfile)
+                    .withShortcut(shortcut)
+                    .build();
+            //end create build context
+
+            CompletableFuture<HttpResponse<byte[]>> responseFuture = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofByteArray());
+            responseFuture.whenComplete((response, throwable) -> {
+                if (throwable != null) {
+                    LOG.error("Error downloading: " + response.request().uri().toString(), throwable);
+                }
+
+                if (isPolling) {
+                    //TODO: Fire and forget! Task should be tracked in order to start/stop/cancel.
+                    //TODO: store and read polling interval from plugin config
+                    Runnable refresh = () -> handleHttpResponse(response, buildContext);
+                    //Period is in server ticks (50ms default)
+                    int ticks = Tick.tick().fromDuration(Duration.ofMillis(200));
+                    scheduler.scheduleSyncRepeatingTask(application, refresh, 0, ticks);
+                } else {
+                    handleHttpResponse(response, buildContext);
+                }
+            });
         } catch (Exception e) {
             player.sendMessage("Failed to create request for " + shortcut.getUrl());
             LOG.error("Failed to create HTTP request for " + shortcut.getUrl(), e);
         }
     }
 
-    static void handleHttpResponse(CompletableFuture<HttpResponse<byte[]>> responseFuture, Player player, PlayerSettingsType.Shortcut shortcut, BukkitScheduler scheduler) {
-        responseFuture.whenComplete((response, throwable) -> {
-            if (throwable != null) {
-                player.sendMessage("Failed to download " + shortcut.getUrl());
-                LOG.error("Failed to download " + shortcut.getUrl(), throwable);
-                return;
-            }
+    void handleHttpResponse(HttpResponse<byte[]> response, BuildContext buildContext) {
+        try {
+            // Add the image to build context. Find a better way to stop mutating state later.
+            BufferedImage image = ImageIO.read(new java.io.ByteArrayInputStream(response.body()));
+            buildContext.setImage(image);
+            CopyTask canvas = new CopyTask(application, buildContext);
 
-            if (response.statusCode() != 200) {
-                player.sendMessage("Failed to download " + shortcut.getUrl() + " (HTTP " + response.statusCode() + ")");
-                LOG.error("HTTP request failed with status code: " + response.statusCode() + " for URL: " + shortcut.getUrl());
-                return;
-            }
-
-            try {
-                BufferedImage image = ImageIO.read(new java.io.ByteArrayInputStream(response.body()));
-
-                if (image == null) {
-                    player.sendMessage("Failed to parse image from " + shortcut.getUrl());
-                    LOG.error("Failed to parse image from " + shortcut.getUrl());
-                    return;
-                }
-
-                Block b = player.getTargetBlock(null, 100);
-                Location location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
-                location.setYaw(player.getLocation().getYaw());
-                location.setPitch(player.getLocation().getPitch());
-
-                CopyTask canvas = new CopyTask(image, player, location);
-
-                scheduler.runTask(Application.getInstance(), canvas::performDraw);
-            } catch (IOException e) {
-                player.sendMessage("Failed to process image from " + shortcut.getUrl());
-                LOG.error("Failed to process image from " + shortcut.getUrl(), e);
-            }
-        });
+            //Get back on the main thread for render
+            BukkitScheduler scheduler = application.getServer().getScheduler();
+            scheduler.runTask(application, canvas::performDraw);
+        } catch (Throwable e) {
+            LOG.error("Failed to process image from URL: ", e);
+        }
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> buildAdminCommand() {
@@ -161,7 +165,7 @@ public class CommandBuilder {
         return Commands.literal("list")
                 .executes(context -> {
                     String player = context.getSource().getSender().getName();
-                    PlayerSettingsManager playerSettings = getPlayerSettings(player);
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
                     context.getSource().getSender().sendMessage("Copycat Image List:");
                     playerSettings.getShortcuts().forEach(s -> {
                         context.getSource().getSender().sendMessage(s.getName() + " URL: " + s.getUrl());
@@ -178,7 +182,7 @@ public class CommandBuilder {
                     String name = commandContext.getArgument("name", String.class);
                     String url = commandContext.getArgument("url", String.class);
                     String playerName = commandContext.getSource().getSender().getName();
-                    PlayerSettingsManager playerSettings = getPlayerSettings(playerName);
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
                     playerSettings.addShortcut(name, url);
                     return Command.SINGLE_SUCCESS;
                 });
@@ -200,7 +204,7 @@ public class CommandBuilder {
                         .executes(context -> {
                             String shortcutName = context.getArgument("shortcut", String.class);
                             Player player = (Player) context.getSource().getSender();
-                            PlayerSettingsManager playerSettings = getPlayerSettings(player.getName());
+                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
                             PlayerSettingsType.Shortcut foundShortcut = findShortcut(shortcutName, playerSettings);
 
                             if (foundShortcut != null) {
@@ -217,7 +221,7 @@ public class CommandBuilder {
                     Player player = (Player) ctx.getSource().getSender();
                     ctx.getSource().getSender().sendMessage("Undo for " + player.getName());
 
-                    PlayerSettingsManager playerSettings = getPlayerSettings(player.getName());
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
                     LinkedBlockingDeque<Stack<RevertibleBlock>> undoBuffer = playerSettings.getUndoBuffer();
 
                     if (!undoBuffer.isEmpty()) {
@@ -239,7 +243,7 @@ public class CommandBuilder {
                         .executes(context -> {
                             String shortcutName = context.getArgument("shortcut", String.class);
                             Player player = (Player) context.getSource().getSender();
-                            PlayerSettingsManager playerSettings = getPlayerSettings(player.getName());
+                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
                             PlayerSettingsType.Shortcut foundShortcut = findShortcut(shortcutName, playerSettings);
 
                             if (foundShortcut != null) {
@@ -256,7 +260,7 @@ public class CommandBuilder {
                         .executes(context -> {
                             boolean ditheringEnabled = context.getArgument("enabled", Boolean.class);
                             String player = context.getSource().getSender().getName();
-                            PlayerSettingsManager playerSettings = getPlayerSettings(player);
+                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
                             playerSettings.setDithering(ditheringEnabled);
                             return Command.SINGLE_SUCCESS;
                         })))
@@ -267,7 +271,7 @@ public class CommandBuilder {
                                             Integer width = ctx.getArgument("width", Integer.class);
                                             Integer height = ctx.getArgument("height", Integer.class);
                                             String player = ctx.getSource().getSender().getName();
-                                            PlayerSettingsManager playerSettings = getPlayerSettings(player);
+                                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
                                             playerSettings.setBuildDimensions(width, height);
                                             return Command.SINGLE_SUCCESS;
                                         }))))
