@@ -13,6 +13,7 @@ plugins {
     id 'io.freefair.lombok' version '9.0.0-rc2'
     id 'java'
     id 'xyz.jpenilla.run-paper' version '2.3.1'
+    id 'io.papermc.hangar-publish-plugin' version '0.1.2'
 }
 
 apply plugin: 'java'
@@ -21,8 +22,6 @@ apply plugin: 'com.gradleup.shadow'
 
 group = 'org.bukkitmodders'
 version = '1.4'
-
-
 
 repositories {
     maven {
@@ -71,3 +70,23 @@ dependencies {
     implementation 'org.projectlombok:lombok:1.18.24'
 }
 
+hangarPublish {
+    publications.register("plugin") {
+        version.set(project.version as String)
+        channel.set("Snapshot") // We're using the 'Snapshot' channel
+        id.set("copycat")
+        apiKey.set(System.getenv("HANGAR_API_TOKEN"))
+        platforms {
+            register(io.papermc.hangarpublishplugin.model.Platforms.PAPER) {
+                jar.set(tasks.shadowJar.flatMap { it.archiveFile })
+                def versions = (property("paperVersion") as String)
+                        .split(",")
+                        .collect { it.trim() }
+                platformVersions.set(versions)
+
+                dependencies {
+                }
+            }
+        }
+    }
+}
