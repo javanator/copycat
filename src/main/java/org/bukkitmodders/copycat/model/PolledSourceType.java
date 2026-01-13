@@ -6,9 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PolledSourceType {
-    protected String url;
+    protected String shortcutNameRef;
     protected int refreshRateMilliseconds;
     protected long worldX;
     protected long worldY;
+    protected double yaw;
 }
 

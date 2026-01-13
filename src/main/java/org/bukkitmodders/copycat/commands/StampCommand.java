@@ -91,7 +91,7 @@ public class StampCommand implements CommandExecutor {
 
 				Player player = (Player) sender;
 				String itemTrigger = player.getItemInHand().getType().name();
-				playerSettings.setTrigger(itemTrigger);
+				playerSettings.setStampShortcut(itemTrigger);
 
 				sender.sendMessage("Using: " + itemTrigger + " will trigger rendering when ON");
 			} else if ("SETIMAGE".equalsIgnoreCase(operation)) {

@@ -12,20 +12,23 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
-import io.papermc.paper.util.Tick;
-import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
-import org.bukkitmodders.copycat.model.BlockProfileType;
 import org.bukkitmodders.copycat.model.BuildContext;
+import org.bukkitmodders.copycat.model.BuildContextFactory;
 import org.bukkitmodders.copycat.model.PlayerSettingsType;
+<<<<<<< HEAD
+import org.bukkitmodders.copycat.services.MediaService;
+
+=======
 import org.bukkitmodders.copycat.model.RevertibleBlock;
+import org.bukkitmodders.copycat.model.PolledSourceType;
 import org.bukkitmodders.copycat.services.PrepareImageTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import uk.co.caprica.vlcj.player.base.MediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormat;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -33,36 +36,33 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.ByteBuffer;
 import java.time.Duration;
+>>>>>>> 7ef0926 (checkpoint)
 import java.util.Objects;
-import java.util.Stack;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.LinkedBlockingDeque;
 
 
 public class CommandBuilder {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CommandBuilder.class);
     private final Application application;
+    private final MediaService mediaService;
 
-    public CommandBuilder(Application application) {
+    public CommandBuilder(Application application, MediaService mediaService) {
         this.application = application;
+        this.mediaService = mediaService;
     }
 
     private CompletableFuture<Suggestions> buildShortcutSuggestions(CommandContext<CommandSourceStack> commandContext, SuggestionsBuilder suggestionsBuilder) {
-        String player = commandContext.getSource().getSender().getName();
-        PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
+        String playerName = commandContext.getSource().getSender().getName();
+        PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
 
-        // Get the partial input to filter suggestions
-        String input = suggestionsBuilder.getInput();
-        String[] parts = input.split(" ");
-        String partial = parts.length > 0 ? parts[parts.length - 1] : "";
+        String input = suggestionsBuilder.getRemaining().toLowerCase();
 
-        // Add matching shortcuts as suggestions
         if (playerSettings.getShortcuts() != null) {
             playerSettings.getShortcuts().stream()
                     .map(PlayerSettingsType.Shortcut::getName)
-                    .filter(name -> name.toLowerCase().startsWith(partial.toLowerCase()))
+                    .filter(name -> name.toLowerCase().startsWith(input))
                     .forEach(suggestionsBuilder::suggest);
         }
         return suggestionsBuilder.buildFuture();
@@ -75,6 +75,8 @@ public class CommandBuilder {
                 .orElse(null);
     }
 
+<<<<<<< HEAD
+=======
     private void executeHttpRequest(Player player, PlayerSettingsType.Shortcut shortcut, boolean isPolling) {
         BukkitScheduler scheduler = application.getServer().getScheduler();
 
@@ -118,12 +120,24 @@ public class CommandBuilder {
                 }
 
                 if (isPolling) {
-                    //TODO: Fire and forget! Task should be tracked in order to start/stop/cancel.
-                    //TODO: store and read polling interval from plugin config
-                    Runnable refresh = () -> handleHttpResponse(response, buildContext);
-                    //Period is in server ticks (50ms default)
-                    int ticks = Tick.tick().fromDuration(Duration.ofMillis(200));
-                    scheduler.scheduleSyncRepeatingTask(application, refresh, 0, ticks);
+                    try {
+                        // Create a PolledSourceType and save it using PlayerSettingsManager
+                        PolledSourceType source = new PolledSourceType();
+                        source.setShortcutNameRef(shortcut.getName());
+                        // Use player's current target location and orientation
+                        source.setWorldX((long) location.getX());
+                        source.setWorldY((long) location.getY());
+                        source.setYaw(location.getYaw());
+                        // Default refresh rate; could be sourced from global settings if exposed
+                        source.setRefreshRateMilliseconds(200);
+
+                        PlayerSettingsManager psm = application.getPlayerSettings(player.getName());
+                        psm.addPolledSource(source);
+                        player.sendMessage("Started polling for shortcut: " + shortcut.getName());
+                    } catch (Exception ex) {
+                        LOG.error("Failed to add polled source for shortcut: " + shortcut.getName(), ex);
+                        player.sendMessage("Failed to start polling for " + shortcut.getName());
+                    }
                 } else {
                     handleHttpResponse(response, buildContext);
                 }
@@ -149,6 +163,125 @@ public class CommandBuilder {
         }
     }
 
+    void handleVideoStreamRequest(Player player, String streamUrl) {
+        BukkitScheduler scheduler = application.getServer().getScheduler();
+
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(streamUrl))
+                    .timeout(Duration.ofSeconds(30))
+                    .GET()
+                    .build();
+
+            HttpClient httpClient = HttpClient.newBuilder()
+                    .followRedirects(HttpClient.Redirect.NORMAL)
+                    .connectTimeout(Duration.ofSeconds(30))
+                    .build();
+
+            CompletableFuture<HttpResponse<java.io.InputStream>> responseFuture =
+                    httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream());
+
+            responseFuture.whenComplete((response, throwable) -> {
+                if (throwable != null) {
+                    LOG.error("Error fetching video stream: " + streamUrl, throwable);
+                    player.sendMessage("Failed to fetch video stream");
+                    return;
+                }
+
+                try {
+                    // Get player settings for dimensions
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
+                    int width = playerSettings.getMaxBuildWidth();
+                    int height = playerSettings.getMaxBuildHeight();
+
+                    // Initialize VLC4J media player factory
+                    uk.co.caprica.vlcj.factory.MediaPlayerFactory factory = new uk.co.caprica.vlcj.factory.MediaPlayerFactory();
+
+                    // Create a callback media player with custom rendering
+                    uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer mediaPlayer = factory.mediaPlayers().newEmbeddedMediaPlayer();
+
+                    // Set up the video surface with a callback for custom rendering
+                    mediaPlayer.videoSurface().set(factory.videoSurfaces().newVideoSurface(
+                            new uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormatCallback() {
+                                @Override
+                                public uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
+                                    return new uk.co.caprica.vlcj.player.embedded.videosurface.callback.format.RV32BufferFormat(width, height);
+                                }
+
+                                @Override
+                                public void newFormatSize(int i, int i1, int i2, int i3) {
+
+                                }
+
+                                @Override
+                                public void allocatedBuffers(ByteBuffer[] byteBuffers) {
+
+                                }
+                            },
+                            new uk.co.caprica.vlcj.player.embedded.videosurface.callback.RenderCallback() {
+                                @Override
+                                public void lock(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer) {
+
+                                }
+
+                                @Override
+                                public void display(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer, java.nio.ByteBuffer[] nativeBuffers, uk.co.caprica.vlcj.player.embedded.videosurface.callback.BufferFormat bufferFormat, int x, int y) {
+                                    // Convert ByteBuffer to BufferedImage
+                                    int bufferWidth = bufferFormat.getWidth();
+                                    int bufferHeight = bufferFormat.getHeight();
+                                    BufferedImage bufferedImage = new BufferedImage(bufferWidth, bufferHeight, BufferedImage.TYPE_INT_RGB);
+                                    int[] pixels = new int[bufferWidth * bufferHeight];
+                                    nativeBuffers[0].asIntBuffer().get(pixels);
+                                    bufferedImage.setRGB(0, 0, bufferWidth, bufferHeight, pixels, 0, bufferWidth);
+
+                                    // Get build context
+                                    Block b = player.getTargetBlock(null, 100);
+                                    Location location = new Location(b.getWorld(), b.getX(), b.getY(), b.getZ());
+                                    location.setYaw(player.getLocation().getYaw());
+                                    location.setPitch(player.getLocation().getPitch());
+
+                                    String blockProfileName = playerSettings.getBlockProfile();
+                                    BlockProfileType blockProfile = application.getConfigurationManager().getBlockProfile(blockProfileName);
+
+                                    BuildContext buildContext = BuildContext.builder()
+                                            .withPlayer(player)
+                                            .withLocation(location)
+                                            .withBlockProfile(blockProfile)
+                                            .withImage(bufferedImage)
+                                            .build();
+
+                                    PrepareImageTask task = new PrepareImageTask(application, buildContext);
+                                    scheduler.runTask(application, task::performDraw);
+                                }
+
+                                @Override
+                                public void unlock(uk.co.caprica.vlcj.player.base.MediaPlayer mediaPlayer) {
+
+                                }
+                            },
+                            true
+                    ));
+
+                    // Play the stream URL
+                    mediaPlayer.media().play(streamUrl);
+
+                    player.sendMessage("Video stream opened with VLC4J custom canvas: " + streamUrl);
+                    LOG.info("Opened video stream for player {} with canvas {}x{}: {}",
+                            player.getName(), width, height, streamUrl);
+
+                } catch (Exception e) {
+                    LOG.error("Failed to open video stream with VLC4J", e);
+                    player.sendMessage("Failed to open video stream with VLC4J");
+                }
+            });
+
+        } catch (Exception e) {
+            player.sendMessage("Failed to create video stream request for " + streamUrl);
+            LOG.error("Failed to create video stream request for " + streamUrl, e);
+        }
+    }
+
+>>>>>>> 7ef0926 (checkpoint)
     public LiteralArgumentBuilder<CommandSourceStack> buildAdminCommand() {
         return Commands.literal("admin")
                 .then(Commands.literal("undo")
@@ -164,8 +297,8 @@ public class CommandBuilder {
     public LiteralArgumentBuilder<CommandSourceStack> buildListCommand() {
         return Commands.literal("list")
                 .executes(context -> {
-                    String player = context.getSource().getSender().getName();
-                    PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
+                    String playerName = context.getSource().getSender().getName();
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
                     context.getSource().getSender().sendMessage("Copycat Image List:");
                     playerSettings.getShortcuts().forEach(s -> {
                         context.getSource().getSender().sendMessage(s.getName() + " URL: " + s.getUrl());
@@ -193,6 +326,10 @@ public class CommandBuilder {
                 .then(Commands.argument("name", StringArgumentType.string())
                         .suggests(this::buildShortcutSuggestions))
                 .executes(commandContext -> {
+                    String name = commandContext.getArgument("name", String.class);
+                    String playerName = commandContext.getSource().getSender().getName();
+                    PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
+                    playerSettings.deleteShortcut(name);
                     return Command.SINGLE_SUCCESS;
                 });
     }
@@ -208,9 +345,12 @@ public class CommandBuilder {
                             PlayerSettingsType.Shortcut foundShortcut = findShortcut(shortcutName, playerSettings);
 
                             if (foundShortcut != null) {
-                                player.sendMessage("URL for " + shortcutName + ": " + foundShortcut.getUrl());
-                                executeHttpRequest(player, foundShortcut, false);
+                                BuildContext buildContext = BuildContextFactory.create(application, player, foundShortcut);
+                                application.getServer().getAsyncScheduler().runNow(application, (scheduledTask) -> {
+                                    mediaService.executeHttpRequest(player, foundShortcut, buildContext);
+                                });
                             }
+
                             return Command.SINGLE_SUCCESS;
                         }));
     }
@@ -219,39 +359,18 @@ public class CommandBuilder {
         return Commands.literal("undo")
                 .executes(ctx -> {
                     Player player = (Player) ctx.getSource().getSender();
-                    ctx.getSource().getSender().sendMessage("Undo for " + player.getName());
-
-                    PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
-                    LinkedBlockingDeque<Stack<RevertibleBlock>> undoBuffer = playerSettings.getUndoBuffer();
-
-                    if (!undoBuffer.isEmpty()) {
-                        Stack<RevertibleBlock> lastImageBlocks = undoBuffer.pop();
-
-                        while (!lastImageBlocks.isEmpty()) {
-                            lastImageBlocks.pop().revert();
-                        }
-                    }
-
+                    application.getPlayerSettings(player.getName()).undo(player);
                     return Command.SINGLE_SUCCESS;
                 });
     }
 
-    public LiteralArgumentBuilder<CommandSourceStack> buildPollCommand() {
-        return Commands.literal("poll")
-                .then(Commands.argument("shortcut", StringArgumentType.string())
-                        .suggests(this::buildShortcutSuggestions)
-                        .executes(context -> {
-                            String shortcutName = context.getArgument("shortcut", String.class);
-                            Player player = (Player) context.getSource().getSender();
-                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player.getName());
-                            PlayerSettingsType.Shortcut foundShortcut = findShortcut(shortcutName, playerSettings);
-
-                            if (foundShortcut != null) {
-                                player.sendMessage("URL for " + shortcutName + ": " + foundShortcut.getUrl());
-                                executeHttpRequest(player, foundShortcut, true);
-                            }
-                            return Command.SINGLE_SUCCESS;
-                        }));
+    public LiteralArgumentBuilder<CommandSourceStack> buildStopCommand() {
+        return Commands.literal("stop")
+                .executes(ctx -> {
+                    Player player = (Player) ctx.getSource().getSender();
+                    mediaService.stopVideoStreamsForPlayer(player);
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> buildSetCommand() {
@@ -259,8 +378,8 @@ public class CommandBuilder {
                 .then(Commands.literal("dithering").then(Commands.argument("enabled", BoolArgumentType.bool())
                         .executes(context -> {
                             boolean ditheringEnabled = context.getArgument("enabled", Boolean.class);
-                            String player = context.getSource().getSender().getName();
-                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
+                            String playerName = context.getSource().getSender().getName();
+                            PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
                             playerSettings.setDithering(ditheringEnabled);
                             return Command.SINGLE_SUCCESS;
                         })))
@@ -270,8 +389,8 @@ public class CommandBuilder {
                                         .executes(ctx -> {
                                             Integer width = ctx.getArgument("width", Integer.class);
                                             Integer height = ctx.getArgument("height", Integer.class);
-                                            String player = ctx.getSource().getSender().getName();
-                                            PlayerSettingsManager playerSettings = application.getPlayerSettings(player);
+                                            String playerName = ctx.getSource().getSender().getName();
+                                            PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
                                             playerSettings.setBuildDimensions(width, height);
                                             return Command.SINGLE_SUCCESS;
                                         }))))

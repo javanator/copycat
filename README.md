@@ -1,3 +1,15 @@
+## Table of Contents
+<!-- TOC -->
+* [Table of Contents](#table-of-contents)
+    * [Copycat](#copycat)
+    * [Command Tree](#command-tree)
+    * [Features](#features)
+    * [Experimental](#experimental)
+    * [Possibly Upcoming](#possibly-upcoming)
+    * [How It Works](#how-it-works)
+    * [Version History](#version-history)
+<!-- TOC -->
+
 # Copycat
 
 A Minecraft plugin that converts images from URLs into pixel art using in-game blocks. HTTP Redirects and basic auth are supported.
@@ -5,18 +17,6 @@ A Minecraft plugin that converts images from URLs into pixel art using in-game b
 
 ![Example](assets/example.png)
 ![Example](assets/basicauth.png)
-
-## Table of Contents
-<!-- TOC -->
-* [Copycat](#copycat)
-  * [Table of Contents](#table-of-contents)
-  * [Command Tree](#command-tree)
-  * [Features](#features)
-  * [Experimental](#experimental)
-  * [Possibly Upcoming](#possibly-upcoming)
-  * [How It Works](#how-it-works)
-  * [Version History](#version-history)
-<!-- TOC -->
 
 ## Command Tree
 ```

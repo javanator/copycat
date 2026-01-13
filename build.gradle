@@ -21,7 +21,7 @@ apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.gradleup.shadow'
 
 group = 'org.bukkitmodders'
-version = '1.4'
+version = '2.0-SNAPSHOT'
 
 repositories {
     maven {
@@ -35,6 +35,8 @@ java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
 }
+
+runPaper.folia.registerTask()
 
 tasks {
     tasks.shadowJar {
@@ -68,9 +70,11 @@ dependencies {
     implementation 'com.twelvemonkeys.imageio:twelvemonkeys-imageio-core:2.3'
     implementation 'org.slf4j:slf4j-api:2.0.17'
     implementation 'org.projectlombok:lombok:1.18.24'
+    implementation 'uk.co.caprica:vlcj:3.12.1'
 }
 
 hangarPublish {
+    println "HANGAR_API_TOKEN: ${System.getenv("HANGAR_API_TOKEN")}"
     publications.register("plugin") {
         version.set(project.version as String)
         channel.set("Snapshot") // We're using the 'Snapshot' channel
@@ -78,14 +82,11 @@ hangarPublish {
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
             register(io.papermc.hangarpublishplugin.model.Platforms.PAPER) {
-                jar.set(tasks.shadowJar.flatMap { it.archiveFile })
+                jar.set(tasks.shadowJar.archiveFile)
                 def versions = (property("paperVersion") as String)
                         .split(",")
                         .collect { it.trim() }
                 platformVersions.set(versions)
-
-                dependencies {
-                }
             }
         }
     }

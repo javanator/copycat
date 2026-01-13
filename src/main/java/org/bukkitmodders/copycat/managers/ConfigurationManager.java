@@ -38,6 +38,11 @@ public class ConfigurationManager {
         return new PlayerSettingsManager(playerSettingsOptional, this);
     }
 
+    public List<PlayerSettingsType> getAllPlayerSettings() {
+        return getPluginConfig().getPreferences().getPlayerPreferences();
+    }
+
+
     private PlayerSettingsType createDefaultPlayerSettings(String playerName) {
         PlayerSettingsType playerSettings = new PlayerSettingsType();
         playerSettings.setPlayerName(playerName);

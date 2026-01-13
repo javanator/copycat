@@ -35,6 +35,22 @@ public class ImageCopier {
         log.debug("Transformation Matrix: " + worldMatrix.toString());
     }
 
+    public Stack<RevertibleBlock> createUndoBuffer(int width, int height) {
+        Stack<RevertibleBlock> undoBuffer = new Stack<>();
+        Vector4d point = new Vector4d();
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                Vector4d worldPosition = calculateWorldPosition(point, x, y, height);
+                Block block = getBlockAtPosition(worldPosition);
+                undoBuffer.push(new RevertibleBlock(block));
+            }
+        }
+
+        return undoBuffer;
+    }
+
+
     /**
      * This method draws the provided image in the minecraft world
      *
@@ -54,11 +70,7 @@ public class ImageCopier {
     private void processPixel(BufferedImage image, Stack<RevertibleBlock> undoBuffer, Vector4d point, int x, int y) {
         Vector4d worldPosition = calculateWorldPosition(point, x, y, image.getHeight());
         Block block = getBlockAtPosition(worldPosition);
-
-        if (block != null) {
-            saveBlockForUndo(undoBuffer, block);
-            setBlockFromImagePixel(image, block, x, y);
-        }
+        setBlockFromImagePixel(image, block, x, y);
     }
 
     private Vector4d calculateWorldPosition(Vector4d point, int x, int y, int imageHeight) {
@@ -74,12 +86,6 @@ public class ImageCopier {
         int blockY = (int) Math.round(position.y);
         int blockZ = (int) Math.round(position.z);
         return world.getBlockAt(blockX, blockY, blockZ);
-    }
-
-    private void saveBlockForUndo(Stack<RevertibleBlock> undoBuffer, Block block) {
-        if (undoBuffer != null) {
-            undoBuffer.push(new RevertibleBlock(block));
-        }
     }
 
     private void setBlockFromImagePixel(BufferedImage image, Block block, int x, int y) {

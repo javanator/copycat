@@ -5,6 +5,7 @@ import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
 import org.bukkitmodders.copycat.model.BuildContext;
 import org.bukkitmodders.copycat.model.RevertibleBlock;
+import org.bukkitmodders.copycat.model.UndoHistoryComponent;
 import org.bukkitmodders.copycat.util.ImageUtil;
 import org.bukkitmodders.copycat.util.MatrixUtil;
 import org.joml.Matrix4d;
@@ -46,15 +47,17 @@ public class PrepareImageTask {
     }
 
     public void performDraw() {
-
-        Stack<RevertibleBlock> undoBuffer = new Stack<>();
+        Stack<RevertibleBlock> blocks = new Stack<>();
 
         try {
-            imageCopier.draw(preparedImage, undoBuffer);
+            blocks = imageCopier.createUndoBuffer(preparedImage.getWidth(), preparedImage.getHeight());
+            imageCopier.draw(preparedImage, blocks);
         } finally {
-            LinkedBlockingDeque<Stack<RevertibleBlock>> undoBuffers = playerSettings.getUndoBuffer();
-            undoBuffers.push(undoBuffer);
-            //TODO: Make the undo buffer persistent. Only save undo once when polling.
+            LinkedBlockingDeque<UndoHistoryComponent> undoBuffers = playerSettings.getUndoBuffer();
+            undoBuffers.push(UndoHistoryComponent.builder()
+                    .withBlocks(blocks)
+                    .build());
+            //TODO: Make the undo buffer persistent
         }
     }
 }

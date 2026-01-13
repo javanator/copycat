@@ -2,6 +2,8 @@
   "globalSettings": {
     "maxImageWidth": 400,
     "maxImageHeight": 100,
+    "pollOnPlayerConnectedOnly": false,
+    "pollingRefresh": 200,
     "blockProfiles": [
       {
         "name": "wool",

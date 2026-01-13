@@ -10,7 +10,9 @@ import java.util.List;
 @Getter
 public class GlobalSettingsType {
 
+    protected boolean pollOnPlayerConnectedOnly;
+    protected int pollingRefresh;
     protected int maxImageWidth;
     protected int maxImageHeight;
-    List<BlockProfileType> blockProfiles = new ArrayList<>();
+    protected List<BlockProfileType> blockProfiles = new ArrayList<>();
 }
