@@ -2,8 +2,6 @@
   "globalSettings": {
     "maxImageWidth": 400,
     "maxImageHeight": 100,
-    "pollOnPlayerConnectedOnly": false,
-    "pollingRefresh": 200,
     "blockProfiles": [
       {
         "name": "wool",
@@ -89,13 +87,11 @@
   "preferences": {
     "playerPreferences": [
       {
-        "stampActivated": true,
         "playerName": "examplePlayer",
         "blockProfile": "default",
         "buildWidth": 64,
         "buildHeight": 64,
         "activeShortcut": "",
-        "stampItem": "",
         "undoEnabled": true,
         "dithering": true,
         "shortcuts": [

@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class ConfigurationManager {
 
-    private Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
+    private final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
 
     private final String file;
 

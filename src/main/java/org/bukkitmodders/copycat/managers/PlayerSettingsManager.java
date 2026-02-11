@@ -1,10 +1,7 @@
 package org.bukkitmodders.copycat.managers;
 
-import io.papermc.paper.util.Tick;
-import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.model.PlayerSettingsType;
 import org.bukkitmodders.copycat.model.PlayerSettingsType.Shortcut;
-import org.bukkitmodders.copycat.model.PolledSourceType;
 import org.bukkitmodders.copycat.model.RevertibleBlock;
 import org.bukkitmodders.copycat.model.UndoHistoryComponent;
 import org.slf4j.Logger;
@@ -14,8 +11,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.net.URL;
-import java.time.Duration;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 import java.util.concurrent.LinkedBlockingDeque;
 
 /**
@@ -38,16 +37,8 @@ public class PlayerSettingsManager {
         this.undoBufferManager = UndoBufferManager.getInstance();
     }
 
-    public static void purgeAllUndoBuffers() {
-        UndoBufferManager.getInstance().purgeAll();
-    }
-
     public LinkedBlockingDeque<UndoHistoryComponent> getUndoBuffer() {
         return undoBufferManager.getUndoBuffer(playerSettings.getPlayerName());
-    }
-
-    public Shortcut getShortcut(final String name) {
-        return findShortcutByName(name);
     }
 
     public void addShortcut(final String name, final String url) {
@@ -74,12 +65,6 @@ public class PlayerSettingsManager {
         return playerSettings.getShortcuts();
     }
 
-    public boolean isStampModeActivated() {
-
-
-        return playerSettings.isStampActivated();
-    }
-
     public String getBlockProfile() {
         return playerSettings.getBlockProfile();
     }
@@ -101,52 +86,6 @@ public class PlayerSettingsManager {
 
     public int getMaxBuildWidth() {
         return Math.min(cm.getMaxImageWidth(), playerSettings.getBuildWidth());
-    }
-
-    public Shortcut getStampShortcut() {
-        return findShortcutByName(playerSettings.getActiveShortcut());
-    }
-
-    public void cleanShortcuts() {
-        final List<Shortcut> shortcuts = playerSettings.getShortcuts();
-        if (shortcuts == null) return;
-
-        final Iterator<Shortcut> it = shortcuts.iterator();
-        while (it.hasNext()) {
-            final Shortcut shortcut = it.next();
-            if (!isValidImageUrl(shortcut)) {
-                it.remove();
-                log.info("Removed invalid image URL shortcut: name='{}' url='{}'", shortcut.getName(), shortcut.getUrl());
-            }
-        }
-        saveSettings();
-    }
-
-    private boolean isValidImageUrl(final Shortcut shortcut) {
-        if (shortcut == null || shortcut.getUrl() == null || shortcut.getUrl().isBlank()) return false;
-        return withImageFromUrl(shortcut.getUrl()) != null;
-    }
-
-    private BufferedImage withImageFromUrl(final String url) {
-        try (InputStream in = new URL(url).openStream()) {
-            return ImageIO.read(in);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public void setStampActivated(final boolean isStampActivated) {
-        playerSettings.setStampActivated(isStampActivated);
-        saveSettings();
-    }
-
-    public void setStampShortcut(final String shortcutName) {
-        playerSettings.setActiveShortcut(shortcutName);
-        saveSettings();
-    }
-
-    public String getStampItem() {
-        return playerSettings.getStampItem();
     }
 
     public boolean isDithering() {

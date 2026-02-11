@@ -15,7 +15,6 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerExit(PlayerQuitEvent event) {
-        //Stop their mediaPlayer streams
         Application.getInstance().getMediaService().stopVideoStreamsForPlayer(event.getPlayer());
     }
 }

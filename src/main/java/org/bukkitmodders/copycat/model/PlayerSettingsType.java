@@ -18,7 +18,6 @@ public class PlayerSettingsType {
     protected boolean undoEnabled;
     protected boolean dithering;
     protected List<Shortcut> shortcuts = new ArrayList<>();
-    protected List<PolledSourceType> polledSources = new ArrayList<>();
     protected String playerName;
     protected boolean stampActivated;
 
