@@ -1,7 +1,9 @@
 package org.bukkitmodders.copycat.managers;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.IOUtils;
+import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.Settings;
 import org.bukkitmodders.copycat.model.BlockProfileType;
 import org.bukkitmodders.copycat.model.BlockProfileType.Block;
@@ -23,9 +25,11 @@ public class ConfigurationManager {
     private final Logger log = LoggerFactory.getLogger(ConfigurationManager.class);
 
     private final String file;
+    private final Application application;
 
-    public ConfigurationManager(String file) {
+    public ConfigurationManager(String file, Application application) {
         this.file = file;
+        this.application = application;
     }
 
     public PlayerSettingsManager getPlayerSettings(String targetPlayerName) {
@@ -35,7 +39,7 @@ public class ConfigurationManager {
                         playerSettingsType.getPlayerName().equalsIgnoreCase(targetPlayerName))
                 .findFirst()
                 .orElseGet(() -> createDefaultPlayerSettings(targetPlayerName));
-        return new PlayerSettingsManager(playerSettingsOptional, this);
+        return new PlayerSettingsManager(playerSettingsOptional, application);
     }
 
     public List<PlayerSettingsType> getAllPlayerSettings() {
@@ -137,7 +141,9 @@ public class ConfigurationManager {
     private synchronized PluginConfig getPluginConfig() {
         PluginConfig pluginConfig = null;
         try {
-            pluginConfig = new ObjectMapper().readValue(getDataFile(), PluginConfig.class);
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            pluginConfig = mapper.readValue(getDataFile(), PluginConfig.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -14,9 +14,23 @@ import java.util.Stack;
  */
 @Builder(setterPrefix = "with")
 @Getter
-@Setter
 public class UndoHistoryComponent {
 
-    private Stack<RevertibleBlock> blocks;
+    private Stack<RevertibleBlock> blocks = new Stack<>();
     private DirectMediaPlayer mediaPlayer;
+
+    public void revert() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+        } else {
+            revertBlocks();
+        }
+    }
+
+    public void revertBlocks() {
+        while (!blocks.isEmpty()) {
+            RevertibleBlock block = blocks.pop();
+            block.revert();
+        }
+    }
 }

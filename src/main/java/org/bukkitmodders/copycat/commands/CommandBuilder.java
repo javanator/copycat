@@ -66,7 +66,14 @@ public class CommandBuilder {
                                     final Player target = targetResolver.resolve(ctx.getSource()).getFirst();
                                     ctx.getSource().getSender().sendMessage("Undo on " + Objects.requireNonNull(target.getPlayer()).getName());
                                     return Command.SINGLE_SUCCESS;
-                                })));
+                                }))
+                ).then(Commands.literal("purgeAllUndoBuffers")
+                        .executes(ctx -> {
+                            Application.getInstance().getUndoBufferManager().purgeAll();
+                            ctx.getSource().getSender().sendMessage("All undo buffers purged.");
+                            return Command.SINGLE_SUCCESS;
+                        })
+                );
     }
 
     public LiteralArgumentBuilder<CommandSourceStack> buildListCommand() {
@@ -139,7 +146,7 @@ public class CommandBuilder {
                 .requires(stack -> stack.getSender().hasPermission("copycat.command.undo"))
                 .executes(ctx -> {
                     Player player = (Player) ctx.getSource().getSender();
-                    application.getPlayerSettings(player.getName()).undo(player);
+                    application.getUndoBufferManager().undo(player);
                     return Command.SINGLE_SUCCESS;
                 });
     }

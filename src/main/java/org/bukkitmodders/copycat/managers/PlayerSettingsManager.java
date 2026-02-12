@@ -1,5 +1,6 @@
 package org.bukkitmodders.copycat.managers;
 
+import org.bukkitmodders.copycat.Application;
 import org.bukkitmodders.copycat.model.PlayerSettingsType;
 import org.bukkitmodders.copycat.model.PlayerSettingsType.Shortcut;
 import org.bukkitmodders.copycat.model.RevertibleBlock;
@@ -7,15 +8,9 @@ import org.bukkitmodders.copycat.model.UndoHistoryComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
+import java.util.Queue;
 import java.util.Stack;
-import java.util.concurrent.LinkedBlockingDeque;
 
 /**
  * Manages player-specific settings and preferences for the Copycat plugin.
@@ -27,18 +22,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 public class PlayerSettingsManager {
 
     private final PlayerSettingsType playerSettings;
-    private final ConfigurationManager cm;
     private final Logger log = LoggerFactory.getLogger(PlayerSettingsManager.class);
-    private final UndoBufferManager undoBufferManager;
+    private final Application application;
 
-    public PlayerSettingsManager(final PlayerSettingsType playerSettings, final ConfigurationManager configurationManager) {
+    public PlayerSettingsManager(final PlayerSettingsType playerSettings, Application application) {
         this.playerSettings = playerSettings;
-        this.cm = configurationManager;
-        this.undoBufferManager = UndoBufferManager.getInstance();
-    }
-
-    public LinkedBlockingDeque<UndoHistoryComponent> getUndoBuffer() {
-        return undoBufferManager.getUndoBuffer(playerSettings.getPlayerName());
+        this.application = application;
     }
 
     public void addShortcut(final String name, final String url) {
@@ -81,11 +70,11 @@ public class PlayerSettingsManager {
     }
 
     public int getMaxBuildHeight() {
-        return Math.min(cm.getMaxImageHeight(), playerSettings.getBuildHeight());
+        return Math.min(application.getConfigurationManager().getMaxImageHeight(), playerSettings.getBuildHeight());
     }
 
     public int getMaxBuildWidth() {
-        return Math.min(cm.getMaxImageWidth(), playerSettings.getBuildWidth());
+        return Math.min(application.getConfigurationManager().getMaxImageWidth(), playerSettings.getBuildWidth());
     }
 
     public boolean isDithering() {
@@ -97,29 +86,12 @@ public class PlayerSettingsManager {
         saveSettings();
     }
 
-    public void undo(org.bukkit.entity.Player player) {
-        player.sendMessage("Undo for " + player.getName());
-        LinkedBlockingDeque<UndoHistoryComponent> buffer = getUndoBuffer();
-
-        if (!buffer.isEmpty()) {
-            UndoHistoryComponent lastUndo = buffer.pop();
-
-            if (lastUndo.getMediaPlayer() != null) {
-                lastUndo.getMediaPlayer().stop();
-                lastUndo.getMediaPlayer().release();
-                //Let the media player handle the undo with its own lifecycle methods
-            } else {
-                Stack<RevertibleBlock> lastImageBlocks = lastUndo.getBlocks();
-
-                while (!lastImageBlocks.isEmpty()) {
-                    lastImageBlocks.pop().revert();
-                }
-            }
-        }
+    public Queue<UndoHistoryComponent> getUndoBuffer() {
+        return application.getUndoBufferManager().getUndoBuffer(playerSettings.getPlayerName());
     }
 
     private void saveSettings() {
-        cm.savePlayerSettings(playerSettings);
+        application.getConfigurationManager().savePlayerSettings(playerSettings);
     }
 
     private List<Shortcut> ensureShortcutsList() {
@@ -139,23 +111,4 @@ public class PlayerSettingsManager {
         return null;
     }
 
-    private static class UndoBufferManager {
-        private static final UndoBufferManager INSTANCE = new UndoBufferManager();
-        private final Map<String, LinkedBlockingDeque<UndoHistoryComponent>> undoBuffers = new java.util.HashMap<>();
-
-        private UndoBufferManager() {
-        }
-
-        public static UndoBufferManager getInstance() {
-            return INSTANCE;
-        }
-
-        public LinkedBlockingDeque<UndoHistoryComponent> getUndoBuffer(final String playerName) {
-            return undoBuffers.computeIfAbsent(playerName, k -> new LinkedBlockingDeque<>());
-        }
-
-        public void purgeAll() {
-            undoBuffers.clear();
-        }
-    }
 }

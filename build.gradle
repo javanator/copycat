@@ -71,6 +71,7 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:2.0.17'
     implementation 'org.projectlombok:lombok:1.18.24'
     implementation 'uk.co.caprica:vlcj:3.12.1'
+    implementation 'com.google.guava:guava:33.3.1-jre'
 }
 
 hangarPublish {

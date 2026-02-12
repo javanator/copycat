@@ -5,11 +5,13 @@ import com.sun.jna.NativeLibrary;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkitmodders.copycat.commands.CommandBuilder;
 import org.bukkitmodders.copycat.listener.PlayerListener;
 import org.bukkitmodders.copycat.managers.ConfigurationManager;
 import org.bukkitmodders.copycat.managers.PlayerSettingsManager;
+import org.bukkitmodders.copycat.managers.UndoBufferManager;
 import org.bukkitmodders.copycat.services.MediaService;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.runtime.RuntimeUtil;
@@ -20,8 +22,11 @@ public class Application extends JavaPlugin {
 
     private static final String DATAFILE = "pluginSettings.json";
     private static Application INSTANCE;
+    @Getter
     private final MediaService mediaService = new MediaService(this);
     private final CommandBuilder commandBuilder = new CommandBuilder(this, mediaService);
+    @Getter
+    private final UndoBufferManager undoBufferManager = new UndoBufferManager(this);
     private ConfigurationManager configurationManager;
 
     @Override
@@ -64,13 +69,9 @@ public class Application extends JavaPlugin {
     public ConfigurationManager getConfigurationManager() {
         if (this.configurationManager == null) {
             String file = getDataFolder().getAbsolutePath() + File.separatorChar + DATAFILE;
-            this.configurationManager = new ConfigurationManager(file);
+            this.configurationManager = new ConfigurationManager(file, this);
         }
         return this.configurationManager;
-    }
-
-    public MediaService getMediaService() {
-        return mediaService;
     }
 
     /**
@@ -86,4 +87,5 @@ public class Application extends JavaPlugin {
     public static Application getInstance() {
         return INSTANCE;
     }
+
 }

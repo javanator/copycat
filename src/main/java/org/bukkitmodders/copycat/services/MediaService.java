@@ -169,7 +169,7 @@ public class MediaService {
                     .withBlocks(imageCopier.createUndoBuffer(width, height))
                     .withMediaPlayer(mediaPlayer)
                     .build();
-            playerSettings.getUndoBuffer().push(undoComponent);
+            playerSettings.getUndoBuffer().add(undoComponent);
 
             mediaPlayer.playMedia(new NonSeekableInputStreamMedia() {
                 @Override
@@ -182,9 +182,7 @@ public class MediaService {
                 @Override
                 protected void onCloseStream(InputStream inputStream) {
                     application.getLogger().info("onCloseStream()");
-                    application.getServer().getScheduler().runTask(application, () -> {
-                        undoComponent.getBlocks().forEach(RevertibleBlock::revert);
-                    });
+                    application.getServer().getScheduler().runTask(application, undoComponent::revertBlocks);
                 }
 
                 @Override

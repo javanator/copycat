@@ -12,8 +12,8 @@ import org.joml.Matrix4d;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
+import java.util.Queue;
 import java.util.Stack;
-import java.util.concurrent.LinkedBlockingDeque;
 
 public class PrepareImageTask {
 
@@ -53,8 +53,8 @@ public class PrepareImageTask {
             blocks = imageCopier.createUndoBuffer(preparedImage.getWidth(), preparedImage.getHeight());
             imageCopier.draw(preparedImage, blocks);
         } finally {
-            LinkedBlockingDeque<UndoHistoryComponent> undoBuffers = playerSettings.getUndoBuffer();
-            undoBuffers.push(UndoHistoryComponent.builder()
+            Queue<UndoHistoryComponent> undoBuffers = playerSettings.getUndoBuffer();
+            undoBuffers.add(UndoHistoryComponent.builder()
                     .withBlocks(blocks)
                     .build());
             //TODO: Make the undo buffer persistent
