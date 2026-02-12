@@ -12,7 +12,8 @@
 
 # Copycat
 
-A Minecraft plugin that converts images from URLs into pixel art using in-game blocks. HTTP Redirects and basic auth are supported.
+A Minecraft plugin that converts images from URLs into pixel art using in-game blocks. HTTP Redirects and basic auth are supported. 
+Video is rendered using VLC when available.
 
 
 ![Example](assets/example.png)
