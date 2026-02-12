@@ -23,7 +23,7 @@ apply plugin: 'io.freefair.lombok'
 apply plugin: 'com.gradleup.shadow'
 
 group = 'org.bukkitmodders'
-version = '2.0'
+version = '2.1-SNAPSHOT'
 
 repositories {
     maven {
