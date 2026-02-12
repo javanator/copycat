@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 buildscript {
     repositories {
         mavenCentral()
@@ -76,10 +78,12 @@ dependencies {
 
 hangarPublish {
     println "HANGAR_API_TOKEN: ${System.getenv("HANGAR_API_TOKEN")}"
-    def timestampVersion = project.version.toString().contains("SNAPSHOT") ? new java.text.SimpleDateFormat("yyyyMMddHHmm").format(new Date()) : project.version.toString()
+    def isSnapshot = project.version.toString().contains("SNAPSHOT")
+    def timestampVersion = isSnapshot ? new SimpleDateFormat("yyyyMMddHHmm").format(new Date()) : project.version.toString()
+
     publications.register("plugin") {
-        version.set(timestampVersion)
-        channel.set(project.version.toString().contains("SNAPSHOT") ? "Snapshot" : "Release")
+        version.set( isSnapshot ? timestampVersion : project.version)
+        channel.set( isSnapshot ? "Snapshot" : "Release")
         id.set("copycat")
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
