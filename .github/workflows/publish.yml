@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master #used as a snapshot branch, not a release branch
-      - release # used as a release branch
-
 jobs:
   publish:
     if: github.repository_owner == 'javanator'
