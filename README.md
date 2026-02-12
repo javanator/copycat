@@ -23,7 +23,8 @@ Video is rendered using VLC when available.
 ```
 /cc
 ├── admin
-│   └── undo <player>               # Admin undo for specific player
+│   ├── undo <player>               # Admin undo for specific player
+│   └── purgeAllUndoBuffers         # Purge all undo buffers for all players to free memory
 ├── list                            # List all saved image shortcuts
 ├── add <name> <url>                # Add new url shortcut for video or image
 ├── remove <name>                   # Remove image shortcut (with tab completion)

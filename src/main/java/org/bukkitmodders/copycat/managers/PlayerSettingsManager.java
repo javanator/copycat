@@ -8,8 +8,8 @@ import org.bukkitmodders.copycat.model.UndoHistoryComponent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
 
 /**
@@ -86,7 +86,7 @@ public class PlayerSettingsManager {
         saveSettings();
     }
 
-    public Queue<UndoHistoryComponent> getUndoBuffer() {
+    public Deque<UndoHistoryComponent> getUndoBuffer() {
         return application.getUndoBufferManager().getUndoBuffer(playerSettings.getPlayerName());
     }
 

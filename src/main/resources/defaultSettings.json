@@ -2,6 +2,7 @@
   "globalSettings": {
     "maxImageWidth": 400,
     "maxImageHeight": 100,
+    "undoBufferLimit": 20,
     "blockProfiles": [
       {
         "name": "wool",

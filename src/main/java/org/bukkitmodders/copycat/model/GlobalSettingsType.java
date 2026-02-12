@@ -14,5 +14,6 @@ public class GlobalSettingsType {
     protected int pollingRefresh;
     protected int maxImageWidth;
     protected int maxImageHeight;
+    protected int undoBufferLimit;
     protected List<BlockProfileType> blockProfiles = new ArrayList<>();
 }

@@ -138,6 +138,8 @@ public class ConfigurationManager {
         return getPluginConfig().getGlobalSettings().getMaxImageHeight();
     }
 
+    public int getMaxUndoSize() {return getPluginConfig().getGlobalSettings().getUndoBufferLimit();}
+
     private synchronized PluginConfig getPluginConfig() {
         PluginConfig pluginConfig = null;
         try {

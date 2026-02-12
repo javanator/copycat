@@ -12,7 +12,7 @@ import org.joml.Matrix4d;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.IndexColorModel;
-import java.util.Queue;
+import java.util.Deque;
 import java.util.Stack;
 
 public class PrepareImageTask {
@@ -53,7 +53,7 @@ public class PrepareImageTask {
             blocks = imageCopier.createUndoBuffer(preparedImage.getWidth(), preparedImage.getHeight());
             imageCopier.draw(preparedImage, blocks);
         } finally {
-            Queue<UndoHistoryComponent> undoBuffers = playerSettings.getUndoBuffer();
+            Deque<UndoHistoryComponent> undoBuffers = playerSettings.getUndoBuffer();
             undoBuffers.add(UndoHistoryComponent.builder()
                     .withBlocks(blocks)
                     .build());
