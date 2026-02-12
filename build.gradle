@@ -75,15 +75,16 @@ dependencies {
 
 hangarPublish {
     println "HANGAR_API_TOKEN: ${System.getenv("HANGAR_API_TOKEN")}"
+    def timestampVersion = project.version.toString().contains("SNAPSHOT") ? new java.text.SimpleDateFormat("yyyyMMddHHmm").format(new Date()) : project.version.toString()
     publications.register("plugin") {
-        version.set(project.version as String)
+        version.set(timestampVersion)
         channel.set("Snapshot") // We're using the 'Snapshot' channel
         id.set("copycat")
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
             register(io.papermc.hangarpublishplugin.model.Platforms.PAPER) {
                 jar.set(tasks.shadowJar.archiveFile)
-                def versions = (property("paperVersion") as String)
+                def versions = (property("paperVersion").toString())
                         .split(",")
                         .collect { it.trim() }
                 platformVersions.set(versions)

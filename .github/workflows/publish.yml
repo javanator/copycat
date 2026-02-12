@@ -2,8 +2,8 @@ name: Publish to Hangar
 on:
   push:
     branches:
-      # Add any additional branches you want to automatically publish from
-      - snapshot # Assuming your main branch is called 'main'
+      - master #used as a snapshot branch, not a release branch
+      - release # used as a release branch
 
 jobs:
   publish:
