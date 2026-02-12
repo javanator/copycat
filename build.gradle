@@ -79,7 +79,7 @@ hangarPublish {
     def timestampVersion = project.version.toString().contains("SNAPSHOT") ? new java.text.SimpleDateFormat("yyyyMMddHHmm").format(new Date()) : project.version.toString()
     publications.register("plugin") {
         version.set(timestampVersion)
-        channel.set("Snapshot") // We're using the 'Snapshot' channel
+        channel.set(project.version.toString().contains("SNAPSHOT") ? "Snapshot" : "Release")
         id.set("copycat")
         apiKey.set(System.getenv("HANGAR_API_TOKEN"))
         platforms {
