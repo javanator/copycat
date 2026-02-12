@@ -18,6 +18,7 @@ Video is rendered using VLC when available.
 
 ![Example](assets/example.png)
 ![Example](assets/basicauth.png)
+![Example](assets/examplecam.png)
 
 ## Command Tree
 ```
