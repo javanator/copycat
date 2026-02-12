@@ -16,7 +16,8 @@ import java.util.Stack;
 @Getter
 public class UndoHistoryComponent {
 
-    private final Stack<RevertibleBlock> blocks = new Stack<>();
+    @Builder.Default
+    private Stack<RevertibleBlock> blocks = new Stack<>();
     private DirectMediaPlayer mediaPlayer;
 
     public void revert() {
