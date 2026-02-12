@@ -5,3 +5,44 @@ author: Javanat0r
 website: https://github.com/javanator/copycat
 api-version: '1.21'
 
+commands:
+  cc:
+    description: Main command for Copycat
+    usage: /cc <subcommand>
+    permission: copycat.use
+
+permissions:
+  copycat.*:
+    description: Allows access to all Copycat features
+    children:
+      copycat.admin: false
+      copycat.user: true
+  copycat.admin:
+    description: Allows access to administrative commands
+    default: op
+  copycat.user:
+    description: Allows access to user Copycat commands
+    default: true
+    children:
+      copycat.command.list: true
+      copycat.command.add: true
+      copycat.command.remove: true
+      copycat.command.copy: true
+      copycat.command.undo: true
+      copycat.command.stop: true
+      copycat.command.set: true
+  copycat.command.list:
+    description: Allows using /cc list
+  copycat.command.add:
+    description: Allows using /cc add
+  copycat.command.remove:
+    description: Allows using /cc remove
+  copycat.command.copy:
+    description: Allows using /cc copy
+  copycat.command.undo:
+    description: Allows using /cc undo
+  copycat.command.stop:
+    description: Allows using /cc stop
+  copycat.command.set:
+    description: Allows using /cc set
+

@@ -58,6 +58,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildAdminCommand() {
         return Commands.literal("admin")
+                .requires(stack -> stack.getSender().hasPermission("copycat.admin"))
                 .then(Commands.literal("undo")
                         .then(Commands.argument("player", ArgumentTypes.player())
                                 .executes(ctx -> {
@@ -70,6 +71,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildListCommand() {
         return Commands.literal("list")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.list"))
                 .executes(context -> {
                     String playerName = context.getSource().getSender().getName();
                     PlayerSettingsManager playerSettings = application.getPlayerSettings(playerName);
@@ -83,6 +85,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildAddCommand() {
         return Commands.literal("add")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.add"))
                 .then(Commands.argument("name", StringArgumentType.string()))
                 .then(Commands.argument("url", StringArgumentType.string()))
                 .executes(commandContext -> {
@@ -97,6 +100,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildRemoveCommand() {
         return Commands.literal("remove")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.remove"))
                 .then(Commands.argument("name", StringArgumentType.string())
                         .suggests(this::buildShortcutSuggestions))
                 .executes(commandContext -> {
@@ -110,6 +114,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildCopyCommand() {
         return Commands.literal("copy")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.copy"))
                 .then(Commands.argument("shortcut", StringArgumentType.string())
                         .suggests(this::buildShortcutSuggestions)
                         .executes(context -> {
@@ -131,6 +136,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildUndoCommand() {
         return Commands.literal("undo")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.undo"))
                 .executes(ctx -> {
                     Player player = (Player) ctx.getSource().getSender();
                     application.getPlayerSettings(player.getName()).undo(player);
@@ -140,6 +146,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildStopCommand() {
         return Commands.literal("stop")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.stop"))
                 .executes(ctx -> {
                     Player player = (Player) ctx.getSource().getSender();
                     mediaService.stopVideoStreamsForPlayer(player);
@@ -149,6 +156,7 @@ public class CommandBuilder {
 
     public LiteralArgumentBuilder<CommandSourceStack> buildSetCommand() {
         return Commands.literal("set")
+                .requires(stack -> stack.getSender().hasPermission("copycat.command.set"))
                 .then(Commands.literal("dithering").then(Commands.argument("enabled", BoolArgumentType.bool())
                         .executes(context -> {
                             boolean ditheringEnabled = context.getArgument("enabled", Boolean.class);

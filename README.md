@@ -24,40 +24,55 @@ A Minecraft plugin that converts images from URLs into pixel art using in-game b
 ├── admin
 │   └── undo <player>               # Admin undo for specific player
 ├── list                            # List all saved image shortcuts
-├── add <name> <url>                # Add new image shortcut
+├── add <name> <url>                # Add new url shortcut for video or image
 ├── remove <name>                   # Remove image shortcut (with tab completion)
-├── copy <shortcut>                 # Render image from shortcut (with tab completion)
-├── undo                            # Undo last render for current player
-├── poll <shortcut>                 # Continuously poll and render image from URL
+├── copy <shortcut>                 # Render image or stream video from shortcut (with tab completion)
+├── undo                            # Undo last action for current player
+├── stop                            # Stop all active video streams for current player
 └── set
     ├── dithering <true|false>      # Enable/disable image dithering
     ├── dimensions <width> <height> # Set render dimensions
-    └── profile <profileName>       # Set block profile 
+    └── profile <profileName>       # Set block profile (with tab completion)
 ```
+
+## Permissions
+
+| Permission | Description | Default |
+|------------|-------------|---------|
+| `copycat.*` | Allows access to all Copycat features | `op` |
+| `copycat.admin` | Allows access to administrative commands | `op` |
+| `copycat.user` | Allows access to basic Copycat commands | `true` |
+| `copycat.command.list` | Allows using `/cc list` | `true` |
+| `copycat.command.add` | Allows using `/cc add` | `true` |
+| `copycat.command.remove` | Allows using `/cc remove` | `true` |
+| `copycat.command.copy` | Allows using `/cc copy` | `true` |
+| `copycat.command.undo` | Allows using `/cc undo` | `true` |
+| `copycat.command.stop` | Allows using `/cc stop` | `true` |
+| `copycat.command.set` | Allows using `/cc set` | `true` |
 
 ## Features
 - **Brigadier Command System**: The command system has been updated to support the new brigadier system and provide tab completion
 - **Image-to-Block Conversion**: Downloads images from URLs and converts them into Minecraft block structures
+- **Video Streaming**: Supports streaming video (including MJPEG) directly onto blocks using VLCJ
 - **Color Mapping**: Preprocesses Minecraft block textures to create color averages for accurate material matching
 - **Image Processing**: Automatically resizes and dithers images to optimize them for pixel art conversion
 - **Per-Pixel Analysis**: Maps each pixel to the closest matching Minecraft block based on color similarity
 - **Basic Auth**: Support for HTTPS basic auth is included
-
-## Experimental
-- **Polling**: Will repeatedly hit a URL to refresh an image. Polling will stop on a server restart. There are no controls for abuse. I suggest this be used on a personal server only. Undo also does not work for poll commands.
+- **Permissions**: Robust permission system for fine-grained access control
 
 ## Possibly Upcoming
-- **Permissions** Because they sound important. 
-- **Persistent Undo Buffers** Right now, they are in memory only and lost after server restart 
-- **Persistent Polling** to keep streaming those streams
-- **Dynamic Color Mapping** to set a default color map with the server's loaded resource pack.
+- **Persistent Undo Buffers**: Right now, they are in memory only and lost after server restart 
+- **Persistent Polling/Streaming**: To keep streaming those streams across restarts
+- **Dynamic Color Mapping**: to set a default color map with the server's loaded resource pack.
 
 ## How It Works
 
-1. Enter an image URL in-game
+1. Enter an image or video URL in-game
 2. The plugin downloads and resizes the image to your specified resolution
 3. Each pixel is analyzed and mapped to the closest matching Minecraft block color
 4. The plugin places the corresponding blocks to recreate the image as pixel art
+5. For video, VLCJ is used. VLC must be installed on the host OS for video support.
+7. Video playback will only stay active while a player is logged in. This was a design decision in order to minimize load on the server. 
 
 **Note**: Results are optimized for the default Minecraft textures. Using other texture packs may produce suboptimal color matching.
 
